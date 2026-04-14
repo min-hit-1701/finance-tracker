@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="brand_primary">#2F54FF</color>
+    <color name="brand_primary_dark">#1E3DD6</color>
+    <color name="brand_primary_soft">#E8EDFF</color>
+
+    <color name="bg_app">#F6F7FF</color>
+    <color name="bg_surface">#FFFFFFFF</color>
+    <color name="bg_muted">#F1F3FF</color>
+
+    <color name="text_primary">#111827</color>
+    <color name="text_secondary">#6B7280</color>
+    <color name="text_hint">#9CA3AF</color>
+
+    <color name="stroke_default">#E5E7EB</color>
+    <color name="success">#22C55E</color>
+    <color name="warning">#F59E0B</color>
+    <color name="error">#EF4444</color>
+
+    <color name="income_green">#16A34A</color>
+    <color name="expense_red">#DC2626</color>
+
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

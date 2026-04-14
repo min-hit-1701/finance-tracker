@@ -1,14 +1,3 @@
 <resources>
     <string name="app_name">Finance Tracker</string>
-    <string name="nav_home">Trang chủ</string>
-    <string name="nav_finance">Tài chính</string>
-    <string name="nav_stats">Thống kê</string>
-    <string name="nav_cards">Thẻ</string>
-    <string name="nav_profile">Cá nhân</string>
-
-    <string name="screen_home">Trang chủ</string>
-    <string name="screen_finance">Tài chính</string>
-    <string name="screen_stats">Thống kê</string>
-    <string name="screen_cards">Thẻ</string>
-    <string name="screen_profile">Cá nhân</string>
 </resources>

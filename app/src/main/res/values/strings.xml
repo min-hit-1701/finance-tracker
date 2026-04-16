@@ -1,0 +1,51 @@
+<resources>
+    <string name="app_name">Finance Tracker</string>
+    <string name="app_tagline">Quản lý tài chính</string>
+
+    <string name="login_title">Đăng nhập</string>
+    <string name="login_email_hint">Email</string>
+    <string name="login_password_hint">Mật khẩu</string>
+    <string name="login_button">Đăng nhập</string>
+
+    <string name="business_dashboard_title">Business Dashboard</string>
+    <string name="business_revenue">Revenue</string>
+    <string name="business_expense">Expense</string>
+    <string name="business_profit">Profit</string>
+    <string name="business_this_month">This month</string>
+    <string name="business_quick_overview">Quick overview</string>
+    <string name="business_chart_placeholder">Chart area (fake UI)</string>
+
+    <string name="business_management_title">Business Management</string>
+    <string name="business_name_label">Business name</string>
+    <string name="business_type_label">Business type</string>
+    <string name="business_note_label">Note</string>
+    <string name="business_create">Create business</string>
+    <string name="business_update">Update business</string>
+    <string name="business_list_title">Your businesses</string>
+
+    <string name="business_transaction_title">Business Transactions</string>
+    <string name="business_add_transaction">Add transaction</string>
+
+    <string name="business_report_title">Business Report</string>
+    <string name="business_filter">Filter</string>
+    <string name="business_filter_week">Week</string>
+    <string name="business_filter_month">Month</string>
+    <string name="business_filter_year">Year</string>
+    <string name="business_report_trend_title">Revenue / Expense Trend</string>
+    <string name="business_total_revenue">Total revenue</string>
+    <string name="business_total_expense">Total expense</string>
+    <string name="business_total_profit">Profit</string>
+
+    <string name="fake_business_name_1">Coffee Kiosk</string>
+    <string name="fake_business_name_2">Online Store</string>
+    <string name="fake_business_name_3">Freelance Team</string>
+
+    <string name="fake_tx_1_title">Office supplies</string>
+    <string name="fake_tx_1_subtitle">Stationery - 10:30</string>
+    <string name="fake_tx_2_title">Client payment</string>
+    <string name="fake_tx_2_subtitle">Invoice INV-112 - 14:00</string>
+    <string name="fake_tx_3_title">Team lunch</string>
+    <string name="fake_tx_3_subtitle">Operation cost - 12:15</string>
+    <string name="fake_tx_4_title">Service package</string>
+    <string name="fake_tx_4_subtitle">Monthly plan - 09:00</string>
+</resources>

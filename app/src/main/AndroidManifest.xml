@@ -12,6 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FinanceTracker">
         <activity
+            android:name=".BusinessMainActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

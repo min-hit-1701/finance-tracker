@@ -3,14 +3,18 @@
     <color name="brand_primary">#2F54FF</color>
     <color name="brand_primary_dark">#1E3DD6</color>
     <color name="brand_primary_soft">#E8EDFF</color>
+    <color name="brand_primary_light">#5E7BFF</color>
 
     <color name="bg_app">#F6F7FF</color>
     <color name="bg_surface">#FFFFFFFF</color>
     <color name="bg_muted">#F1F3FF</color>
+    <color name="bg_soft_blue">#EEF2FF</color>
 
     <color name="text_primary">#111827</color>
     <color name="text_secondary">#6B7280</color>
     <color name="text_hint">#9CA3AF</color>
+    <color name="text_on_primary_high">#FFFFFFFF</color>
+    <color name="text_on_primary_mid">#D6E0FF</color>
 
     <color name="stroke_default">#E5E7EB</color>
     <color name="success">#22C55E</color>

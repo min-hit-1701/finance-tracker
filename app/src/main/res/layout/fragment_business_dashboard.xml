@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_app">
+    android:background="@color/bg_app"
+    android:scrollbars="none">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,30 +13,136 @@
         android:padding="16dp">
 
         <TextView
+            style="@style/Text.Finance.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/business_dashboard_title"
-            android:textStyle="bold"
-            style="@style/Text.Finance.Title" />
+            android:text="@string/business_dashboard_title" />
 
         <TextView
+            style="@style/Text.Finance.Body"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="@string/business_this_month"
-            style="@style/Text.Finance.Body" />
+            android:text="@string/business_dashboard_subtitle" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:background="@drawable/bg_business_hero_gradient"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/business_total_balance"
+                android:textColor="@color/text_on_primary_mid"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/business_balance_value"
+                android:textColor="@color/text_on_primary_high"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_pill_white"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="6dp"
+                    android:text="@string/business_income_short"
+                    android:textColor="@color/text_on_primary_high"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_pill_white"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="6dp"
+                    android:text="@string/business_expense_short"
+                    android:textColor="@color/text_on_primary_high"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_pill_white"
+                    android:gravity="center"
+                    android:paddingVertical="10dp"
+                    android:text="@string/business_view_details"
+                    android:textColor="@color/text_on_primary_high"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_pill_outline_white"
+                    android:gravity="center"
+                    android:paddingVertical="10dp"
+                    android:text="@string/business_send_payment"
+                    android:textColor="@color/text_on_primary_high"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/Text.Finance.Subheading"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/business_overview" />
+
+            <TextView
+                style="@style/Text.Finance.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/business_this_month" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             android:orientation="horizontal"
             android:weightSum="3">
 
             <com.google.android.material.card.MaterialCardView
                 style="@style/Widget.Finance.Card"
                 android:layout_width="0dp"
-                android:layout_height="92dp"
+                android:layout_height="96dp"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1">
 
@@ -46,25 +153,33 @@
                     android:orientation="vertical">
 
                     <TextView
+                        style="@style/Text.Finance.Caption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/business_revenue"
-                        style="@style/Text.Finance.Caption" />
+                        android:text="@string/business_revenue" />
 
                     <TextView
+                        style="@style/Text.Finance.Subheading"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="12.5M"
-                        android:textColor="@color/income_green"
-                        style="@style/Text.Finance.Subheading" />
+                        android:layout_marginTop="3dp"
+                        android:text="@string/business_revenue_value"
+                        android:textColor="@color/income_green" />
+
+                    <TextView
+                        style="@style/Text.Finance.Caption"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/business_growth_up"
+                        android:textColor="@color/income_green" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
                 style="@style/Widget.Finance.Card"
                 android:layout_width="0dp"
-                android:layout_height="92dp"
+                android:layout_height="96dp"
                 android:layout_marginHorizontal="4dp"
                 android:layout_weight="1">
 
@@ -75,25 +190,33 @@
                     android:orientation="vertical">
 
                     <TextView
+                        style="@style/Text.Finance.Caption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/business_expense"
-                        style="@style/Text.Finance.Caption" />
+                        android:text="@string/business_expense" />
 
                     <TextView
+                        style="@style/Text.Finance.Subheading"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="5.2M"
-                        android:textColor="@color/expense_red"
-                        style="@style/Text.Finance.Subheading" />
+                        android:layout_marginTop="3dp"
+                        android:text="@string/business_expense_value"
+                        android:textColor="@color/expense_red" />
+
+                    <TextView
+                        style="@style/Text.Finance.Caption"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/business_growth_down"
+                        android:textColor="@color/expense_red" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
                 style="@style/Widget.Finance.Card"
                 android:layout_width="0dp"
-                android:layout_height="92dp"
+                android:layout_height="96dp"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1">
 
@@ -104,18 +227,26 @@
                     android:orientation="vertical">
 
                     <TextView
+                        style="@style/Text.Finance.Caption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/business_profit"
-                        style="@style/Text.Finance.Caption" />
+                        android:text="@string/business_profit" />
 
                     <TextView
+                        style="@style/Text.Finance.Subheading"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="7.3M"
-                        android:textColor="@color/brand_primary"
-                        style="@style/Text.Finance.Subheading" />
+                        android:layout_marginTop="3dp"
+                        android:text="@string/business_profit_value"
+                        android:textColor="@color/brand_primary" />
+
+                    <TextView
+                        style="@style/Text.Finance.Caption"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/business_growth_up"
+                        android:textColor="@color/brand_primary" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
@@ -123,27 +254,257 @@
         <com.google.android.material.card.MaterialCardView
             style="@style/Widget.Finance.Card"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="14dp">
 
                 <TextView
+                    style="@style/Text.Finance.Subheading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/business_quick_overview"
-                    style="@style/Text.Finance.Subheading" />
+                    android:text="@string/business_monthly_cash_flow" />
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_marginTop="12dp"
+                    android:gravity="bottom"
+                    android:orientation="horizontal"
+                    android:weightSum="12">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="62dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_chart_bar_income" />
+
+                    <Space android:layout_width="4dp" android:layout_height="1dp" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="42dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_chart_bar_expense" />
+
+                    <Space android:layout_width="8dp" android:layout_height="1dp" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="78dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_chart_bar_income" />
+
+                    <Space android:layout_width="4dp" android:layout_height="1dp" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="46dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_chart_bar_expense" />
+
+                    <Space android:layout_width="8dp" android:layout_height="1dp" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="96dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_chart_bar_income" />
+
+                    <Space android:layout_width="4dp" android:layout_height="1dp" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="54dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_chart_bar_expense" />
+
+                    <Space android:layout_width="8dp" android:layout_height="1dp" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="88dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_chart_bar_income" />
+
+                    <Space android:layout_width="4dp" android:layout_height="1dp" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="57dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_chart_bar_expense" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@string/business_chart_placeholder"
-                    style="@style/Text.Finance.Caption" />
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:weightSum="6">
+
+                    <TextView style="@style/Text.Finance.Caption" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/month_jan" />
+                    <TextView style="@style/Text.Finance.Caption" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/month_feb" />
+                    <TextView style="@style/Text.Finance.Caption" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/month_mar" />
+                    <TextView style="@style/Text.Finance.Caption" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/month_apr" />
+                    <TextView style="@style/Text.Finance.Caption" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/month_may" />
+                    <TextView style="@style/Text.Finance.Caption" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/month_jun" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Finance.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="14dp">
+
+                <TextView
+                    style="@style/Text.Finance.Subheading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/business_recent_transactions" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:background="@drawable/bg_icon_soft_circle" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/Text.Finance.Body"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/business_tx_rent"
+                            android:textColor="@color/text_primary"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            style="@style/Text.Finance.Caption"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/business_tx_rent_sub" />
+                    </LinearLayout>
+
+                    <TextView
+                        style="@style/Text.Finance.Body"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/business_tx_minus_4m"
+                        android:textColor="@color/expense_red"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:background="@drawable/bg_icon_soft_circle" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/Text.Finance.Body"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/business_tx_client"
+                            android:textColor="@color/text_primary"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            style="@style/Text.Finance.Caption"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/business_tx_client_sub" />
+                    </LinearLayout>
+
+                    <TextView
+                        style="@style/Text.Finance.Body"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/business_tx_plus_8_5m"
+                        android:textColor="@color/income_green"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:background="@drawable/bg_icon_soft_circle" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/Text.Finance.Body"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/business_tx_advert"
+                            android:textColor="@color/text_primary"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            style="@style/Text.Finance.Caption"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/business_tx_advert_sub" />
+                    </LinearLayout>
+
+                    <TextView
+                        style="@style/Text.Finance.Body"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/business_tx_minus_1_8m"
+                        android:textColor="@color/expense_red"
+                        android:textStyle="bold" />
+                </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 

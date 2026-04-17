@@ -20,7 +20,7 @@
 | 1   | 22521169 | Nguyễn Võ Đăng Phương    |       | 22521169@gm.uit.edu.vn |
 | 2   | 23520230 | Nguyễn Lê Bảo Đăng   | https://github.com/nguyenlebaodang      | 23520230@gm.uit.edu.vn |
 | 3   | 23520924 | Hồ Nhật Minh    | https://github.com/min-hit-1701      | 23520924@gm.uit.edu.vn |
-| 4   | 23521770 | Đỗ Ngọc Tường Vân    |       | 23521770@gm.uit.edu.vn |
+| 4   | 23521770 | Đỗ Ngọc Tường Vân    |https://github.com/23521770       | 23521770@gm.uit.edu.vn |
 | 5   | 23521812 |Nguyễn Trường Vũ    | https://github.com/vu-leonguyen      | 23521812@gm.uit.edu.vn |
 
 ## GIỚI THIỆU ĐỒ ÁN

@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.uit.minhho.financetracker.R;
-import com.uit.minhho.financetracker.adapter.BusinessTransactionAdapter;
-import com.uit.minhho.financetracker.model.BusinessTransaction;
+import com.uit.minhho.financetracker.adapter.business.BusinessTransactionAdapter;
+import com.uit.minhho.financetracker.model.business.BusinessTransaction;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.uit.minhho.financetracker.model;
+package com.uit.minhho.financetracker.model.business;
 
 public class BusinessTransaction {
     private final String title;

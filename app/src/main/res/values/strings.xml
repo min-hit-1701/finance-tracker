@@ -1,6 +1,53 @@
 <resources>
     <string name="app_name">Finance Tracker</string>
 
+    <!-- Personal Navigation Labels -->
+    <string name="nav_home">Home</string>
+    <string name="nav_wallet">Wallet</string>
+    <string name="nav_category">Category</string>
+    <string name="nav_budget">Budget</string>
+    <string name="nav_report">Report</string>
+
+    <!-- Personal Home -->
+    <string name="personal_home_title">Good morning!</string>
+    <string name="personal_home_subtitle">Keep track of your spending</string>
+    <string name="personal_total_balance">Total Balance</string>
+    <string name="personal_balance_value">12,450,000 VND</string>
+    <string name="personal_income">Income</string>
+    <string name="personal_expense">Expense</string>
+    <string name="personal_income_value">+5.2M</string>
+    <string name="personal_expense_value">-2.8M</string>
+    <string name="personal_recent_transactions">Recent Transactions</string>
+    <string name="personal_view_all">View all</string>
+
+    <!-- Personal Wallet -->
+    <string name="personal_wallet_title">My Wallets</string>
+    <string name="personal_add_wallet">Add new wallet</string>
+
+    <!-- Personal Category -->
+    <string name="personal_category_title">Categories</string>
+    <string name="personal_add_category">Add new category</string>
+    <string name="category_income">Income</string>
+    <string name="category_expense">Expense</string>
+
+    <!-- Personal Budget -->
+    <string name="personal_budget_title">Budgets</string>
+    <string name="personal_add_budget">Set new budget</string>
+    <string name="budget_spent_of">spent of</string>
+    <string name="budget_remaining">Remaining</string>
+    <string name="budget_over">Over budget</string>
+
+    <!-- Add Transaction -->
+    <string name="add_tx_title">Add Transaction</string>
+    <string name="add_tx_amount_hint">0</string>
+    <string name="add_tx_note_hint">Enter note...</string>
+    <string name="add_tx_category_label">Category</string>
+    <string name="add_tx_wallet_label">Wallet</string>
+    <string name="add_tx_date_label">Date</string>
+    <string name="add_tx_save">Save Transaction</string>
+    <string name="add_tx_income">Income</string>
+    <string name="add_tx_expense">Expense</string>
+
     <string name="business_dashboard_title">Business Dashboard</string>
     <string name="business_nav_dashboard">Dashboard</string>
     <string name="business_nav_business">Business</string>

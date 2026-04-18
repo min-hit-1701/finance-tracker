@@ -66,7 +66,6 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
         TextView spentText;
         TextView limitText;
         TextView remainingText;
-
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             categoryName = itemView.findViewById(R.id.budget_category_name);

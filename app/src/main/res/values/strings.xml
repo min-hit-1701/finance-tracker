@@ -1,126 +1,194 @@
 <resources>
-    <string name="app_name">Finance Tracker</string>
+    <string name="app_name">Quản Lý Tài Chính</string>
+    <string name="app_tagline">Thông minh - Tiện lợi - Hiệu quả</string>
 
-    <!-- Personal Navigation Labels -->
-    <string name="nav_home">Home</string>
-    <string name="nav_wallet">Wallet</string>
-    <string name="nav_category">Category</string>
-    <string name="nav_budget">Budget</string>
-    <string name="nav_report">Report</string>
+    <!-- Điều hướng chính -->
+    <string name="nav_home">Tổng quan</string>
+    <string name="nav_wallet">Ví của tôi</string>
+    <string name="nav_budget">Ngân sách</string>
+    <string name="nav_category">Danh mục</string>
+    <string name="nav_report">Báo cáo</string>
+    <string name="nav_profile">Tài khoản</string>
 
-    <!-- Personal Home -->
-    <string name="personal_home_title">Good morning!</string>
-    <string name="personal_home_subtitle">Keep track of your spending</string>
-    <string name="personal_total_balance">Total Balance</string>
-    <string name="personal_balance_value">12,450,000 VND</string>
-    <string name="personal_income">Income</string>
-    <string name="personal_expense">Expense</string>
-    <string name="personal_income_value">+5.2M</string>
-    <string name="personal_expense_value">-2.8M</string>
-    <string name="personal_recent_transactions">Recent Transactions</string>
-    <string name="personal_view_all">View all</string>
+    <!-- Các kỳ hạn -->
+    <string name="period_week">Tuần này</string>
+    <string name="period_month">Tháng này</string>
+    <string name="period_quarter">Quý này</string>
+    <string name="period_year">Năm nay</string>
 
-    <!-- Personal Wallet -->
-    <string name="personal_wallet_title">My Wallets</string>
-    <string name="personal_add_wallet">Add new wallet</string>
+    <!-- Đăng nhập & Đăng ký -->
+    <string name="login_title">Chào mừng trở lại</string>
+    <string name="login_subtitle">Vui lòng đăng nhập để tiếp tục quản lý tài chính</string>
+    <string name="login_email">Email / Số điện thoại</string>
+    <string name="login_password">Mật khẩu</string>
+    <string name="login_button">Đăng nhập</string>
+    <string name="login_no_account">
 
-    <!-- Personal Category -->
-    <string name="personal_category_title">Categories</string>
-    <string name="personal_add_category">Add new category</string>
-    <string name="category_income">Income</string>
-    <string name="category_expense">Expense</string>
+        Bạn chưa có tài khoản? Đăng ký ngay</string>
+    <string name="register_title">Tạo tài khoản mới</string>
+    <string name="register_name">Họ và tên</string>
+    <string name="register_email">Email</string>
+    <string name="register_password">Mật khẩu</string>
+    <string name="register_button">Đăng ký</string>
+    <string name="register_have_account">Đã có tài khoản? Đăng nhập</string>
 
-    <!-- Personal Budget -->
-    <string name="personal_budget_title">Budgets</string>
-    <string name="personal_add_budget">Set new budget</string>
-    <string name="budget_spent_of">spent of</string>
-    <string name="budget_remaining">Remaining</string>
-    <string name="budget_over">Over budget</string>
+    <!-- Chọn chế độ -->
+    <string name="mode_select_title">Chọn mục đích sử dụng</string>
+    <string name="mode_personal">Quản lý Cá nhân</string>
+    <string name="mode_business">Quản lý Doanh nghiệp</string>
 
-    <!-- Add Transaction -->
-    <string name="add_tx_title">Add Transaction</string>
-    <string name="add_tx_amount_hint">0</string>
-    <string name="add_tx_note_hint">Enter note...</string>
-    <string name="add_tx_category_label">Category</string>
-    <string name="add_tx_wallet_label">Wallet</string>
-    <string name="add_tx_date_label">Date</string>
-    <string name="add_tx_save">Save Transaction</string>
-    <string name="add_tx_income">Income</string>
-    <string name="add_tx_expense">Expense</string>
+    <!-- Hành động -->
+    <string name="action_logout">Đăng xuất</string>
+    <string name="action_switch_mode">Chế độ Doanh nghiệp</string>
+    <string name="action_switch_personal">Chế độ Cá nhân</string>
+    <string name="action_save">Lưu lại</string>
+    <string name="action_update">Cập nhật</string>
+    <string name="action_cancel">Hủy</string>
+    <string name="action_add">Thêm mới</string>
 
-    <string name="business_dashboard_title">Business Dashboard</string>
-    <string name="business_nav_dashboard">Dashboard</string>
-    <string name="business_nav_business">Business</string>
-    <string name="business_nav_transaction">Transaction</string>
-    <string name="business_nav_report">Report</string>
-    <string name="business_dashboard_subtitle">Track your company performance in one place</string>
-    <string name="business_total_balance">Total balance</string>
-    <string name="business_balance_value">86,450,000 VND</string>
-    <string name="business_income_short">Income: 45.2M</string>
-    <string name="business_expense_short">Expense: 12.3M</string>
-    <string name="business_view_details">View details</string>
-    <string name="business_send_payment">Send payment</string>
-    <string name="business_overview">Overview</string>
-    <string name="business_revenue_value">24,500,000</string>
-    <string name="business_expense_value">11,300,000</string>
-    <string name="business_profit_value">13,200,000</string>
-    <string name="business_growth_up">+12.5%%</string>
-    <string name="business_growth_down">-4.2%%</string>
-    <string name="business_monthly_cash_flow">Monthly cash flow</string>
-    <string name="business_recent_transactions">Recent transactions</string>
-    <string name="business_tx_rent">Office rent</string>
-    <string name="business_tx_rent_sub">Apr 12 - 09:20</string>
-    <string name="business_tx_client">Client payment</string>
-    <string name="business_tx_client_sub">Apr 12 - 13:10</string>
-    <string name="business_tx_advert">Ads campaign</string>
-    <string name="business_tx_advert_sub">Apr 11 - 17:45</string>
-    <string name="business_tx_minus_4m">-4,000,000</string>
-    <string name="business_tx_plus_8_5m">+8,500,000</string>
-    <string name="business_tx_minus_1_8m">-1,800,000</string>
-    <string name="month_jan">Jan</string>
-    <string name="month_feb">Feb</string>
-    <string name="month_mar">Mar</string>
-    <string name="month_apr">Apr</string>
-    <string name="month_may">May</string>
-    <string name="month_jun">Jun</string>
-    <string name="business_revenue">Revenue</string>
-    <string name="business_expense">Expense</string>
-    <string name="business_profit">Profit</string>
-    <string name="business_this_month">This month</string>
-    <string name="business_quick_overview">Quick overview</string>
-    <string name="business_chart_placeholder">Chart area (fake UI)</string>
+    <!-- Trang chủ Cá nhân -->
+    <string name="personal_home_title">Xin chào!</string>
+    <string name="personal_home_subtitle">Theo dõi dòng tiền của bạn hôm nay</string>
+    <string name="personal_total_balance">Tổng số dư</string>
+    <string name="personal_balance_value">12.450.000 đ</string>
+    <string name="personal_income">Thu nhập</string>
+    <string name="personal_expense">Chi tiêu</string>
+    <string name="personal_income_value">+5.200.000 đ</string>
+    <string name="personal_expense_value">-2.800.000 đ</string>
+    <string name="personal_recent_transactions">Giao dịch gần đây</string>
+    <string name="personal_view_all">Xem tất cả</string>
 
-    <string name="business_management_title">Business Management</string>
-    <string name="business_name_label">Business name</string>
-    <string name="business_type_label">Business type</string>
-    <string name="business_note_label">Note</string>
-    <string name="business_create">Create business</string>
-    <string name="business_update">Update business</string>
-    <string name="business_list_title">Your businesses</string>
+    <!-- Ví của tôi -->
+    <string name="personal_wallet_title">Ví và Tài khoản</string>
+    <string name="personal_add_wallet">Thêm tài khoản mới</string>
+    <string name="wallet_name_label">Tên tài khoản/ví</string>
+    <string name="wallet_balance_label">Số dư khởi tạo</string>
+    <string name="wallet_type_label">Loại tài khoản</string>
+    <string name="wallet_cash">Ví Tiền mặt</string>
+    <string name="wallet_bank">Ngân hàng Techcombank</string>
+    <string name="wallet_momo">Ví điện tử MoMo</string>
+    <string name="wallet_last_updated">Cập nhật lúc: %s</string>
 
-    <string name="business_transaction_title">Business Transactions</string>
-    <string name="business_add_transaction">Add transaction</string>
+    <!-- Danh mục -->
+    <string name="personal_category_title">Danh mục thu chi</string>
+    <string name="personal_add_category">Tạo danh mục mới</string>
+    <string name="category_income">Khoản thu</string>
+    <string name="category_expense">Khoản chi</string>
 
-    <string name="business_report_title">Business Report</string>
-    <string name="business_filter">Filter</string>
-    <string name="business_filter_week">Week</string>
-    <string name="business_filter_month">Month</string>
-    <string name="business_filter_year">Year</string>
-    <string name="business_report_trend_title">Revenue / Expense Trend</string>
-    <string name="business_total_revenue">Total revenue</string>
-    <string name="business_total_expense">Total expense</string>
-    <string name="business_total_profit">Profit</string>
+    <!-- Danh mục cụ thể -->
+    <string name="cat_food">Ăn uống &amp; Cafe</string>
+    <string name="cat_transport">Di chuyển</string>
+    <string name="cat_shopping">Mua sắm</string>
+    <string name="cat_utility">Hóa đơn &amp; Tiện ích</string>
+    <string name="cat_home">Nhà cửa</string>
+    <string name="cat_entertainment">Giải trí</string>
+    <string name="cat_health">Sức khỏe</string>
+    <string name="cat_education">Giáo dục</string>
+    <string name="cat_salary">Tiền lương</string>
+    <string name="cat_bonus">Tiền thưởng</string>
+    <string name="cat_investment">Đầu tư</string>
+    <string name="cat_other">Khác</string>
 
-    <string name="fake_business_name_1">Coffee Kiosk</string>
-    <string name="fake_business_name_2">Online Store</string>
-    <string name="fake_business_name_3">Freelance Team</string>
+    <!-- Ngân sách -->
+    <string name="personal_budget_title">Quản lý Ngân sách</string>
+    <string name="personal_add_budget">Thiết lập ngân sách mới</string>
+    <string name="budget_remaining">Còn lại: %s</string>
+    <string name="budget_over">Vượt mức: %s</string>
+    <string name="budget_spent_of">Đã dùng %s / %s</string>
+    <string name="budget_percent_format">%d%%</string>
 
-    <string name="fake_tx_1_title">Office supplies</string>
-    <string name="fake_tx_1_subtitle">Stationery - 10:30</string>
-    <string name="fake_tx_2_title">Client payment</string>
-    <string name="fake_tx_2_subtitle">Invoice INV-112 - 14:00</string>
-    <string name="fake_tx_3_title">Team lunch</string>
-    <string name="fake_tx_3_subtitle">Operation cost - 12:15</string>
-    <string name="fake_tx_4_title">Service package</string>
-    <string name="fake_tx_4_subtitle">Monthly plan - 09:00</string>
+    <!-- Báo cáo -->
+    <string name="report_title">Phân tích Tài chính</string>
+    <string name="report_comparison">So sánh Thu - Chi</string>
+    <string name="report_distribution">Phân bổ chi tiêu</string>
+    <string name="report_total_income">Tổng thu</string>
+    <string name="report_total_expense">Tổng chi</string>
+    <string name="report_net_amount">Số dư thực tế</string>
+    <string name="report_trend">Xu hướng chi tiêu</string>
+    <string name="report_category_distribution">Phân bổ theo danh mục</string>
+    <string name="report_net_income">Thu nhập ròng</string>
+
+    <!-- Thêm giao dịch -->
+    <string name="add_tx_title">Ghi chép chi tiêu</string>
+    <string name="add_tx_amount_hint">Số tiền (đ)</string>
+    <string name="add_tx_note_hint">Nội dung chi tiết...</string>
+    <string name="add_tx_category_label">Danh mục</string>
+    <string name="add_tx_wallet_label">Ví/Tài khoản</string>
+    <string name="add_tx_date_label">Ngày thực hiện</string>
+    <string name="add_tx_save">Lưu giao dịch</string>
+    <string name="add_tx_income">Khoản thu</string>
+    <string name="add_tx_expense">Khoản chi</string>
+
+    <!-- Doanh nghiệp -->
+    <string name="business_dashboard_title">Quản trị Kinh doanh</string>
+    <string name="business_dashboard_subtitle">Thống kê hiệu quả hoạt động</string>
+    <string name="business_total_balance">Vốn lưu động</string>
+    <string name="business_balance_value">86.450.000 đ</string>
+    <string name="business_income_short">Thu: 45,2 Tr</string>
+    <string name="business_expense_short">Chi: 12,3 Tr</string>
+    <string name="business_revenue">Doanh thu</string>
+    <string name="business_expense">Chi phí</string>
+    <string name="business_profit">Lợi nhuận</string>
+    <string name="business_recent_transactions">Giao dịch gần đây</string>
+    <string name="business_tx_inventory">Nhập hàng hóa</string>
+    <string name="business_tx_payroll">Lương nhân viên</string>
+    <string name="business_tx_rent">Tiền thuê mặt bằng</string>
+    <string name="business_tx_client">Khách hàng thanh toán</string>
+    <string name="business_tx_advert">Chi phí Marketing</string>
+    <string name="business_management_title">Quản lý Doanh nghiệp</string>
+    <string name="business_name_label">Tên doanh nghiệp</string>
+    <string name="business_type_label">Loại hình kinh doanh</string>
+    <string name="business_note_label">Ghi chú</string>
+    <string name="business_update">Cập nhật</string>
+    <string name="business_create">Tạo doanh nghiệp</string>
+    <string name="business_list_title">Danh sách doanh nghiệp</string>
+    <string name="fake_business_name_1">Cửa hàng Cafe X</string>
+    <string name="fake_business_name_2">Shop Thời trang Y</string>
+    <string name="fake_business_name_3">Tiệm Tạp hóa Z</string>
+    <string name="business_view_details">Xem chi tiết</string>
+    <string name="business_send_payment">Gửi thanh toán</string>
+    <string name="business_overview">Tổng quan kinh doanh</string>
+    <string name="business_this_month">Tháng này</string>
+    <string name="business_revenue_value">45.200.000 đ</string>
+    <string name="business_expense_value">12.300.000 đ</string>
+    <string name="business_profit_value">32.900.000 đ</string>
+    <string name="business_growth_up">Tăng 15%</string>
+    <string name="business_growth_down">Giảm 5%</string>
+    <string name="business_monthly_cash_flow">Dòng tiền hàng tháng</string>
+    <string name="business_tx_rent_sub">Thanh toán tháng 10</string>
+    <string name="business_tx_minus_4m">-4.000.000 đ</string>
+    <string name="business_tx_client_sub">Đơn hàng #12345</string>
+    <string name="business_tx_plus_8_5m">+8.500.000 đ</string>
+    <string name="business_tx_advert_sub">Facebook Ads</string>
+    <string name="business_tx_minus_1_8m">-1.800.000 đ</string>
+    <string name="business_report_title">Báo cáo doanh nghiệp</string>
+    <string name="business_filter">Lọc theo</string>
+    <string name="business_filter_week">Tuần</string>
+    <string name="business_filter_month">Tháng</string>
+    <string name="business_filter_year">Năm</string>
+    <string name="business_report_trend_title">Xu hướng kinh doanh</string>
+    <string name="business_chart_placeholder">Biểu đồ đang được tải...</string>
+    <string name="business_total_revenue">Tổng doanh thu</string>
+    <string name="business_total_expense">Tổng chi phí</string>
+    <string name="business_total_profit">Tổng lợi nhuận</string>
+    <string name="business_transaction_title">Lịch sử giao dịch</string>
+    <string name="business_add_transaction">Thêm giao dịch mới</string>
+    <string name="business_nav_dashboard">Bảng tin</string>
+    <string name="business_nav_business">Doanh nghiệp</string>
+    <string name="business_nav_transaction">Giao dịch</string>
+    <string name="business_nav_report">Báo cáo</string>
+
+    <!-- Các tháng -->
+    <string name="month_jan">Tháng 1</string>
+    <string name="month_feb">Tháng 2</string>
+    <string name="month_mar">Tháng 3</string>
+    <string name="month_apr">Tháng 4</string>
+    <string name="month_may">Tháng 5</string>
+    <string name="month_jun">Tháng 6</string>
+    <string name="month_jul">Tháng 7</string>
+    <string name="month_aug">Tháng 8</string>
+    <string name="month_sep">Tháng 9</string>
+    <string name="month_oct">Tháng 10</string>
+    <string name="month_nov">Tháng 11</string>
+    <string name="month_dec">Tháng 12</string>
 </resources>

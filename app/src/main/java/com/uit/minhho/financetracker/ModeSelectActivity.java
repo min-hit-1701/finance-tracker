@@ -1,13 +1,11 @@
-package com.example.finance_tracker;
+package com.uit.minhho.financetracker;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 public class ModeSelectActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -16,12 +14,17 @@ public class ModeSelectActivity extends AppCompatActivity {
         Button btnPersonal = findViewById(R.id.btnPersonal);
         Button btnBusiness = findViewById(R.id.btnBusiness);
 
-        btnPersonal.setOnClickListener(v ->
-                startActivity(new Intent(ModeSelectActivity.this, MainActivity.class))
-        );
-
-        btnBusiness.setOnClickListener(v ->
-                startActivity(new Intent(ModeSelectActivity.this, BusinessMainActivity.class))
-        );
+        if (btnPersonal != null) {
+            btnPersonal.setOnClickListener(v -> {
+                startActivity(new Intent(this, MainActivity.class));
+                finish();
+            });
+        }
+        if (btnBusiness != null) {
+            btnBusiness.setOnClickListener(v -> {
+                startActivity(new Intent(this, BusinessMainActivity.class));
+                finish();
+            });
+        }
     }
 }

@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
+    app:cardCornerRadius="16dp"
     app:cardElevation="2dp">
 
     <LinearLayout
@@ -14,21 +15,28 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <View
+            android:id="@+id/category_icon_bg"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_icon_soft_circle" />
+
         <ImageView
             android:id="@+id/category_icon"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="-36dp"
             android:src="@android:drawable/ic_menu_help"
-            app:tint="@color/brand_primary" />
+            app:tint="@color/white" />
 
         <TextView
             android:id="@+id/category_name"
             style="@style/Text.Finance.Body"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="20dp"
             android:gravity="center"
-            android:text="Category"
+            android:text="Danh mục"
             android:textStyle="bold" />
 
         <TextView
@@ -37,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="Expense" />
+            android:text="Loại" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

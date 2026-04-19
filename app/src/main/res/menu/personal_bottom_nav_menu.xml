@@ -2,22 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_home"
-        android:icon="@android:drawable/ic_menu_today"
+        android:icon="@drawable/ic_home"
         android:title="@string/nav_home" />
     <item
         android:id="@+id/nav_wallet"
-        android:icon="@android:drawable/ic_menu_save"
+        android:icon="@drawable/ic_wallet"
         android:title="@string/nav_wallet" />
     <item
-        android:id="@+id/nav_category"
-        android:icon="@android:drawable/ic_menu_manage"
-        android:title="@string/nav_category" />
-    <item
         android:id="@+id/nav_budget"
-        android:icon="@android:drawable/ic_menu_recent_history"
+        android:icon="@drawable/ic_budget"
         android:title="@string/nav_budget" />
     <item
+        android:id="@+id/nav_category"
+        android:icon="@drawable/ic_category"
+        android:title="@string/nav_category" />
+    <item
         android:id="@+id/nav_report"
-        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:icon="@drawable/ic_report"
         android:title="@string/nav_report" />
 </menu>

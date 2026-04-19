@@ -1,5 +1,6 @@
 package com.uit.minhho.financetracker.adapter.personal;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,8 +36,10 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Budget item = items.get(position);
+        Context context = holder.itemView.getContext();
+        
         holder.categoryName.setText(item.getCategoryName());
-        holder.statusText.setText(item.getProgressPercent() + "%");
+        holder.statusText.setText(context.getString(R.string.budget_percent_format, item.getProgressPercent()));
         holder.progressBar.setProgress(item.getProgressPercent());
         
         holder.spentText.setText(formatter.format(item.getSpentAmount()));
@@ -44,13 +47,13 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
         
         double remaining = item.getLimitAmount() - item.getSpentAmount();
         if (remaining >= 0) {
-            holder.remainingText.setText(holder.itemView.getContext().getString(R.string.budget_remaining) + ": " + formatter.format(remaining));
-            holder.remainingText.setTextColor(holder.itemView.getResources().getColor(R.color.text_secondary, null));
-            holder.progressBar.setIndicatorColor(holder.itemView.getResources().getColor(R.color.brand_primary, null));
+            holder.remainingText.setText(context.getString(R.string.budget_remaining, formatter.format(remaining)));
+            holder.remainingText.setTextColor(context.getResources().getColor(R.color.text_secondary, null));
+            holder.progressBar.setIndicatorColor(context.getResources().getColor(R.color.brand_primary, null));
         } else {
-            holder.remainingText.setText(holder.itemView.getContext().getString(R.string.budget_over) + ": " + formatter.format(Math.abs(remaining)));
-            holder.remainingText.setTextColor(holder.itemView.getResources().getColor(R.color.expense_red, null));
-            holder.progressBar.setIndicatorColor(holder.itemView.getResources().getColor(R.color.expense_red, null));
+            holder.remainingText.setText(context.getString(R.string.budget_over, formatter.format(Math.abs(remaining))));
+            holder.remainingText.setTextColor(context.getResources().getColor(R.color.expense_red, null));
+            holder.progressBar.setIndicatorColor(context.getResources().getColor(R.color.expense_red, null));
         }
     }
 
@@ -59,7 +62,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
         return items.size();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView categoryName;
         TextView statusText;
         LinearProgressIndicator progressBar;

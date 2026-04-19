@@ -1,55 +1,23 @@
 package com.uit.minhho.financetracker.model.personal;
 
 public class PersonalTransaction {
-    private final String id;
-    private final String title;
-    private final String note;
-    private final double amount;
-    private final String date;
-    private final String categoryId;
-    private final String walletId;
-    private final boolean isIncome;
+    private String title;
+    private String subtitle;
+    private String amount;
+    private boolean isIncome;
+    private String iconType;
 
-    public PersonalTransaction(String id, String title, String note, double amount, String date, String categoryId, String walletId, boolean isIncome) {
-        this.id = id;
+    public PersonalTransaction(String title, String subtitle, String amount, boolean isIncome, String iconType) {
         this.title = title;
-        this.note = note;
+        this.subtitle = subtitle;
         this.amount = amount;
-        this.date = date;
-        this.categoryId = categoryId;
-        this.walletId = walletId;
         this.isIncome = isIncome;
+        this.iconType = iconType;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public String getCategoryId() {
-        return categoryId;
-    }
-
-    public String getWalletId() {
-        return walletId;
-    }
-
-    public boolean isIncome() {
-        return isIncome;
-    }
+    public String getTitle() { return title; }
+    public String getSubtitle() { return subtitle; }
+    public String getAmount() { return amount; }
+    public boolean isIncome() { return isIncome; }
+    public String getIconType() { return iconType; }
 }

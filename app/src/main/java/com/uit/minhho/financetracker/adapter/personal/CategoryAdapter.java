@@ -5,21 +5,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.uit.minhho.financetracker.R;
 import com.uit.minhho.financetracker.model.personal.Category;
-
 import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
 
     private final List<Category> items;
+    private OnCategoryClickListener listener;
 
-    public CategoryAdapter(List<Category> items) {
+    public interface OnCategoryClickListener {
+        void onCategoryClick(Category category);
+    }
+
+    public CategoryAdapter(List<Category> items, OnCategoryClickListener listener) {
         this.items = items;
+        this.listener = listener;
     }
 
     @NonNull
@@ -34,16 +37,31 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Category item = items.get(position);
         holder.nameText.setText(item.getName());
-        holder.iconImage.setImageResource(item.getIconResId());
         
-        holder.typeText.setText(holder.itemView.getContext().getString(
+        String typeLabel = holder.itemView.getContext().getString(
                 item.isIncome() ? R.string.category_income : R.string.category_expense
-        ));
+        );
+        holder.typeText.setText(typeLabel);
+
+        int iconRes = R.drawable.ic_other;
+        String name = item.getName().toLowerCase();
         
-        holder.typeText.setTextColor(holder.itemView.getResources().getColor(
-                item.isIncome() ? R.color.income_green : R.color.expense_red,
-                null
-        ));
+        if (name.contains("ăn uống")) iconRes = R.drawable.ic_food;
+        else if (name.contains("di chuyển")) iconRes = R.drawable.ic_transport;
+        else if (name.contains("mua sắm")) iconRes = R.drawable.ic_shopping;
+        else if (name.contains("hóa đơn") || name.contains("tiện ích")) iconRes = R.drawable.ic_utility;
+        else if (name.contains("giải trí")) iconRes = R.drawable.ic_entertainment;
+        else if (name.contains("sức khỏe")) iconRes = R.drawable.ic_health;
+        else if (name.contains("giáo dục")) iconRes = R.drawable.ic_education;
+        else if (name.contains("lương")) iconRes = R.drawable.ic_salary;
+        else if (name.contains("đầu tư")) iconRes = R.drawable.ic_investment;
+        else if (name.contains("nhà cửa")) iconRes = R.drawable.ic_utility;
+
+        holder.iconView.setImageResource(iconRes);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) listener.onCategoryClick(item);
+        });
     }
 
     @Override
@@ -52,15 +70,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView iconImage;
-        TextView nameText;
-        TextView typeText;
+        TextView nameText, typeText;
+        ImageView iconView;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
-            iconImage = itemView.findViewById(R.id.category_icon);
             nameText = itemView.findViewById(R.id.category_name);
             typeText = itemView.findViewById(R.id.category_type);
+            iconView = itemView.findViewById(R.id.category_icon);
         }
     }
 }

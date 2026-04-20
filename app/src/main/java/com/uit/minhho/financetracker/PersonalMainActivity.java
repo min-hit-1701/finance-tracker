@@ -20,7 +20,7 @@ public class PersonalMainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_personal_main);
 
         setSupportActionBar(findViewById(R.id.main_toolbar));
 

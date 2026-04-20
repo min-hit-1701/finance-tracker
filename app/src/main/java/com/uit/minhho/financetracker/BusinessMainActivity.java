@@ -61,7 +61,7 @@ public class BusinessMainActivity extends AppCompatActivity {
             finish();
             return true;
         } else if (id == R.id.action_switch_personal) {
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, PersonalMainActivity.class));
             finish();
             return true;
         }

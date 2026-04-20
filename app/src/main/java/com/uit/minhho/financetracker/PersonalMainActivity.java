@@ -14,7 +14,7 @@ import com.uit.minhho.financetracker.fragment.personal.BudgetFragment;
 import com.uit.minhho.financetracker.fragment.personal.ReportFragment;
 import com.uit.minhho.financetracker.fragment.personal.CategoryFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class PersonalMainActivity extends AppCompatActivity {
     BottomNavigationView bottomNav;
 
     @Override

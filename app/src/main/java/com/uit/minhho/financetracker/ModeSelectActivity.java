@@ -16,7 +16,7 @@ public class ModeSelectActivity extends AppCompatActivity {
 
         if (btnPersonal != null) {
             btnPersonal.setOnClickListener(v -> {
-                startActivity(new Intent(this, MainActivity.class));
+                startActivity(new Intent(this, PersonalMainActivity.class));
                 finish();
             });
         }

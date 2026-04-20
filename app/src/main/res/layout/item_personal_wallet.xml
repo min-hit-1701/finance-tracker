@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    app:strokeColor="#E0E0E0"
+    app:strokeWidth="1dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <View
+            android:id="@+id/wallet_icon_bg"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_icon_soft_circle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_wallet_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_wallet"
+            app:layout_constraintBottom_toBottomOf="@id/wallet_icon_bg"
+            app:layout_constraintEnd_toEndOf="@id/wallet_icon_bg"
+            app:layout_constraintStart_toStartOf="@id/wallet_icon_bg"
+            app:layout_constraintTop_toTopOf="@id/wallet_icon_bg"
+            app:tint="@color/brand_primary" />
+
+        <TextView
+            android:id="@+id/wallet_name"
+            style="@style/Text.Finance.Body.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Tên Ví"
+            app:layout_constraintStart_toEndOf="@id/wallet_icon_bg"
+            app:layout_constraintTop_toTopOf="@id/wallet_icon_bg" />
+
+        <TextView
+            android:id="@+id/wallet_account_number"
+            style="@style/Text.Finance.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Loại tài khoản"
+            app:layout_constraintStart_toStartOf="@id/wallet_name"
+            app:layout_constraintTop_toBottomOf="@id/wallet_name" />
+
+        <TextView
+            android:id="@+id/tv_wallet_balance"
+            style="@style/Text.Finance.Body.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0 đ"
+            android:textColor="@color/brand_primary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

@@ -56,7 +56,12 @@ public class BusinessMainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_logout) {
+        if (id == R.id.action_back_business) {
+            if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                getSupportFragmentManager().popBackStack();
+            }
+            return true;
+        } else if (id == R.id.action_logout) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
             return true;

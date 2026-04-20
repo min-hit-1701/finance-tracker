@@ -2,21 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_business_dashboard"
-        android:icon="@android:drawable/ic_menu_view"
+        android:icon="@drawable/ic_home"
         android:title="@string/business_nav_dashboard" />
 
     <item
         android:id="@+id/nav_business_management"
-        android:icon="@android:drawable/ic_menu_edit"
+        android:icon="@drawable/ic_category"
         android:title="@string/business_nav_business" />
 
     <item
         android:id="@+id/nav_business_transaction"
-        android:icon="@android:drawable/ic_menu_send"
+        android:icon="@drawable/ic_wallet"
         android:title="@string/business_nav_transaction" />
 
     <item
         android:id="@+id/nav_business_report"
-        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:icon="@drawable/ic_report"
         android:title="@string/business_nav_report" />
 </menu>

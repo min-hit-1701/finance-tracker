@@ -29,6 +29,7 @@
         android:id="@+id/fragment_container_business"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:clipToPadding="false"
         app:layout_constraintBottom_toTopOf="@id/bottom_nav_business"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

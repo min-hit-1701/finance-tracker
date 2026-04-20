@@ -1,9 +1,7 @@
 package com.uit.minhho.financetracker.fragment.business;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,21 +9,23 @@ import androidx.fragment.app.Fragment;
 
 import com.uit.minhho.financetracker.R;
 
-public class DashboardFragment extends Fragment {
+public class BusinessDetailFragment extends Fragment {
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_business_dashboard, container, false);
+    public BusinessDetailFragment() {
+        super(R.layout.fragment_business_detail);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        View paymentButton = view.findViewById(R.id.btn_send_business_payment);
+        view.findViewById(R.id.btn_open_report_from_detail).setOnClickListener(v ->
+                openChildScreen(new ReportFragment())
+        );
 
-        paymentButton.setOnClickListener(v -> openChildScreen(new BusinessPaymentFragment()));
+        view.findViewById(R.id.btn_back_from_business_detail).setOnClickListener(v ->
+                requireActivity().getSupportFragmentManager().popBackStack()
+        );
     }
 
     private void openChildScreen(Fragment fragment) {

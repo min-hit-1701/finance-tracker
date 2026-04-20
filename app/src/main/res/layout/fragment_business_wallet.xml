@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_app"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:clipToPadding="false"
+        android:paddingBottom="20dp">
+
+        <TextView
+            style="@style/Text.Finance.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/business_wallet_title" />
+
+        <TextView
+            style="@style/Text.Finance.Body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/business_wallet_subtitle" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_add_business_wallet"
+            style="@style/Widget.Finance.Button.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/business_add_wallet" />
+
+        <TextView
+            style="@style/Text.Finance.Subheading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/business_wallet_added_title" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_business_wallets"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            android:paddingBottom="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_back_business_wallet"
+            style="@style/Widget.Finance.Button.Secondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/action_back" />
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

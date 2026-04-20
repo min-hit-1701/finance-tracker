@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/action_back_business"
+        android:title="@string/action_back"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_switch_personal"
         android:title="@string/action_switch_personal"
         app:showAsAction="never" />

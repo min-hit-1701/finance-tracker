@@ -18,17 +18,12 @@ import com.uit.minhho.financetracker.model.business.BusinessTransaction;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Màn hình hiển thị lịch sử giao dịch doanh nghiệp.
- * Dữ liệu được Việt hóa hoàn toàn và trình bày chuyên nghiệp.
- */
 public class TransactionFragment extends Fragment {
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        // Sử dụng layout đã thiết kế sẵn cho doanh nghiệp
         return inflater.inflate(R.layout.fragment_business_transaction, container, false);
     }
 
@@ -38,46 +33,46 @@ public class TransactionFragment extends Fragment {
         
         RecyclerView recyclerView = view.findViewById(R.id.business_transaction_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        
-        // Thiết lập Adapter với dữ liệu thực tế tại Việt Nam
         recyclerView.setAdapter(new BusinessTransactionAdapter(fakeTransactions()));
     }
 
-    /**
-     * Tạo dữ liệu mẫu mang tính logic cho quản lý kinh doanh.
-     */
     private List<BusinessTransaction> fakeTransactions() {
         List<BusinessTransaction> list = new ArrayList<>();
-        
-        // Các giao dịch thu/chi thực tế
+
         list.add(new BusinessTransaction(
                 getString(R.string.business_tx_rent),
-                "12 Th4 - 09:20",
-                "-4.000.000 đ",
+                getString(R.string.business_tx_rent_sub),
+                getString(R.string.business_tx_minus_4m),
                 false
         ));
         list.add(new BusinessTransaction(
                 getString(R.string.business_tx_client),
-                "12 Th4 - 13:10",
-                "+8.500.000 đ",
+                getString(R.string.business_tx_client_sub),
+                getString(R.string.business_tx_plus_8_5m),
                 true
         ));
         list.add(new BusinessTransaction(
                 getString(R.string.business_tx_advert),
-                "11 Th4 - 17:45",
-                "-1.800.000 đ",
+                getString(R.string.business_tx_advert_sub),
+                getString(R.string.business_tx_minus_1_8m),
                 false
         ));
         list.add(new BusinessTransaction(
-                "Nhập hàng linh kiện",
-                "10 Th4 - 10:30",
-                "-12.500.000 đ",
+                getString(R.string.business_tx_inventory),
+                getString(R.string.business_tx_inventory_sub),
+                getString(R.string.business_tx_minus_12_5m),
                 false
         ));
         list.add(new BusinessTransaction(
-                "Khách thanh toán nợ",
-                "09 Th4 - 15:00",
-                "+3.200.000 đ",
+                getString(R.string.business_tx_payroll),
+                getString(R.string.business_tx_payroll_sub),
+                getString(R.string.business_tx_minus_6_2m),
+                false
+        ));
+        list.add(new BusinessTransaction(
+                getString(R.string.business_tx_client_payment),
+                getString(R.string.business_tx_client_payment_sub),
+                getString(R.string.business_tx_plus_3_2m),
                 true
         ));
 

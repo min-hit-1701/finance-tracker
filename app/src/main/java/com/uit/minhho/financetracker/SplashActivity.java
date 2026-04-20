@@ -10,10 +10,16 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_auth_splash);
+        
+        // Handler để chuyển cảnh sau 2 giây
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
+            if (!isFinishing()) {
+                Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
         }, 2000);
     }
 }

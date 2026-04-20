@@ -51,7 +51,7 @@ public class WalletFragment extends Fragment implements WalletAdapter.OnWalletCl
     }
 
     private void showAddWalletDialog() {
-        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_personal_add_wallet, null);
+        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.fragment_personal_add_wallet, null);
         AutoCompleteTextView spinnerBank = dialogView.findViewById(R.id.spinner_bank_type);
         
         String[] banks = {"Vietcombank", "Techcombank", "MB Bank", "MoMo", "ZaloPay"};

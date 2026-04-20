@@ -69,11 +69,28 @@
     <string name="wallet_momo">Ví điện tử MoMo</string>
     <string name="wallet_last_updated">Cập nhật lúc: %s</string>
 
+    <!-- Strings cho dialog thêm thẻ/ví -->
+    <string name="card_add_title">Thêm Thẻ/Ví Mới</string>
+    <string name="card_add_subtitle">Vui lòng nhập thông tin thẻ hoặc ví của bạn bên dưới</string>
+    <string name="card_holder_name_label">Tên chủ sở hữu</string>
+    <string name="card_email_label">Địa chỉ Email</string>
+    <string name="card_number_label">Số tài khoản / Thẻ</string>
+    <string name="card_expiry_label">Ngày hết hạn</string>
+    <string name="card_cvv_label">Mã CVV</string>
+    <string name="card_bank_type_label">Ngân hàng / Loại ví</string>
+    <string name="card_label_label">Tên gọi nhãn (ví dụ: Ví chính)</string>
+    <string name="card_set_default_label">Đặt làm tài khoản mặc định</string>
+
     <!-- Danh mục -->
     <string name="personal_category_title">Danh mục thu chi</string>
     <string name="personal_add_category">Tạo danh mục mới</string>
     <string name="category_income">Khoản thu</string>
     <string name="category_expense">Khoản chi</string>
+    <string name="category_select_type">Chọn loại giao dịch</string>
+    <string name="category_name_label">Tên danh mục</string>
+    <string name="category_icon_label">Biểu tượng</string>
+    <string name="category_icon_hint">Chạm để chọn biểu tượng</string>
+    <string name="category_budget_limit_label">Hạn mức ngân sách (Tùy chọn)</string>
 
     <!-- Danh mục cụ thể -->
     <string name="cat_food">Ăn uống &amp; Cafe</string>

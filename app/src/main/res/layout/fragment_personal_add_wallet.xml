@@ -17,7 +17,7 @@
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="@android:drawable/ic_menu_close_clear_cancel"
             app:navigationIconTint="@color/text_primary"
-            app:title="@string/add_tx_title"
+            app:title="@string/card_add_title"
             app:titleCentered="true"
             app:titleTextAppearance="@style/Text.Finance.Heading" />
 
@@ -35,7 +35,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Hero Amount Section (Business Dashboard Style) -->
+            <!-- Hero Section (Business Style Gradient) -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -54,82 +54,29 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="SỐ TIỀN"
+                        android:text="TÀI KHOẢN MỚI"
                         android:textColor="@color/text_on_primary_mid"
-                        android:textSize="12sp"
+                        android:textSize="13sp"
                         android:letterSpacing="0.1"
                         android:textStyle="bold" />
 
-                    <LinearLayout
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:gravity="bottom"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="6dp"
-                            android:text="đ"
-                            android:textColor="@color/text_on_primary_high"
-                            android:textSize="24sp"
-                            android:textStyle="bold" />
-
-                        <EditText
-                            android:id="@+id/et_amount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:background="@android:color/transparent"
-                            android:hint="0"
-                            android:inputType="number"
-                            android:minWidth="80dp"
-                            android:textColor="@color/text_on_primary_high"
-                            android:textColorHint="@color/text_on_primary_mid"
-                            android:textSize="44sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
+                        android:text="Kết nối nguồn tiền"
+                        android:textColor="@color/text_on_primary_high"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Toggle Buttons (Modern Tab Style) -->
-            <com.google.android.material.button.MaterialButtonToggleGroup
-                android:id="@+id/toggle_group_type"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                app:checkedButton="@+id/btn_expense"
-                app:selectionRequired="true"
-                app:singleSelection="true">
-
-                <Button
-                    android:id="@+id/btn_income"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/add_tx_income"
-                    android:textColor="@color/income_green"
-                    app:strokeColor="@color/income_green" />
-
-                <Button
-                    android:id="@+id/btn_expense"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/add_tx_expense"
-                    android:textColor="@color/expense_red"
-                    app:strokeColor="@color/expense_red" />
-            </com.google.android.material.button.MaterialButtonToggleGroup>
-
-            <!-- Form Details Card (Business Style) -->
+            <!-- Form Details Card -->
             <com.google.android.material.card.MaterialCardView
                 style="@style/Widget.Finance.Card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="24dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -138,17 +85,16 @@
                     android:padding="16dp">
 
                     <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        style="@style/Widget.Finance.Input"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/add_tx_category_label">
+                        android:hint="@string/card_holder_name_label">
 
-                        <AutoCompleteTextView
-                            android:id="@+id/spinner_category"
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_holder_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="none"
-                            android:textColor="@color/text_primary" />
+                            android:inputType="textPersonName" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -156,14 +102,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:hint="@string/add_tx_wallet_label">
+                        android:hint="@string/card_bank_type_label">
 
                         <AutoCompleteTextView
-                            android:id="@+id/spinner_wallet"
+                            android:id="@+id/spinner_bank_type"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="none"
-                            android:textColor="@color/text_primary" />
+                            android:inputType="none" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -171,16 +116,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:hint="@string/add_tx_date_label">
+                        android:hint="@string/card_number_label">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/et_date"
+                            android:id="@+id/et_card_number"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:clickable="true"
-                            android:focusable="false"
-                            android:text="Hôm nay"
-                            android:textColor="@color/text_primary" />
+                            android:inputType="number" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -188,28 +130,26 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:hint="Ghi chú">
+                        android:hint="@string/card_label_label">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/et_note"
+                            android:id="@+id/et_card_label"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="textLongMessage"
-                            android:textColor="@color/text_primary" />
+                            android:inputType="textCapWords" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_save"
+                android:id="@+id/btn_save_card"
                 style="@style/Widget.Finance.Button.Primary"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="32dp"
                 android:layout_marginBottom="16dp"
-                android:text="@string/add_tx_save"
-                android:textStyle="bold"
+                android:text="@string/action_save"
                 app:cornerRadius="12dp" />
 
         </LinearLayout>

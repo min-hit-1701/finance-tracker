@@ -4,9 +4,7 @@ plugins {
 
 android {
     namespace 'com.uit.minhho.financetracker'
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk 36
 
     defaultConfig {
         applicationId "com.uit.minhho.financetracker"

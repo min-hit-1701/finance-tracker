@@ -15,6 +15,7 @@
         style="@style/Text.Finance.Title" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_add_transaction"
         style="@style/Widget.Finance.Button.Primary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

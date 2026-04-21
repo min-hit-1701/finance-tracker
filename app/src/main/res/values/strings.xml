@@ -129,10 +129,15 @@
     <!-- Thêm giao dịch -->
     <string name="add_tx_title">Ghi chép chi tiêu</string>
     <string name="add_tx_amount_hint">Số tiền (đ)</string>
+    <string name="add_tx_amount_label">GIÁ TRỊ GIAO DỊCH</string>
+    <string name="add_tx_currency_symbol">đ</string>
+    <string name="add_tx_default_amount">0</string>
     <string name="add_tx_note_hint">Nội dung chi tiết...</string>
     <string name="add_tx_category_label">Danh mục</string>
     <string name="add_tx_wallet_label">Ví/Tài khoản</string>
     <string name="add_tx_date_label">Ngày thực hiện</string>
+    <string name="add_tx_date_today">Hôm nay</string>
+    <string name="add_tx_partner_label">Đối tác / Khách hàng</string>
     <string name="add_tx_save">Lưu giao dịch</string>
     <string name="add_tx_income">Khoản thu</string>
     <string name="add_tx_expense">Khoản chi</string>

@@ -34,6 +34,16 @@ public class TransactionFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.business_transaction_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(new BusinessTransactionAdapter(fakeTransactions()));
+
+        // KẾT NỐI: Mở màn hình Thêm giao dịch khi nhấn vào nút "Thêm giao dịch mới"
+        view.findViewById(R.id.btn_add_transaction).setOnClickListener(v -> {
+            getParentFragmentManager().beginTransaction()
+                    .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, 
+                                       android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                    .replace(R.id.fragment_container_business, new BusinessAddTransactionFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
     }
 
     private List<BusinessTransaction> fakeTransactions() {

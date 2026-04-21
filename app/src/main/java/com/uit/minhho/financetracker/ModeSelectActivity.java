@@ -5,23 +5,31 @@ import android.os.Bundle;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.card.MaterialCardView;
+
 public class ModeSelectActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mode_select);
 
-        Button btnPersonal = findViewById(R.id.btnPersonal);
-        Button btnBusiness = findViewById(R.id.btnBusiness);
+        MaterialCardView cardPersonal = findViewById(R.id.cardPersonal);
+        cardPersonal.setOnClickListener(v -> {
+        });
 
-        if (btnPersonal != null) {
-            btnPersonal.setOnClickListener(v -> {
+        MaterialCardView cardBusiness = findViewById(R.id.cardBusiness);
+        cardPersonal.setOnClickListener(v -> {
+        });
+
+
+        if (cardPersonal != null) {
+            cardPersonal.setOnClickListener(v -> {
                 startActivity(new Intent(this, PersonalMainActivity.class));
                 finish();
             });
         }
-        if (btnBusiness != null) {
-            btnBusiness.setOnClickListener(v -> {
+        if (cardBusiness != null) {
+            cardBusiness.setOnClickListener(v -> {
                 startActivity(new Intent(this, BusinessMainActivity.class));
                 finish();
             });

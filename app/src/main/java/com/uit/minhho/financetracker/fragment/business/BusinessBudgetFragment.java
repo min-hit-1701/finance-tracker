@@ -30,6 +30,7 @@ public class BusinessBudgetFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
         getParentFragmentManager().setFragmentResultListener(
                 BusinessAddBudgetFragment.REQUEST_KEY,
                 getViewLifecycleOwner(),

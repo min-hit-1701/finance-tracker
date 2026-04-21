@@ -138,7 +138,7 @@
                     android:padding="16dp">
 
                     <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        style="@style/Widget.Finance.Input.Dropdown"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/add_tx_category_label">
@@ -152,7 +152,7 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        style="@style/Widget.Finance.Input.Dropdown"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
@@ -171,6 +171,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
+                        android:textColorHint="@color/brand_primary_dark"
                         android:hint="@string/add_tx_date_label">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -180,7 +181,7 @@
                             android:clickable="true"
                             android:focusable="false"
                             android:text="Hôm nay"
-                            android:textColor="@color/text_primary" />
+                            android:textColor="@color/brand_primary_light" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout

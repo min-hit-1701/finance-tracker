@@ -85,7 +85,7 @@
                     android:padding="16dp">
 
                     <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        style="@style/Widget.Finance.Input.Dropdown"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/add_tx_category_label">
@@ -96,6 +96,7 @@
                             android:layout_height="wrap_content"
                             android:inputType="none" />
                     </com.google.android.material.textfield.TextInputLayout>
+
 
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.Finance.Input"
@@ -113,10 +114,11 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        style="@style/Widget.Finance.Input.Dropdown"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
+                        android:textColorHint="@color/brand_primary_dark"
                         android:hint="Thời hạn ngân sách">
 
                         <AutoCompleteTextView
@@ -124,7 +126,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="none"
+                            android:textColor="@color/brand_primary_light"
                             android:text="@string/period_month" />
+
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout

@@ -13,7 +13,7 @@ public class SplashActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_auth_splash);
         
-        // Handler để chuyển cảnh sau 2 giây
+        // Handler chuyển sang màn hình login sau 2 giây
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             if (!isFinishing()) {
                 Intent intent = new Intent(SplashActivity.this, LoginActivity.class);

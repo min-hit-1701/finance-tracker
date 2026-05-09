@@ -10,7 +10,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Tên file đã được đổi để phân loại theo mô-đun Auth
         setContentView(R.layout.activity_auth_login);
 
         Button btnLogin = findViewById(R.id.btnLogin);

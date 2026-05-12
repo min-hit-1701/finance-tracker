@@ -12,7 +12,7 @@ import java.util.List;
 @Dao
 public interface CategoryDao {
     @Insert
-    void insert(Category category);
+    long insert(Category category);
 
     @Update
     void update(Category category);
@@ -25,4 +25,7 @@ public interface CategoryDao {
 
     @Query("SELECT * FROM categories WHERE isIncome = :isIncome ORDER BY name ASC")
     LiveData<List<Category>> getCategoriesByType(boolean isIncome);
+
+    @Query("SELECT * FROM categories WHERE name = :name AND isIncome = :isIncome LIMIT 1")
+    Category getCategoryByNameSync(String name, boolean isIncome);
 }

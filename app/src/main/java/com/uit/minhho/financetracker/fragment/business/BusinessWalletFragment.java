@@ -7,20 +7,20 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.uit.minhho.financetracker.R;
 import com.uit.minhho.financetracker.adapter.business.BusinessWalletAdapter;
-import com.uit.minhho.financetracker.model.business.BusinessWallet;
+import com.uit.minhho.financetracker.viewmodel.BusinessViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class BusinessWalletFragment extends Fragment {
 
-    private final List<BusinessWallet> wallets = new ArrayList<>();
     private BusinessWalletAdapter walletAdapter;
+    private BusinessViewModel businessViewModel;
 
     public BusinessWalletFragment() {
         super(R.layout.fragment_business_wallet);
@@ -30,47 +30,47 @@ public class BusinessWalletFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        businessViewModel = new ViewModelProvider(requireActivity()).get(BusinessViewModel.class);
+
+        RecyclerView recyclerView = view.findViewById(R.id.rv_business_wallets);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        walletAdapter = new BusinessWalletAdapter(new ArrayList<>());
+        recyclerView.setAdapter(walletAdapter);
+
+        businessViewModel.getBusinessWallets().observe(getViewLifecycleOwner(), wallets -> {
+            walletAdapter.submitItems(wallets);
+            View emptyView = view.findViewById(R.id.tv_business_wallet_empty);
+            if (emptyView != null) {
+                emptyView.setVisibility(wallets == null || wallets.isEmpty() ? View.VISIBLE : View.GONE);
+            }
+        });
+
         getParentFragmentManager().setFragmentResultListener(
                 BusinessAddWalletFragment.REQUEST_KEY,
                 getViewLifecycleOwner(),
                 (requestKey, result) -> {
                     String name = result.getString(BusinessAddWalletFragment.KEY_NAME, "");
-                    String balance = result.getString(BusinessAddWalletFragment.KEY_BALANCE, "");
+                    String balanceText = result.getString(BusinessAddWalletFragment.KEY_BALANCE, "0");
                     String note = result.getString(BusinessAddWalletFragment.KEY_NOTE, getString(R.string.business_note_default));
 
-                    wallets.add(0, new BusinessWallet(
-                            name,
-                            getString(R.string.business_wallet_balance_format, balance),
-                            note
-                    ));
-                    walletAdapter.notifyDataSetChanged();
-                    Toast.makeText(requireContext(), R.string.business_wallet_save_success, Toast.LENGTH_SHORT).show();
+                    double balance;
+                    try {
+                        balance = Double.parseDouble(balanceText);
+                    } catch (NumberFormatException exception) {
+                        Toast.makeText(requireContext(), R.string.business_wallet_error_balance, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    businessViewModel.addBusinessWallet(name, balance, getString(R.string.business_wallet_type_default), note);
                 }
         );
 
-        RecyclerView recyclerView = view.findViewById(R.id.rv_business_wallets);
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-
-        if (wallets.isEmpty()) {
-            wallets.add(new BusinessWallet(
-                    getString(R.string.business_wallet_main_cash),
-                    getString(R.string.business_wallet_main_cash_amount),
-                    getString(R.string.business_wallet_updated)
-            ));
-            wallets.add(new BusinessWallet(
-                    getString(R.string.business_wallet_bank_account),
-                    getString(R.string.business_wallet_bank_account_amount),
-                    getString(R.string.business_wallet_updated)
-            ));
-            wallets.add(new BusinessWallet(
-                    getString(R.string.business_wallet_e_wallet),
-                    getString(R.string.business_wallet_e_wallet_amount),
-                    getString(R.string.business_wallet_updated)
-            ));
-        }
-
-        walletAdapter = new BusinessWalletAdapter(wallets);
-        recyclerView.setAdapter(walletAdapter);
+        businessViewModel.getOperationMessage().observe(getViewLifecycleOwner(), message -> {
+            if (message != null && !message.trim().isEmpty()) {
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                businessViewModel.clearOperationMessage();
+            }
+        });
 
         view.findViewById(R.id.btn_add_business_wallet).setOnClickListener(v ->
                 openChildScreen(new BusinessAddWalletFragment())

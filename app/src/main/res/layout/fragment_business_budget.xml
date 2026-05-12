@@ -48,6 +48,16 @@
             android:nestedScrollingEnabled="false"
             android:paddingBottom="8dp" />
 
+        <TextView
+            android:id="@+id/tv_business_budget_empty"
+            style="@style/Text.Finance.Caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingVertical="12dp"
+            android:text="@string/business_empty_budget"
+            android:visibility="gone" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_back_business_budget"
             style="@style/Widget.Finance.Button.Secondary"

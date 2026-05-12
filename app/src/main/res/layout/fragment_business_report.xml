@@ -94,6 +94,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
+                    android:id="@+id/tv_business_total_revenue_value"
                     android:text="@string/business_total_revenue_value"
                     android:textColor="@color/income_green"
                     style="@style/Text.Finance.Subheading" />
@@ -109,6 +110,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
+                    android:id="@+id/tv_business_total_expense_value"
                     android:text="@string/business_total_expense_value"
                     android:textColor="@color/expense_red"
                     style="@style/Text.Finance.Subheading" />
@@ -124,6 +126,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
+                    android:id="@+id/tv_business_total_profit_value"
                     android:text="@string/business_total_profit_value"
                     android:textColor="@color/brand_primary"
                     style="@style/Text.Finance.Subheading" />

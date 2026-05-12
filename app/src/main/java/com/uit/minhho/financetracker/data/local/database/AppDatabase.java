@@ -15,7 +15,7 @@ import com.uit.minhho.financetracker.data.local.entity.Transaction;
 import com.uit.minhho.financetracker.data.local.entity.User;
 import com.uit.minhho.financetracker.data.local.entity.Wallet;
 
-@Database(entities = {User.class, Wallet.class, Category.class, Transaction.class, Budget.class}, version = 1, exportSchema = false)
+@Database(entities = {User.class, Wallet.class, Category.class, Transaction.class, Budget.class}, version = 2, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static volatile AppDatabase INSTANCE;

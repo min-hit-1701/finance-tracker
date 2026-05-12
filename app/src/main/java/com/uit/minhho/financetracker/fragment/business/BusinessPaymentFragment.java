@@ -10,11 +10,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.button.MaterialButton;
 import com.uit.minhho.financetracker.R;
+import com.uit.minhho.financetracker.viewmodel.BusinessViewModel;
 
 public class BusinessPaymentFragment extends Fragment {
+
+    private BusinessViewModel businessViewModel;
 
     public BusinessPaymentFragment() {
         super(R.layout.fragment_business_payment);
@@ -23,6 +27,8 @@ public class BusinessPaymentFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        businessViewModel = new ViewModelProvider(requireActivity()).get(BusinessViewModel.class);
 
         EditText receiverInput = view.findViewById(R.id.et_payment_receiver);
         EditText accountInput = view.findViewById(R.id.et_payment_account);
@@ -35,7 +41,7 @@ public class BusinessPaymentFragment extends Fragment {
         confirmButton.setOnClickListener(v -> {
             String receiver = safeText(receiverInput);
             String account = safeText(accountInput);
-            String amount = safeText(amountInput);
+            String amountText = safeText(amountInput);
             String note = safeText(noteInput);
 
             if (TextUtils.isEmpty(receiver)) {
@@ -46,7 +52,7 @@ public class BusinessPaymentFragment extends Fragment {
                 Toast.makeText(requireContext(), R.string.business_payment_error_account, Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (TextUtils.isEmpty(amount)) {
+            if (TextUtils.isEmpty(amountText)) {
                 Toast.makeText(requireContext(), R.string.business_payment_error_amount, Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -54,14 +60,35 @@ public class BusinessPaymentFragment extends Fragment {
                 note = getString(R.string.business_payment_default_note);
             }
 
+            double amount;
+            try {
+                amount = Double.parseDouble(amountText);
+            } catch (NumberFormatException exception) {
+                Toast.makeText(requireContext(), R.string.business_error_amount_invalid, Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (amount <= 0) {
+                Toast.makeText(requireContext(), R.string.business_error_amount_invalid, Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             summaryText.setText(getString(
                     R.string.business_payment_summary_format,
                     receiver,
-                    amount,
+                    amountText,
                     account,
                     note
             ));
-            Toast.makeText(requireContext(), R.string.business_payment_success, Toast.LENGTH_SHORT).show();
+
+            businessViewModel.createBusinessPayment(receiver, account, amount, note, System.currentTimeMillis());
+        });
+
+        businessViewModel.getOperationMessage().observe(getViewLifecycleOwner(), message -> {
+            if (message != null && !message.trim().isEmpty()) {
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                businessViewModel.clearOperationMessage();
+            }
         });
 
         backButton.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());

@@ -8,17 +8,20 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.uit.minhho.financetracker.R;
 import com.uit.minhho.financetracker.adapter.business.BusinessTransactionAdapter;
-import com.uit.minhho.financetracker.model.business.BusinessTransaction;
+import com.uit.minhho.financetracker.viewmodel.BusinessViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class TransactionFragment extends Fragment {
+
+    private BusinessTransactionAdapter transactionAdapter;
+    private BusinessViewModel businessViewModel;
 
     @Nullable
     @Override
@@ -30,62 +33,29 @@ public class TransactionFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        
+
+        businessViewModel = new ViewModelProvider(requireActivity()).get(BusinessViewModel.class);
+
         RecyclerView recyclerView = view.findViewById(R.id.business_transaction_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        recyclerView.setAdapter(new BusinessTransactionAdapter(fakeTransactions()));
+        transactionAdapter = new BusinessTransactionAdapter(new ArrayList<>());
+        recyclerView.setAdapter(transactionAdapter);
 
-        // KẾT NỐI: Mở màn hình Thêm giao dịch khi nhấn vào nút "Thêm giao dịch mới"
+        businessViewModel.getBusinessTransactions().observe(getViewLifecycleOwner(), transactions -> {
+            transactionAdapter.submitItems(transactions);
+            View emptyView = view.findViewById(R.id.tv_business_transaction_empty);
+            if (emptyView != null) {
+                emptyView.setVisibility(transactions == null || transactions.isEmpty() ? View.VISIBLE : View.GONE);
+            }
+        });
+
         view.findViewById(R.id.btn_add_transaction).setOnClickListener(v -> {
             getParentFragmentManager().beginTransaction()
-                    .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, 
-                                       android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                    .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right,
+                            android.R.anim.slide_in_left, android.R.anim.slide_out_right)
                     .replace(R.id.fragment_container_business, new BusinessAddTransactionFragment())
                     .addToBackStack(null)
                     .commit();
         });
-    }
-
-    private List<BusinessTransaction> fakeTransactions() {
-        List<BusinessTransaction> list = new ArrayList<>();
-
-        list.add(new BusinessTransaction(
-                getString(R.string.business_tx_rent),
-                getString(R.string.business_tx_rent_sub),
-                getString(R.string.business_tx_minus_4m),
-                false
-        ));
-        list.add(new BusinessTransaction(
-                getString(R.string.business_tx_client),
-                getString(R.string.business_tx_client_sub),
-                getString(R.string.business_tx_plus_8_5m),
-                true
-        ));
-        list.add(new BusinessTransaction(
-                getString(R.string.business_tx_advert),
-                getString(R.string.business_tx_advert_sub),
-                getString(R.string.business_tx_minus_1_8m),
-                false
-        ));
-        list.add(new BusinessTransaction(
-                getString(R.string.business_tx_inventory),
-                getString(R.string.business_tx_inventory_sub),
-                getString(R.string.business_tx_minus_12_5m),
-                false
-        ));
-        list.add(new BusinessTransaction(
-                getString(R.string.business_tx_payroll),
-                getString(R.string.business_tx_payroll_sub),
-                getString(R.string.business_tx_minus_6_2m),
-                false
-        ));
-        list.add(new BusinessTransaction(
-                getString(R.string.business_tx_client_payment),
-                getString(R.string.business_tx_client_payment_sub),
-                getString(R.string.business_tx_plus_3_2m),
-                true
-        ));
-
-        return list;
     }
 }

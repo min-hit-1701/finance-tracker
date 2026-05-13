@@ -55,7 +55,9 @@ public class BusinessTransactionAdapter extends RecyclerView.Adapter<BusinessTra
 
     public void submitItems(List<Transaction> transactions) {
         items.clear();
-        items.addAll(transactions);
+        if (transactions != null) {
+            items.addAll(transactions);
+        }
         notifyDataSetChanged();
     }
 

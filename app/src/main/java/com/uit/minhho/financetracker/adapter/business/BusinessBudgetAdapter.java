@@ -57,7 +57,9 @@ public class BusinessBudgetAdapter extends RecyclerView.Adapter<BusinessBudgetAd
 
     public void submitItems(List<Budget> budgets) {
         items.clear();
-        items.addAll(budgets);
+        if (budgets != null) {
+            items.addAll(budgets);
+        }
         notifyDataSetChanged();
     }
 

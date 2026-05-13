@@ -8,6 +8,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.uit.minhho.financetracker.data.local.entity.Budget;
+import com.uit.minhho.financetracker.data.local.entity.BusinessEntity;
+import com.uit.minhho.financetracker.data.local.entity.Partner;
 import com.uit.minhho.financetracker.data.local.entity.Transaction;
 import com.uit.minhho.financetracker.data.local.entity.Wallet;
 import com.uit.minhho.financetracker.data.repository.AppRepository;
@@ -23,6 +25,14 @@ public class BusinessViewModel extends AndroidViewModel {
     public BusinessViewModel(@NonNull Application application) {
         super(application);
         repository = new AppRepository(application);
+    }
+
+    public LiveData<List<BusinessEntity>> getBusinesses() {
+        return repository.getBusinesses();
+    }
+
+    public LiveData<List<Partner>> getBusinessPartners() {
+        return repository.getPartners(true);
     }
 
     public LiveData<List<Wallet>> getBusinessWallets() {
@@ -71,6 +81,11 @@ public class BusinessViewModel extends AndroidViewModel {
 
     public void clearOperationMessage() {
         operationMessage.postValue(null);
+    }
+
+    public void addBusiness(String name, String type, String taxCode, String note) {
+        repository.insertBusiness(new BusinessEntity(name, type, taxCode, note));
+        operationMessage.postValue("Đã lưu doanh nghiệp vào danh sách");
     }
 
     public void addBusinessWallet(String name, double balance, String type, String note) {

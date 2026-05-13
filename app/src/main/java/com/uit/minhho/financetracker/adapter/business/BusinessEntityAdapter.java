@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.uit.minhho.financetracker.R;
-import com.uit.minhho.financetracker.model.business.BusinessEntity;
+import com.uit.minhho.financetracker.data.local.entity.BusinessEntity;
 
 import java.util.List;
 

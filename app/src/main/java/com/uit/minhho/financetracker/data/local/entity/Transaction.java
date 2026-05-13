@@ -12,15 +12,17 @@ public class Transaction {
     private String note;
     private int categoryId;
     private int walletId;
+    private int partnerId; // New field for Partner link
     private boolean isIncome;
     private boolean isBusiness;
 
-    public Transaction(double amount, long timestamp, String note, int categoryId, int walletId, boolean isIncome, boolean isBusiness) {
+    public Transaction(double amount, long timestamp, String note, int categoryId, int walletId, int partnerId, boolean isIncome, boolean isBusiness) {
         this.amount = amount;
         this.timestamp = timestamp;
         this.note = note;
         this.categoryId = categoryId;
         this.walletId = walletId;
+        this.partnerId = partnerId;
         this.isIncome = isIncome;
         this.isBusiness = isBusiness;
     }
@@ -37,6 +39,8 @@ public class Transaction {
     public void setCategoryId(int categoryId) { this.categoryId = categoryId; }
     public int getWalletId() { return walletId; }
     public void setWalletId(int walletId) { this.walletId = walletId; }
+    public int getPartnerId() { return partnerId; }
+    public void setPartnerId(int partnerId) { this.partnerId = partnerId; }
     public boolean isIncome() { return isIncome; }
     public void setIncome(boolean income) { isIncome = income; }
     public boolean isBusiness() { return isBusiness; }

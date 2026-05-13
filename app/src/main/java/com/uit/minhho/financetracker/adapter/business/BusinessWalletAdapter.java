@@ -53,7 +53,9 @@ public class BusinessWalletAdapter extends RecyclerView.Adapter<BusinessWalletAd
 
     public void submitItems(List<Wallet> wallets) {
         items.clear();
-        items.addAll(wallets);
+        if (wallets != null) {
+            items.addAll(wallets);
+        }
         notifyDataSetChanged();
     }
 

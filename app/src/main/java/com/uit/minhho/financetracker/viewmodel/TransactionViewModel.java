@@ -4,7 +4,9 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import com.uit.minhho.financetracker.data.local.entity.Partner;
 import com.uit.minhho.financetracker.data.local.entity.Transaction;
+import com.uit.minhho.financetracker.data.local.entity.Wallet;
 import com.uit.minhho.financetracker.data.repository.AppRepository;
 import java.util.List;
 
@@ -18,6 +20,14 @@ public class TransactionViewModel extends AndroidViewModel {
 
     public LiveData<List<Transaction>> getTransactions(boolean isBusiness) {
         return repository.getTransactions(isBusiness);
+    }
+
+    public LiveData<List<Wallet>> getWallets(boolean isBusiness) {
+        return repository.getWallets(isBusiness);
+    }
+
+    public LiveData<List<Partner>> getPartners(boolean isBusiness) {
+        return repository.getPartners(isBusiness);
     }
 
     public void insert(Transaction transaction) {

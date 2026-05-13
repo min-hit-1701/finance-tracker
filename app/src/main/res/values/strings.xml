@@ -112,7 +112,7 @@
     <string name="personal_add_budget">Thiết lập ngân sách mới</string>
     <string name="budget_remaining">Còn lại: %s</string>
     <string name="budget_over">Vượt mức: %s</string>
-    <string name="budget_spent_of">Đã dùng %s / %s</string>
+    <string name="budget_spent_of">Đã dùng %1$s / %2$s</string>
     <string name="budget_percent_format">%d%%</string>
 
     <!-- Báo cáo -->
@@ -164,6 +164,7 @@
     <string name="business_management_title">Quản lý Doanh nghiệp</string>
     <string name="business_name_label">Tên doanh nghiệp</string>
     <string name="business_type_label">Loại hình kinh doanh</string>
+    <string name="business_tax_code_label">Mã số thuế</string>
     <string name="business_note_label">Ghi chú</string>
     <string name="business_update">Cập nhật</string>
     <string name="business_create">Lưu doanh nghiệp</string>

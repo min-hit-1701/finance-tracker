@@ -9,16 +9,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.uit.minhho.financetracker.R;
-import com.uit.minhho.financetracker.data.local.entity.BusinessEntity;
+import com.uit.minhho.financetracker.data.local.entity.BusinessContact;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BusinessEntityAdapter extends RecyclerView.Adapter<BusinessEntityAdapter.ViewHolder> {
 
-    private final List<BusinessEntity> items;
+    private final List<BusinessContact> items = new ArrayList<>();
 
-    public BusinessEntityAdapter(List<BusinessEntity> items) {
-        this.items = items;
+    public BusinessEntityAdapter() {
     }
 
     @NonNull
@@ -31,7 +31,7 @@ public class BusinessEntityAdapter extends RecyclerView.Adapter<BusinessEntityAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        BusinessEntity item = items.get(position);
+        BusinessContact item = items.get(position);
         holder.nameText.setText(item.getName());
         holder.detailText.setText(
                 holder.itemView.getResources().getString(
@@ -45,6 +45,14 @@ public class BusinessEntityAdapter extends RecyclerView.Adapter<BusinessEntityAd
     @Override
     public int getItemCount() {
         return items.size();
+    }
+
+    public void updateData(List<BusinessContact> newList) {
+        items.clear();
+        if (newList != null) {
+            items.addAll(newList);
+        }
+        notifyDataSetChanged();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

@@ -8,8 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.uit.minhho.financetracker.data.local.entity.Budget;
-import com.uit.minhho.financetracker.data.local.entity.BusinessEntity;
-import com.uit.minhho.financetracker.data.local.entity.Partner;
+import com.uit.minhho.financetracker.data.local.entity.BusinessContact;
 import com.uit.minhho.financetracker.data.local.entity.Transaction;
 import com.uit.minhho.financetracker.data.local.entity.Wallet;
 import com.uit.minhho.financetracker.data.repository.AppRepository;
@@ -21,18 +20,19 @@ public class BusinessViewModel extends AndroidViewModel {
 
     private final AppRepository repository;
     private final MutableLiveData<String> operationMessage = new MutableLiveData<>();
+    private final MutableLiveData<List<BusinessContact>> businessContactsLiveData = new MutableLiveData<>();
 
     public BusinessViewModel(@NonNull Application application) {
         super(application);
         repository = new AppRepository(application);
+        loadContacts();
     }
 
-    public LiveData<List<BusinessEntity>> getBusinesses() {
-        return repository.getBusinesses();
-    }
-
-    public LiveData<List<Partner>> getBusinessPartners() {
-        return repository.getPartners(true);
+    private void loadContacts() {
+        new Thread(() -> {
+            List<BusinessContact> contacts = repository.getAllBusinessContactsSync();
+            businessContactsLiveData.postValue(contacts);
+        }).start();
     }
 
     public LiveData<List<Wallet>> getBusinessWallets() {
@@ -41,6 +41,32 @@ public class BusinessViewModel extends AndroidViewModel {
 
     public LiveData<List<Budget>> getBusinessBudgets() {
         return repository.getBudgets(true);
+    }
+
+    public LiveData<List<BusinessContact>> getBusinessContacts() {
+        return businessContactsLiveData;
+    }
+
+    public void addBusinessContact(String name, String type, String note) {
+        new Thread(() -> {
+            repository.insertBusinessContactSync(new BusinessContact(name, type, note));
+            List<BusinessContact> contacts = repository.getAllBusinessContactsSync();
+            businessContactsLiveData.postValue(contacts);
+        }).start();
+        operationMessage.postValue("Đã thêm đối tác mới");
+    }
+
+    public void deleteBusinessContact(BusinessContact contact) {
+        new Thread(() -> {
+            repository.deleteBusinessContactSync(contact);
+            List<BusinessContact> contacts = repository.getAllBusinessContactsSync();
+            businessContactsLiveData.postValue(contacts);
+        }).start();
+        operationMessage.postValue("Đã xóa đối tác");
+    }
+
+    public void saveBusinessContact(BusinessContact contact) {
+        repository.insertBusinessContact(contact);
     }
 
     public LiveData<List<Transaction>> getBusinessTransactions() {
@@ -81,11 +107,6 @@ public class BusinessViewModel extends AndroidViewModel {
 
     public void clearOperationMessage() {
         operationMessage.postValue(null);
-    }
-
-    public void addBusiness(String name, String type, String taxCode, String note) {
-        repository.insertBusiness(new BusinessEntity(name, type, taxCode, note));
-        operationMessage.postValue("Đã lưu doanh nghiệp vào danh sách");
     }
 
     public void addBusinessWallet(String name, double balance, String type, String note) {

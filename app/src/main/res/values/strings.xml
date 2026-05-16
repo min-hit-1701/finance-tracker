@@ -44,6 +44,7 @@
     <string name="action_save">Lưu lại</string>
     <string name="action_update">Cập nhật</string>
     <string name="action_cancel">Hủy</string>
+    <string name="action_delete">Xóa</string>
     <string name="action_add">Thêm mới</string>
     <string name="action_back">Quay lại</string>
 
@@ -142,6 +143,9 @@
     <string name="add_tx_income">Khoản thu</string>
     <string name="add_tx_expense">Khoản chi</string>
 
+    <string name="business_add_partner_shortcut">+ Thêm đối tác mới</string>
+    <string name="business_add_contact_subtitle">Nhập thông tin đối tác / khách hàng mới</string>
+
     <!-- Doanh nghiệp -->
     <string name="business_dashboard_title">Quản trị Kinh doanh</string>
     <string name="business_dashboard_subtitle">Thống kê hiệu quả hoạt động</string>
@@ -170,6 +174,7 @@
     <string name="business_create">Lưu doanh nghiệp</string>
     <string name="business_form_subtitle">Nhập thông tin để lưu vào danh sách bên dưới</string>
     <string name="business_saved_success">Đã lưu doanh nghiệp vào danh sách</string>
+    <string name="business_delete_confirm">Bạn có chắc muốn xóa \"%1$s\" khỏi danh sách?</string>
     <string name="business_validation_empty_name">Vui lòng nhập tên doanh nghiệp</string>
     <string name="business_validation_empty_type">Vui lòng nhập loại hình kinh doanh</string>
     <string name="business_item_detail_format">%1$s • %2$s</string>

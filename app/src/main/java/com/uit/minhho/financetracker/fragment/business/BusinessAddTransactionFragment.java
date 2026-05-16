@@ -19,34 +19,30 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.uit.minhho.financetracker.R;
-import com.uit.minhho.financetracker.data.local.entity.Partner;
+import com.uit.minhho.financetracker.data.local.entity.BusinessContact;
 import com.uit.minhho.financetracker.data.local.entity.Transaction;
 import com.uit.minhho.financetracker.data.local.entity.Wallet;
 import com.uit.minhho.financetracker.viewmodel.BusinessViewModel;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class BusinessAddTransactionFragment extends Fragment {
 
-    private final DecimalFormat amountFormatter = new DecimalFormat("#,###");
-    private final Map<String, Integer> walletIdByLabel = new HashMap<>();
-    private final Map<String, Integer> partnerIdByName = new HashMap<>();
-
     private EditText etAmount;
-    private AutoCompleteTextView spinnerPartner;
-    private AutoCompleteTextView spinnerWallet;
+    private AutoCompleteTextView autoPartner;
     private EditText etDate;
     private EditText etNote;
     private AutoCompleteTextView spinnerCategory;
+    private AutoCompleteTextView spinnerWallet;
     private MaterialButtonToggleGroup toggleType;
     private boolean isIncome = false;
     private long selectedTimestamp;
     private BusinessViewModel businessViewModel;
+    private List<String> partnerNames = new ArrayList<>();
+    private List<BusinessContact> allContacts = new ArrayList<>();
+    private List<Wallet> allWallets = new ArrayList<>();
 
     @Nullable
     @Override
@@ -63,12 +59,24 @@ public class BusinessAddTransactionFragment extends Fragment {
 
         initViews(view);
         setupCategorySpinner();
-        observeWallets();
-        observePartners();
         setupDatePicker();
         setupToggle();
+        observeWallets();
+        observeContacts();
 
         view.findViewById(R.id.btn_save).setOnClickListener(v -> onSaveTransaction());
+        view.findViewById(R.id.btn_add_partner).setOnClickListener(v -> openAddContactFragment());
+
+        getParentFragmentManager().setFragmentResultListener(
+                BusinessAddContactFragment.REQUEST_KEY,
+                getViewLifecycleOwner(),
+                (requestKey, result) -> {
+                    String name = result.getString(BusinessAddContactFragment.KEY_NAME, "");
+                    String type = result.getString(BusinessAddContactFragment.KEY_TYPE, "");
+                    String note = result.getString(BusinessAddContactFragment.KEY_NOTE, getString(R.string.business_note_default));
+                    businessViewModel.addBusinessContact(name, type, note);
+                    autoPartner.setText(name, false);
+                });
 
         businessViewModel.getOperationMessage().observe(getViewLifecycleOwner(), message -> {
             if (message == null || message.trim().isEmpty()) {
@@ -87,15 +95,56 @@ public class BusinessAddTransactionFragment extends Fragment {
 
     private void initViews(View view) {
         etAmount = view.findViewById(R.id.et_amount);
-        spinnerPartner = view.findViewById(R.id.spinner_partner);
-        spinnerWallet = view.findViewById(R.id.spinner_wallet);
+        autoPartner = view.findViewById(R.id.et_partner);
         etDate = view.findViewById(R.id.et_date);
         etNote = view.findViewById(R.id.et_note);
         spinnerCategory = view.findViewById(R.id.spinner_category);
+        spinnerWallet = view.findViewById(R.id.spinner_wallet);
         toggleType = view.findViewById(R.id.toggle_group_type);
 
         MaterialToolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(v -> getParentFragmentManager().popBackStack());
+    }
+
+    private void observeWallets() {
+        businessViewModel.getBusinessWallets().observe(getViewLifecycleOwner(), wallets -> {
+            allWallets.clear();
+            if (wallets != null) {
+                allWallets.addAll(wallets);
+            }
+            List<String> walletNames = new ArrayList<>();
+            for (Wallet w : allWallets) {
+                walletNames.add(w.getName());
+            }
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                    requireContext(),
+                    android.R.layout.simple_dropdown_item_1line,
+                    walletNames
+            );
+            spinnerWallet.setAdapter(adapter);
+            if (!walletNames.isEmpty()) {
+                spinnerWallet.setText(walletNames.get(0), false);
+            }
+        });
+    }
+
+    private void observeContacts() {
+        businessViewModel.getBusinessContacts().observe(getViewLifecycleOwner(), contacts -> {
+            allContacts.clear();
+            partnerNames.clear();
+            if (contacts != null) {
+                allContacts.addAll(contacts);
+                for (BusinessContact c : contacts) {
+                    partnerNames.add(c.getName());
+                }
+            }
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                    requireContext(),
+                    android.R.layout.simple_dropdown_item_1line,
+                    partnerNames
+            );
+            autoPartner.setAdapter(adapter);
+        });
     }
 
     private void setupCategorySpinner() {
@@ -113,46 +162,6 @@ public class BusinessAddTransactionFragment extends Fragment {
         );
         spinnerCategory.setAdapter(adapter);
         spinnerCategory.setText(categories[0], false);
-    }
-
-    private void observeWallets() {
-        businessViewModel.getBusinessWallets().observe(getViewLifecycleOwner(), wallets -> {
-            walletIdByLabel.clear();
-            List<String> labels = new ArrayList<>();
-            if (wallets != null) {
-                for (Wallet wallet : wallets) {
-                    String label = wallet.getName() + " - " + amountFormatter.format(wallet.getBalance()) + " đ";
-                    labels.add(label);
-                    walletIdByLabel.put(label, wallet.getId());
-                }
-            }
-            spinnerWallet.setAdapter(new ArrayAdapter<>(
-                    requireContext(),
-                    android.R.layout.simple_dropdown_item_1line,
-                    labels
-            ));
-            if (labels.size() == 1) {
-                spinnerWallet.setText(labels.get(0), false);
-            }
-        });
-    }
-
-    private void observePartners() {
-        businessViewModel.getBusinessPartners().observe(getViewLifecycleOwner(), partners -> {
-            partnerIdByName.clear();
-            List<String> names = new ArrayList<>();
-            if (partners != null) {
-                for (Partner partner : partners) {
-                    names.add(partner.getName());
-                    partnerIdByName.put(partner.getName(), partner.getId());
-                }
-            }
-            spinnerPartner.setAdapter(new ArrayAdapter<>(
-                    requireContext(),
-                    android.R.layout.simple_dropdown_item_1line,
-                    names
-            ));
-        });
     }
 
     private void setupDatePicker() {
@@ -196,24 +205,27 @@ public class BusinessAddTransactionFragment extends Fragment {
         });
     }
 
+    private void openAddContactFragment() {
+        getParentFragmentManager().beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                .replace(R.id.fragment_container_business, new BusinessAddContactFragment())
+                .addToBackStack(null)
+                .commit();
+    }
+
     private void onSaveTransaction() {
         String amountText = textOf(etAmount);
-        String partner = textOf(spinnerPartner);
-        String walletLabel = textOf(spinnerWallet);
+        String partner = textOf(autoPartner);
         String category = textOf(spinnerCategory);
         String note = textOf(etNote);
+        String walletName = textOf(spinnerWallet);
 
         if (amountText.isEmpty()) {
             etAmount.setError(getString(R.string.business_error_amount_required));
             return;
         }
         if (partner.isEmpty()) {
-            spinnerPartner.setError(getString(R.string.business_error_partner_required));
-            return;
-        }
-        Integer walletId = walletIdByLabel.get(walletLabel);
-        if (walletId == null || walletId <= 0) {
-            spinnerWallet.setError(getString(R.string.business_empty_wallet));
+            autoPartner.setError(getString(R.string.business_error_partner_required));
             return;
         }
         if (category.isEmpty()) {
@@ -234,6 +246,27 @@ public class BusinessAddTransactionFragment extends Fragment {
             return;
         }
 
+        int walletId = 0;
+        if (!walletName.isEmpty()) {
+            for (Wallet w : allWallets) {
+                if (walletName.equals(w.getName())) {
+                    walletId = w.getId();
+                    break;
+                }
+            }
+        }
+
+        boolean partnerExists = false;
+        for (String name : partnerNames) {
+            if (name.equalsIgnoreCase(partner)) {
+                partnerExists = true;
+                break;
+            }
+        }
+        if (!partnerExists) {
+            businessViewModel.addBusinessContact(partner, getString(R.string.business_note_default), getString(R.string.business_note_default));
+        }
+
         String notePayload = category + " | " + partner + " | " + note;
         Transaction transaction = new Transaction(
                 amount,
@@ -241,7 +274,6 @@ public class BusinessAddTransactionFragment extends Fragment {
                 notePayload,
                 0,
                 walletId,
-                partnerIdByName.getOrDefault(partner, 0),
                 isIncome,
                 true
         );

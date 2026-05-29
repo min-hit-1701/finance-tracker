@@ -1,0 +1,14 @@
+plugins {
+    id 'application'
+}
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+application {
+    mainClass = 'ImportFirestore'
+}
+
+dependencies {
+    implementation 'com.google.firebase:firebase-admin:9.4.3'
+}

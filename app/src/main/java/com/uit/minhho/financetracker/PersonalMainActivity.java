@@ -1,21 +1,34 @@
 package com.uit.minhho.financetracker;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.uit.minhho.financetracker.fragment.personal.HomeFragment;
 import com.uit.minhho.financetracker.fragment.personal.WalletFragment;
 import com.uit.minhho.financetracker.fragment.personal.BudgetFragment;
 import com.uit.minhho.financetracker.fragment.personal.ReportFragment;
 import com.uit.minhho.financetracker.fragment.personal.CategoryFragment;
+import com.uit.minhho.financetracker.util.ChatbotManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PersonalMainActivity extends AppCompatActivity {
     BottomNavigationView bottomNav;
+    private static final int PERMISSION_REQUEST_CODE = 100;
+    private ChatbotManager chatbotManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +54,45 @@ public class PersonalMainActivity extends AppCompatActivity {
             if (f != null) loadFragment(f);
             return true;
         });
+
+        checkAndRequestPermissions();
+
+        // Khởi tạo Chatbot AI
+        chatbotManager = new ChatbotManager(this);
+        chatbotManager.init();
+    }
+
+    private void checkAndRequestPermissions() {
+        String[] permissions = {
+                Manifest.permission.RECEIVE_SMS,
+                Manifest.permission.READ_SMS,
+                Manifest.permission.CAMERA
+        };
+
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(permission);
+            }
+        }
+
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[0]), PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            for (int result : grantResults) {
+                if (result == PackageManager.PERMISSION_DENIED) {
+                    Toast.makeText(this, "Một số tính năng tự động sẽ không hoạt động nếu thiếu quyền", Toast.LENGTH_LONG).show();
+                    return;
+                }
+            }
+            Toast.makeText(this, "Đã kích hoạt tính năng tự động nhận diện SMS", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

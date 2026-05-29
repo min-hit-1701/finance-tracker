@@ -22,6 +22,7 @@
     <string name="login_email">Email / Số điện thoại</string>
     <string name="login_password">Mật khẩu</string>
     <string name="login_button">Đăng nhập</string>
+    <string name="login_forgot_password">Quên mật khẩu?</string>
     <string name="login_no_account">
 
         Bạn chưa có tài khoản? Đăng ký ngay</string>

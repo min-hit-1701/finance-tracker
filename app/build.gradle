@@ -34,6 +34,12 @@ dependencies {
     implementation libs.activity
     implementation libs.constraintlayout
     implementation libs.recyclerview
+    implementation libs.mlkit.text.recognition
+    
+    // Networking
+    implementation libs.retrofit
+    implementation libs.retrofit.gson
+    implementation libs.okhttp
     
     // Room Database
     implementation "androidx.room:room-runtime:2.6.1"

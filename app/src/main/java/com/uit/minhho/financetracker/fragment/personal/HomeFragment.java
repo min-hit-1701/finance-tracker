@@ -41,7 +41,7 @@ public class HomeFragment extends Fragment {
 
         rv.setAdapter(new PersonalTransactionAdapter(list));
 
-        // KẾT NỐI: Mở màn hình Thêm giao dịch khi nhấn vào FAB
+        // Mở màn hình Thêm giao dịch khi nhấn vào FAB
         view.findViewById(R.id.fab_add_transaction).setOnClickListener(v -> {
             getParentFragmentManager().beginTransaction()
                     .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, 

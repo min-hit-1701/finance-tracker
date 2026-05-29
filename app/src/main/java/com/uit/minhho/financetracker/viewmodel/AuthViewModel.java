@@ -21,19 +21,19 @@ public class AuthViewModel extends AndroidViewModel {
     public LiveData<User> getUserLiveData() { return userLiveData; }
     public LiveData<String> getErrorLiveData() { return errorLiveData; }
 
-    public void register(String name, String email, String password) {
-        User newUser = new User(name, email, password);
+    public void register(String name, String email, String phone, String password) {
+        User newUser = new User(name, email, phone, password);
         repository.registerUser(newUser);
     }
 
-    public void login(String email, String password) {
+    public void login(String identifier, String password) {
         // In a real app, this should be asynchronous
         new Thread(() -> {
-            User user = repository.login(email, password);
+            User user = repository.login(identifier, password);
             if (user != null) {
                 userLiveData.postValue(user);
             } else {
-                errorLiveData.postValue("Email hoặc mật khẩu không chính xác");
+                errorLiveData.postValue("Email/Số điện thoại hoặc mật khẩu không chính xác");
             }
         }).start();
     }

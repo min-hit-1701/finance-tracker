@@ -25,4 +25,7 @@ public interface WalletDao {
 
     @Query("SELECT SUM(balance) FROM wallets WHERE isBusiness = :isBusiness")
     LiveData<Double> getTotalBalance(boolean isBusiness);
+
+    @Query("UPDATE wallets SET balance = balance + :amount WHERE id = :walletId")
+    void updateBalance(int walletId, double amount);
 }

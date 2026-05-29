@@ -41,8 +41,16 @@ public class AppRepository {
         executorService.execute(() -> userDao.registerUser(user));
     }
 
-    public User login(String email, String password) {
-        return userDao.login(email, password);
+    public User login(String identifier, String password) {
+        return userDao.login(identifier, password);
+    }
+
+    public User getUserByPhone(String phone) {
+        return userDao.getUserByPhone(phone);
+    }
+
+    public void updatePassword(String phone, String newPassword) {
+        executorService.execute(() -> userDao.updatePasswordByPhone(phone, newPassword));
     }
 
     // Wallet methods
@@ -79,15 +87,19 @@ public class AppRepository {
     public void insertTransaction(Transaction transaction) {
         executorService.execute(() -> {
             transactionDao.insert(transaction);
-            // Logic Business: Cập nhật số dư ví và ngân sách khi có giao dịch mới
             handleTransactionLogic(transaction);
         });
     }
 
     private void handleTransactionLogic(Transaction tx) {
-        // Đây là nơi xử lý Business Logic ngầm:
-        // 1. Tìm ví tương ứng và cập nhật số dư (cần thêm method update balance vào WalletDao)
-        // 2. Tìm ngân sách tương ứng (categoryId) và cập nhật số tiền đã chi
+        // 1. Cập nhật số dư ví
+        double change = tx.isIncome() ? tx.getAmount() : -tx.getAmount();
+        walletDao.updateBalance(tx.getWalletId(), change);
+
+        // 2. Nếu là Khoản chi, cập nhật số tiền đã dùng trong Ngân sách (Budget)
+        if (!tx.isIncome()) {
+            budgetDao.updateBudgetSpent(tx.getCategoryId(), tx.getAmount());
+        }
     }
 
     public LiveData<Double> getTotalIncome(boolean isBusiness) {

@@ -25,4 +25,7 @@ public interface BudgetDao {
 
     @Query("SELECT * FROM budgets WHERE categoryId = :categoryId LIMIT 1")
     LiveData<Budget> getBudgetByCategory(int categoryId);
+
+    @Query("UPDATE budgets SET spentAmount = spentAmount + :amount WHERE categoryId = :categoryId")
+    void updateBudgetSpent(int categoryId, double amount);
 }

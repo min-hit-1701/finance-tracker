@@ -12,6 +12,7 @@ import com.uit.minhho.financetracker.fragment.business.BusinessFragment;
 import com.uit.minhho.financetracker.fragment.business.DashboardFragment;
 import com.uit.minhho.financetracker.fragment.business.ReportFragment;
 import com.uit.minhho.financetracker.fragment.business.TransactionFragment;
+import com.uit.minhho.financetracker.util.ChatbotManager;
 
 public class BusinessMainActivity extends AppCompatActivity {
 
@@ -45,6 +46,9 @@ public class BusinessMainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             bottomNavigationView.setSelectedItemId(R.id.nav_business_dashboard);
         }
+
+        // Khởi tạo Chatbot AI cho chế độ Doanh nghiệp
+        new ChatbotManager(this).init();
     }
 
     @Override

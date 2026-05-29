@@ -4,8 +4,12 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+
+import com.uit.minhho.financetracker.data.local.entity.Category;
 import com.uit.minhho.financetracker.data.local.entity.Transaction;
+import com.uit.minhho.financetracker.data.local.entity.Wallet;
 import com.uit.minhho.financetracker.data.repository.AppRepository;
+
 import java.util.List;
 
 public class TransactionViewModel extends AndroidViewModel {
@@ -30,5 +34,13 @@ public class TransactionViewModel extends AndroidViewModel {
 
     public LiveData<Double> getTotalExpense(boolean isBusiness) {
         return repository.getTotalExpense(isBusiness);
+    }
+
+    public LiveData<List<Category>> getAllCategories() {
+        return repository.getAllCategories();
+    }
+
+    public LiveData<List<Wallet>> getWallets(boolean isBusiness) {
+        return repository.getWallets(isBusiness);
     }
 }

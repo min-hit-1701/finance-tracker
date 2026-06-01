@@ -5,23 +5,20 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.uit.minhho.financetracker.R;
-import com.uit.minhho.financetracker.adapter.business.BusinessTransactionAdapter;
 import com.uit.minhho.financetracker.data.remote.BusinessApiClient;
 import com.uit.minhho.financetracker.model.business.BusinessTransaction;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -31,11 +28,11 @@ public class DashboardFragment extends Fragment {
     private TextView balanceText;
     private TextView incomeShortText;
     private TextView expenseShortText;
-    private TextView revenueText;
-    private TextView expenseText;
-    private TextView profitText;
-    private final List<BusinessTransaction> recentTransactions = new ArrayList<>();
-    private BusinessTransactionAdapter transactionAdapter;
+    private TextView totalTransactionsText;
+    private TextView incomeCountText;
+    private TextView expenseCountText;
+    private TextView largestTransactionText;
+    private TextView avgPerDayText;
 
     @Nullable
     @Override
@@ -51,10 +48,11 @@ public class DashboardFragment extends Fragment {
         balanceText = view.findViewById(R.id.tv_business_total_balance);
         incomeShortText = view.findViewById(R.id.tv_business_income_short);
         expenseShortText = view.findViewById(R.id.tv_business_expense_short);
-        revenueText = view.findViewById(R.id.tv_business_revenue_value);
-        expenseText = view.findViewById(R.id.tv_business_expense_value);
-        profitText = view.findViewById(R.id.tv_business_profit_value);
-        setupRecentTransactions(view);
+        totalTransactionsText = view.findViewById(R.id.tv_business_total_transactions);
+        incomeCountText = view.findViewById(R.id.tv_business_income_count);
+        expenseCountText = view.findViewById(R.id.tv_business_expense_count);
+        largestTransactionText = view.findViewById(R.id.tv_business_largest_transaction);
+        avgPerDayText = view.findViewById(R.id.tv_business_avg_per_day);
         loadDashboardData();
 
         View paymentButton = view.findViewById(R.id.btn_send_business_payment);
@@ -68,23 +66,6 @@ public class DashboardFragment extends Fragment {
         if (apiClient != null) {
             loadDashboardData();
         }
-    }
-
-    private void setupRecentTransactions(View view) {
-        LinearLayout container = view.findViewById(R.id.business_recent_container);
-        if (container.getChildCount() > 1) {
-            container.removeViews(1, container.getChildCount() - 1);
-        }
-
-        RecyclerView recyclerView = new RecyclerView(requireContext());
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        recyclerView.setNestedScrollingEnabled(false);
-        transactionAdapter = new BusinessTransactionAdapter(recentTransactions);
-        recyclerView.setAdapter(transactionAdapter);
-        container.addView(recyclerView, new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        ));
     }
 
     private void loadDashboardData() {
@@ -103,20 +84,45 @@ public class DashboardFragment extends Fragment {
                 if (summary.success && summary.data != null) {
                     double income = summary.data.totalIncome;
                     double expense = summary.data.totalExpense;
-                    double profit = income - expense;
                     balanceText.setText(formatMoney(summary.data.totalBalance));
                     incomeShortText.setText("Thu: " + formatMoney(income));
                     expenseShortText.setText("Chi: " + formatMoney(expense));
-                    revenueText.setText(formatMoney(income));
-                    expenseText.setText(formatMoney(expense));
-                    profitText.setText(formatMoney(profit));
                 }
 
-                recentTransactions.clear();
-                recentTransactions.addAll(transactions);
-                transactionAdapter.notifyDataSetChanged();
+                renderActivityStats(transactions);
             });
         });
+    }
+
+    private void renderActivityStats(List<BusinessTransaction> transactions) {
+        int incomeCount = 0;
+        int expenseCount = 0;
+        double largest = 0.0;
+        double totalAmount = 0.0;
+        Set<Long> activeDays = new HashSet<>();
+
+        for (BusinessTransaction transaction : transactions) {
+            if (transaction.isIncome()) {
+                incomeCount++;
+            } else {
+                expenseCount++;
+            }
+            double amount = transaction.getRawAmount();
+            largest = Math.max(largest, amount);
+            totalAmount += amount;
+            if (transaction.getTimestamp() > 0L) {
+                activeDays.add(transaction.getTimestamp() / 86_400_000L);
+            }
+        }
+
+        int dayCount = activeDays.isEmpty() ? 1 : activeDays.size();
+        double averagePerDay = transactions.isEmpty() ? 0.0 : totalAmount / dayCount;
+
+        totalTransactionsText.setText(String.valueOf(transactions.size()));
+        incomeCountText.setText(String.valueOf(incomeCount));
+        expenseCountText.setText(String.valueOf(expenseCount));
+        largestTransactionText.setText(formatMoney(largest));
+        avgPerDayText.setText(formatMoney(averagePerDay));
     }
 
     private String formatMoney(double amount) {

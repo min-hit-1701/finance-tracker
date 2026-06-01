@@ -15,10 +15,20 @@ import java.util.List;
 
 public class BusinessTransactionAdapter extends RecyclerView.Adapter<BusinessTransactionAdapter.ViewHolder> {
 
+    public interface OnDeleteClickListener {
+        void onDeleteClick(BusinessTransaction transaction);
+    }
+
     private final List<BusinessTransaction> items;
+    private final OnDeleteClickListener deleteClickListener;
 
     public BusinessTransactionAdapter(List<BusinessTransaction> items) {
+        this(items, null);
+    }
+
+    public BusinessTransactionAdapter(List<BusinessTransaction> items, OnDeleteClickListener deleteClickListener) {
         this.items = items;
+        this.deleteClickListener = deleteClickListener;
     }
 
     @NonNull
@@ -39,6 +49,11 @@ public class BusinessTransactionAdapter extends RecyclerView.Adapter<BusinessTra
                 item.isIncome() ? R.color.income_green : R.color.expense_red,
                 null
         ));
+        holder.deleteButton.setOnClickListener(v -> {
+            if (deleteClickListener != null) {
+                deleteClickListener.onDeleteClick(item);
+            }
+        });
     }
 
     @Override
@@ -50,12 +65,14 @@ public class BusinessTransactionAdapter extends RecyclerView.Adapter<BusinessTra
         TextView titleText;
         TextView subtitleText;
         TextView amountText;
+        View deleteButton;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             titleText = itemView.findViewById(R.id.tx_title);
             subtitleText = itemView.findViewById(R.id.tx_subtitle);
             amountText = itemView.findViewById(R.id.tx_amount);
+            deleteButton = itemView.findViewById(R.id.btn_delete_business_transaction);
         }
     }
 }

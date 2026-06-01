@@ -16,11 +16,6 @@ $userId = (int) $authUser['id'];
 try {
     $conn = (new Database())->connect();
 
-    $stmt = $conn->prepare('SELECT COALESCE(SUM(balance), 0) AS total FROM wallets WHERE userId = ? AND isBusiness = ?');
-    $stmt->bind_param('ii', $userId, $isBusiness);
-    $stmt->execute();
-    $balance = normalize_row(fetch_one($stmt) ?: ['total' => 0]);
-
     $stmt = $conn->prepare('SELECT '
         . 'COALESCE(SUM(CASE WHEN isIncome = 1 THEN amount ELSE 0 END), 0) AS income, '
         . 'COALESCE(SUM(CASE WHEN isIncome = 0 THEN amount ELSE 0 END), 0) AS expense '
@@ -32,7 +27,7 @@ try {
     json_response(true, 'Summary loaded', [
         'userId' => $userId,
         'isBusiness' => $isBusiness,
-        'totalBalance' => $balance['total'],
+        'totalBalance' => $totals['income'] - $totals['expense'],
         'totalIncome' => $totals['income'],
         'totalExpense' => $totals['expense'],
     ]);

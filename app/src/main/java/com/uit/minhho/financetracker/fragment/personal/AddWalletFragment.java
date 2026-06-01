@@ -46,7 +46,7 @@ public class AddWalletFragment extends Fragment {
         spinnerBank = view.findViewById(R.id.spinner_bank_type);
 
         // Khởi tạo WalletViewModel để kết nối dữ liệu xuống Database của nhóm
-        walletViewModel = new ViewModelProvider(this).get(WalletViewModel.class);
+        walletViewModel = new ViewModelProvider(requireActivity()).get(WalletViewModel.class);
 
         // Nối sự kiện nút đóng Toolbar quay lại trang trước
         MaterialToolbar toolbar = view.findViewById(R.id.toolbar);

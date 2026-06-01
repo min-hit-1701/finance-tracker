@@ -71,9 +71,9 @@ public class AddTransactionFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         initViews(view);
-        walletViewModel = new ViewModelProvider(this).get(WalletViewModel.class);
-        categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
-        transactionViewModel = new ViewModelProvider(this).get(TransactionViewModel.class);
+        walletViewModel = new ViewModelProvider(requireActivity()).get(WalletViewModel.class);
+        categoryViewModel = new ViewModelProvider(requireActivity()).get(CategoryViewModel.class);
+        transactionViewModel = new ViewModelProvider(requireActivity()).get(TransactionViewModel.class);
         setupSpinners();
         setupDatePicker();
 
@@ -228,6 +228,9 @@ public class AddTransactionFragment extends Fragment {
                     }
                     Toast.makeText(appContext, message, Toast.LENGTH_SHORT).show();
                     if (success) {
+                        transactionViewModel.refreshTransactions(false);
+                        walletViewModel.refreshPersonalWallets();
+                        categoryViewModel.refreshCategories();
                         getParentFragmentManager().popBackStack();
                     }
                 });

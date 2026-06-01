@@ -16,10 +16,10 @@ $month = input_string($input, 'month', date('Y-m'));
 try {
     $conn = (new Database())->connect();
 
-    $stmt = $conn->prepare('SELECT COALESCE(SUM(balance), 0) AS totalBalance, COUNT(*) AS walletCount FROM wallets WHERE userId = ? AND isBusiness = 1');
+    $stmt = $conn->prepare('SELECT COUNT(*) AS walletCount FROM wallets WHERE userId = ? AND isBusiness = 1');
     $stmt->bind_param('i', $userId);
     $stmt->execute();
-    $wallets = normalize_row(fetch_one($stmt) ?: ['totalBalance' => 0, 'walletCount' => 0]);
+    $wallets = normalize_row(fetch_one($stmt) ?: ['walletCount' => 0]);
 
     $stmt = $conn->prepare(
         'SELECT '
@@ -47,7 +47,7 @@ try {
     json_response(true, 'Dashboard loaded', [
         'userId' => $userId,
         'month' => $month,
-        'totalBalance' => $wallets['totalBalance'],
+        'totalBalance' => $totals['totalIncome'] - $totals['totalExpense'],
         'walletCount' => (int) $wallets['walletCount'],
         'totalIncome' => $totals['totalIncome'],
         'totalExpense' => $totals['totalExpense'],

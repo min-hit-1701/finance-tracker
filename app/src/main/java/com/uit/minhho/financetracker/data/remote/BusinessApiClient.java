@@ -96,10 +96,13 @@ public class BusinessApiClient {
                 String note = text(row, "note");
                 String displayTime = text(row, "displayTime");
                 result.add(new BusinessTransaction(
+                        intValue(row.get("id"), intValue(row.getId(), FirebaseSession.positiveHash(row.getId()))),
                         note.isEmpty() ? "Giao dịch doanh nghiệp" : note,
                         displayTime,
                         (income ? "+" : "-") + formatMoney(amount),
-                        income
+                        income,
+                        amount,
+                        longValue(row.get("timestamp"), 0L)
                 ));
             }
         } catch (Exception ignored) {
@@ -124,7 +127,8 @@ public class BusinessApiClient {
                 result.add(new ReportTransaction(
                         doubleValue(row.get("amount")),
                         boolValue(row.get("isIncome")),
-                        label
+                        label,
+                        longValue(row.get("timestamp"), 0L)
                 ));
             }
         } catch (Exception ignored) {
@@ -139,12 +143,6 @@ public class BusinessApiClient {
                 return ApiResult.error(session.errorMessage);
             }
 
-            double totalBalance = 0.0;
-            QuerySnapshot wallets = Tasks.await(collection(session.uid, WALLETS).get());
-            for (DocumentSnapshot row : wallets.getDocuments()) {
-                totalBalance += doubleValue(row.get("balance"));
-            }
-
             double totalIncome = 0.0;
             double totalExpense = 0.0;
             QuerySnapshot transactions = Tasks.await(collection(session.uid, TRANSACTIONS).get());
@@ -156,6 +154,7 @@ public class BusinessApiClient {
                 }
             }
 
+            double totalBalance = totalIncome - totalExpense;
             return ApiResult.success("Summary loaded", new Summary(totalBalance, totalIncome, totalExpense));
         } catch (Exception e) {
             return ApiResult.error(firebaseMessage(e, "Không thể tải tổng quan doanh nghiệp"));
@@ -288,6 +287,34 @@ public class BusinessApiClient {
         }
     }
 
+    public ApiResult<Void> deleteTransaction(BusinessTransaction transaction) {
+        try {
+            FirebaseSession.Session session = requireSession();
+            if (!session.valid) {
+                return ApiResult.error(session.errorMessage);
+            }
+            if (transaction.getId() <= 0) {
+                return ApiResult.error("Không tìm thấy giao dịch cần xóa");
+            }
+
+            CollectionReference transactions = collection(session.uid, TRANSACTIONS);
+            DocumentSnapshot snapshot = Tasks.await(transactions.document(String.valueOf(transaction.getId())).get());
+            if (!snapshot.exists()) {
+                return ApiResult.error("Giao dịch không còn tồn tại");
+            }
+
+            boolean income = boolValue(snapshot.get("isIncome"));
+            double amount = doubleValue(snapshot.get("amount"));
+            int walletId = intValue(snapshot.get("walletId"), 0);
+
+            Tasks.await(transactions.document(String.valueOf(transaction.getId())).delete());
+            updateWalletBalance(session.uid, walletId, income ? -amount : amount);
+            return ApiResult.success("Đã xóa giao dịch");
+        } catch (Exception e) {
+            return ApiResult.error(firebaseMessage(e, "Không thể xóa giao dịch"));
+        }
+    }
+
     private Map<String, Object> transactionData(
             int id,
             double amount,
@@ -414,6 +441,17 @@ public class BusinessApiClient {
         }
     }
 
+    private long longValue(Object value, long fallback) {
+        if (value instanceof Number) {
+            return ((Number) value).longValue();
+        }
+        try {
+            return value == null ? fallback : Long.parseLong(String.valueOf(value));
+        } catch (Exception ignored) {
+            return fallback;
+        }
+    }
+
     private boolean boolValue(Object value) {
         if (value instanceof Boolean) {
             return (Boolean) value;
@@ -474,11 +512,13 @@ public class BusinessApiClient {
         public final double amount;
         public final boolean income;
         public final String note;
+        public final long timestamp;
 
-        public ReportTransaction(double amount, boolean income, String note) {
+        public ReportTransaction(double amount, boolean income, String note, long timestamp) {
             this.amount = amount;
             this.income = income;
             this.note = note;
+            this.timestamp = timestamp;
         }
     }
 }

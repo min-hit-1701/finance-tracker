@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,9 +21,15 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
 
     private final List<Budget> items;
     private final DecimalFormat formatter = new DecimalFormat("#,###");
+    private final OnBudgetActionListener actionListener;
 
     public BudgetAdapter(List<Budget> items) {
+        this(items, null);
+    }
+
+    public BudgetAdapter(List<Budget> items, OnBudgetActionListener actionListener) {
         this.items = items;
+        this.actionListener = actionListener;
     }
 
     public void setBudgets(List<Budget> budgets) {
@@ -48,18 +55,26 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
         
         holder.categoryName.setText(item.getCategoryName());
         holder.statusText.setText(context.getString(R.string.budget_percent_format, item.getProgressPercent()));
-        holder.progressBar.setProgress(item.getProgressPercent());
+        holder.progressBar.setProgress(Math.min(100, item.getProgressPercent()));
         
-        holder.spentText.setText(formatter.format(item.getSpentAmount()));
-        holder.limitText.setText(formatter.format(item.getLimitAmount()));
+        holder.usageText.setText(context.getString(
+                R.string.budget_spent_of,
+                formatMoney(item.getSpentAmount()),
+                formatMoney(item.getLimitAmount())
+        ));
+        holder.deleteButton.setOnClickListener(v -> {
+            if (actionListener != null) {
+                actionListener.onDeleteBudget(item);
+            }
+        });
         
         double remaining = item.getLimitAmount() - item.getSpentAmount();
         if (remaining >= 0) {
-            holder.remainingText.setText(context.getString(R.string.budget_remaining, formatter.format(remaining)));
+            holder.remainingText.setText(context.getString(R.string.budget_remaining, formatMoney(remaining)));
             holder.remainingText.setTextColor(context.getResources().getColor(R.color.text_secondary, null));
             holder.progressBar.setIndicatorColor(context.getResources().getColor(R.color.brand_primary, null));
         } else {
-            holder.remainingText.setText(context.getString(R.string.budget_over, formatter.format(Math.abs(remaining))));
+            holder.remainingText.setText(context.getString(R.string.budget_over, formatMoney(Math.abs(remaining))));
             holder.remainingText.setTextColor(context.getResources().getColor(R.color.expense_red, null));
             holder.progressBar.setIndicatorColor(context.getResources().getColor(R.color.expense_red, null));
         }
@@ -74,17 +89,25 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
         TextView categoryName;
         TextView statusText;
         LinearProgressIndicator progressBar;
-        TextView spentText;
-        TextView limitText;
+        TextView usageText;
         TextView remainingText;
+        ImageButton deleteButton;
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             categoryName = itemView.findViewById(R.id.budget_category_name);
             statusText = itemView.findViewById(R.id.budget_status_text);
             progressBar = itemView.findViewById(R.id.budget_progress_bar);
-            spentText = itemView.findViewById(R.id.budget_spent_text);
-            limitText = itemView.findViewById(R.id.budget_limit_text);
+            usageText = itemView.findViewById(R.id.budget_usage_text);
             remainingText = itemView.findViewById(R.id.budget_remaining_text);
+            deleteButton = itemView.findViewById(R.id.btn_delete_budget);
         }
+    }
+
+    public interface OnBudgetActionListener {
+        void onDeleteBudget(Budget budget);
+    }
+
+    private String formatMoney(double amount) {
+        return formatter.format(amount) + " đ";
     }
 }

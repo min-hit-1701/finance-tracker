@@ -236,6 +236,24 @@ public class AppRepository {
         });
     }
 
+    public void deleteTransaction(Transaction transaction, OperationCallback callback) {
+        executorService.execute(() -> {
+            if (transaction.isBusiness()) {
+                postBusinessPlaceholder(callback);
+                return;
+            }
+
+            PersonalApiClient.ApiResult<Void> result = personalApiClient.deleteTransaction(transaction);
+            if (result.success) {
+                loadTransactions(false);
+                loadWallets(false);
+                loadTotals();
+                loadCategoryUsageTotals(categoryUsageTotals);
+            }
+            notify(callback, result.success, result.message);
+        });
+    }
+
     private void loadTransactions(boolean isBusiness) {
         executorService.execute(() -> {
             if (isBusiness) {
@@ -276,6 +294,16 @@ public class AppRepository {
     public void insertBudget(Budget budget, OperationCallback callback) {
         executorService.execute(() -> {
             PersonalApiClient.ApiResult<Budget> result = personalApiClient.createBudget(budget);
+            if (result.success) {
+                loadBudgets();
+            }
+            notify(callback, result.success, result.message);
+        });
+    }
+
+    public void deleteBudget(Budget budget, OperationCallback callback) {
+        executorService.execute(() -> {
+            PersonalApiClient.ApiResult<Void> result = personalApiClient.deleteBudget(budget);
             if (result.success) {
                 loadBudgets();
             }

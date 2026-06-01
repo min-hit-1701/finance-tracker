@@ -36,4 +36,8 @@ public class BudgetViewModel extends AndroidViewModel {
     public void insert(Budget budget, AppRepository.OperationCallback callback) {
         repository.insertBudget(budget, callback);
     }
+
+    public void delete(Budget budget, AppRepository.OperationCallback callback) {
+        repository.deleteBudget(budget, callback);
+    }
 }

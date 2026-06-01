@@ -54,7 +54,7 @@ public class AddBudgetFragment extends Fragment {
         spinnerCategory = view.findViewById(R.id.spinner_category);
         spinnerPeriod = view.findViewById(R.id.spinner_period);
 
-        budgetViewModel = new ViewModelProvider(this).get(BudgetViewModel.class);
+        budgetViewModel = new ViewModelProvider(requireActivity()).get(BudgetViewModel.class);
         categoryViewModel = new ViewModelProvider(requireActivity()).get(CategoryViewModel.class);
         setupSpinners();
         categoryViewModel.refreshCategories();

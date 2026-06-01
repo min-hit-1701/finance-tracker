@@ -1,10 +1,12 @@
 package com.uit.minhho.financetracker.fragment.personal;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -55,15 +57,15 @@ public class HomeFragment extends Fragment {
         rvTransactions = view.findViewById(R.id.rv_recent_transactions);
         rvTransactions.setLayoutManager(new LinearLayoutManager(getContext()));
         rvTransactions.setNestedScrollingEnabled(false);
-        transactionAdapter = new PersonalTransactionAdapter(new ArrayList<>());
+        transactionAdapter = new PersonalTransactionAdapter(new ArrayList<>(), this::confirmDeleteTransaction);
         rvTransactions.setAdapter(transactionAdapter);
         totalBalanceText = view.findViewById(R.id.tv_total_balance);
         totalIncomeText = view.findViewById(R.id.tv_total_income);
         totalExpenseText = view.findViewById(R.id.tv_total_expense);
 
         // BACKEND: Khởi tạo ViewModel đúng kiến trúc MVVM [cite: 62]
-        transactionViewModel = new ViewModelProvider(this).get(TransactionViewModel.class);
-        walletViewModel = new ViewModelProvider(this).get(WalletViewModel.class);
+        transactionViewModel = new ViewModelProvider(requireActivity()).get(TransactionViewModel.class);
+        walletViewModel = new ViewModelProvider(requireActivity()).get(WalletViewModel.class);
         categoryViewModel = new ViewModelProvider(requireActivity()).get(CategoryViewModel.class);
 
         walletViewModel.getTotalBalance(false).observe(getViewLifecycleOwner(), total ->
@@ -125,6 +127,7 @@ public class HomeFragment extends Fragment {
                     ? tx.getIconRes()
                     : (categoryIconsById.containsKey(tx.getCategoryId()) ? categoryIconsById.get(tx.getCategoryId()) : R.drawable.ic_other);
             displayList.add(new com.uit.minhho.financetracker.model.personal.PersonalTransaction(
+                    tx.getId(),
                     tx.getNote() != null && !tx.getNote().isEmpty() ? tx.getNote() : "Giao dịch",
                     dateFormat.format(new Date(tx.getTimestamp())) + " - " + (tx.isIncome() ? "Thu nhập" : "Chi phí"),
                     amountText,
@@ -132,8 +135,42 @@ public class HomeFragment extends Fragment {
                     String.valueOf(iconRes)
             ));
         }
-        transactionAdapter = new PersonalTransactionAdapter(displayList);
+        transactionAdapter = new PersonalTransactionAdapter(displayList, this::confirmDeleteTransaction);
         rvTransactions.setAdapter(transactionAdapter);
+    }
+
+    private void confirmDeleteTransaction(com.uit.minhho.financetracker.model.personal.PersonalTransaction item) {
+        new AlertDialog.Builder(requireContext())
+                .setTitle(R.string.delete_transaction_title)
+                .setMessage(R.string.delete_transaction_message)
+                .setNegativeButton(R.string.action_cancel, null)
+                .setPositiveButton(R.string.action_delete, (dialog, which) -> deleteTransaction(item))
+                .show();
+    }
+
+    private void deleteTransaction(com.uit.minhho.financetracker.model.personal.PersonalTransaction item) {
+        Transaction transaction = new Transaction(0, 0, "", 0, 0, item.isIncome(), false);
+        transaction.setId(item.getId());
+        transactionViewModel.delete(transaction, (success, message) -> {
+            if (!isAdded()) {
+                return;
+            }
+            requireActivity().runOnUiThread(() -> {
+                if (!isAdded()) {
+                    return;
+                }
+                Toast.makeText(
+                        requireContext(),
+                        success ? getString(R.string.delete_transaction_success) : message,
+                        Toast.LENGTH_SHORT
+                ).show();
+                if (success) {
+                    transactionViewModel.refreshTransactions(false);
+                    walletViewModel.refreshPersonalWallets();
+                    categoryViewModel.refreshCategories();
+                }
+            });
+        });
     }
 
     private String formatMoney(double amount) {

@@ -44,18 +44,25 @@
     <string name="action_save">Lưu lại</string>
     <string name="action_update">Cập nhật</string>
     <string name="action_cancel">Hủy</string>
+    <string name="action_delete">Xóa</string>
+    <string name="action_delete_transaction">Xóa giao dịch</string>
     <string name="action_add">Thêm mới</string>
     <string name="action_back">Quay lại</string>
+    <string name="delete_transaction_title">Xóa giao dịch?</string>
+    <string name="delete_transaction_message">Giao dịch sẽ bị xóa và các số liệu liên quan sẽ được cập nhật lại.</string>
+    <string name="delete_transaction_success">Đã xóa giao dịch</string>
 
     <!-- Trang chủ Cá nhân -->
     <string name="personal_home_title">Xin chào!</string>
     <string name="personal_home_subtitle">Theo dõi dòng tiền của bạn hôm nay</string>
-    <string name="personal_total_balance">Tổng số dư</string>
+    <string name="personal_total_balance">Dòng tiền ròng</string>
     <string name="personal_balance_value">12.450.000 đ</string>
     <string name="personal_income">Thu nhập</string>
     <string name="personal_expense">Chi tiêu</string>
     <string name="personal_income_value">+5.200.000 đ</string>
     <string name="personal_expense_value">-2.800.000 đ</string>
+    <string name="personal_expense_analysis">Phân tích chi tiêu</string>
+    <string name="personal_monthly_cash_flow">Dòng tiền hàng tháng</string>
     <string name="personal_recent_transactions">Giao dịch gần đây</string>
     <string name="personal_view_all">Xem tất cả</string>
 
@@ -140,7 +147,7 @@
 
     <!-- Báo cáo -->
     <string name="report_title">Phân tích Tài chính</string>
-    <string name="report_comparison">So sánh Thu - Chi</string>
+    <string name="report_comparison">Dòng tiền theo tháng</string>
     <string name="report_distribution">Phân bổ chi tiêu</string>
     <string name="report_total_income">Tổng thu</string>
     <string name="report_total_expense">Tổng chi</string>
@@ -168,11 +175,8 @@
     <!-- Doanh nghiệp -->
     <string name="business_dashboard_title">Quản trị Kinh doanh</string>
     <string name="business_dashboard_subtitle">Thống kê hiệu quả hoạt động</string>
-    <string name="business_total_balance">Vốn lưu động</string>
-    <string name="business_balance_value">86.450.000 đ</string>
-    <string name="business_income_short">Thu: 45,2 Tr</string>
-    <string name="business_expense_short">Chi: 12,3 Tr</string>
-    <string name="business_revenue">Doanh thu</string>
+    <string name="business_total_balance">Dòng tiền ròng</string>
+     <string name="business_revenue">Doanh thu</string>
     <string name="business_expense">Chi phí</string>
     <string name="business_profit">Lợi nhuận</string>
     <string name="business_recent_transactions">Giao dịch gần đây</string>

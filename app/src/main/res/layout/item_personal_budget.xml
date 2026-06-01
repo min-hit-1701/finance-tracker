@@ -32,8 +32,19 @@
                 style="@style/Text.Finance.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:text="80%"
                 android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/btn_delete_budget"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/action_delete"
+                android:padding="8dp"
+                android:src="@android:drawable/ic_menu_delete"
+                android:tint="@color/expense_red" />
         </LinearLayout>
 
         <com.google.android.material.progressindicator.LinearProgressIndicator
@@ -50,42 +61,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/budget_spent_text"
+                android:id="@+id/budget_usage_text"
                 style="@style/Text.Finance.Caption"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="4,000,000"
+                android:singleLine="false"
+                android:text="Đã dùng 4,000,000 / 5,000,000"
                 android:textColor="@color/text_primary" />
-
-            <TextView
-                style="@style/Text.Finance.Caption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:text="@string/budget_spent_of" />
-
-            <TextView
-                android:id="@+id/budget_limit_text"
-                style="@style/Text.Finance.Caption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:text="5,000,000"
-                android:textColor="@color/text_primary" />
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
 
             <TextView
                 android:id="@+id/budget_remaining_text"
                 style="@style/Text.Finance.Caption"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:text="Remaining: 1,000,000"
                 android:textStyle="italic" />
         </LinearLayout>

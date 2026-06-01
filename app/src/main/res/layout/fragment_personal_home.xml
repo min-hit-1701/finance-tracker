@@ -63,7 +63,6 @@
                         android:padding="24dp">
 
                         <TextView
-                            android:id="@+id/tv_total_balance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/personal_total_balance"
@@ -73,6 +72,7 @@
                             android:letterSpacing="0.1" />
 
                         <TextView
+                            android:id="@+id/tv_total_balance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
@@ -99,7 +99,6 @@
                                 android:orientation="vertical">
 
                                 <TextView
-                                    android:id="@+id/tv_total_income"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/personal_income"
@@ -107,7 +106,7 @@
                                     android:textSize="12sp" />
 
                                 <TextView
-                                    android:id="@+id/tv_total_expense"
+                                    android:id="@+id/tv_total_income"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="4dp"
@@ -132,6 +131,7 @@
                                     android:textSize="12sp" />
 
                                 <TextView
+                                    android:id="@+id/tv_total_expense"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="4dp"
@@ -140,122 +140,6 @@
                                     android:textSize="18sp"
                                     android:textStyle="bold" />
                             </LinearLayout>
-                        </LinearLayout>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- Chart Section Placeholder -->
-                <TextView
-                    style="@style/Text.Finance.Subheading"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="28dp"
-                    android:text="Phân tích chi tiêu" />
-
-                <com.google.android.material.card.MaterialCardView
-                    style="@style/Widget.Finance.Card"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_marginTop="12dp"
-                    app:cardCornerRadius="16dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="14dp">
-
-                        <TextView
-                            style="@style/Text.Finance.Subheading"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/business_monthly_cash_flow" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="120dp"
-                            android:layout_marginTop="12dp"
-                            android:gravity="bottom"
-                            android:orientation="horizontal"
-                            android:weightSum="12">
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_height="62dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/bg_chart_bar_income" />
-
-                            <Space android:layout_width="4dp" android:layout_height="1dp" />
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_height="42dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/bg_chart_bar_expense" />
-
-                            <Space android:layout_width="8dp" android:layout_height="1dp" />
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_height="78dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/bg_chart_bar_income" />
-
-                            <Space android:layout_width="4dp" android:layout_height="1dp" />
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_height="46dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/bg_chart_bar_expense" />
-
-                            <Space android:layout_width="8dp" android:layout_height="1dp" />
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_height="96dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/bg_chart_bar_income" />
-
-                            <Space android:layout_width="4dp" android:layout_height="1dp" />
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_height="54dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/bg_chart_bar_expense" />
-
-                            <Space android:layout_width="8dp" android:layout_height="1dp" />
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_height="88dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/bg_chart_bar_income" />
-
-                            <Space android:layout_width="4dp" android:layout_height="1dp" />
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_height="57dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/bg_chart_bar_expense" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:gravity="center"
-                            android:orientation="horizontal"
-                            android:weightSum="6">
-
-                            <TextView style="@style/Text.Finance.Caption" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/month_jan" />
-                            <TextView style="@style/Text.Finance.Caption" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/month_feb" />
-                            <TextView style="@style/Text.Finance.Caption" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/month_mar" />
-                            <TextView style="@style/Text.Finance.Caption" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/month_apr" />
-                            <TextView style="@style/Text.Finance.Caption" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/month_may" />
-                            <TextView style="@style/Text.Finance.Caption" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/month_jun" />
                         </LinearLayout>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>

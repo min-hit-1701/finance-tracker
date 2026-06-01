@@ -1,9 +1,11 @@
 package com.uit.minhho.financetracker.fragment.personal;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -40,11 +42,11 @@ public class BudgetFragment extends Fragment {
         RecyclerView rv = view.findViewById(R.id.rv_budgets);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        adapter = new BudgetAdapter(new ArrayList<>());
+        adapter = new BudgetAdapter(new ArrayList<>(), this::confirmDeleteBudget);
         rv.setAdapter(adapter);
 
-        budgetViewModel = new ViewModelProvider(this).get(BudgetViewModel.class);
-        categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
+        budgetViewModel = new ViewModelProvider(requireActivity()).get(BudgetViewModel.class);
+        categoryViewModel = new ViewModelProvider(requireActivity()).get(CategoryViewModel.class);
         categoryViewModel.getAllCategories().observe(getViewLifecycleOwner(), categories -> {
             categoryNamesById = new HashMap<>();
             if (categories != null) {
@@ -88,6 +90,7 @@ public class BudgetFragment extends Fragment {
                     ? categoryNamesById.get(budget.getCategoryId())
                     : "Danh mục #" + budget.getCategoryId();
             displayBudgets.add(new com.uit.minhho.financetracker.model.personal.Budget(
+                    budget.getId(),
                     String.valueOf(budget.getCategoryId()),
                     categoryName,
                     budget.getLimitAmount(),
@@ -95,5 +98,39 @@ public class BudgetFragment extends Fragment {
             ));
         }
         adapter.setBudgets(displayBudgets);
+    }
+
+    private void confirmDeleteBudget(com.uit.minhho.financetracker.model.personal.Budget item) {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Xóa ngân sách")
+                .setMessage("Bạn muốn xóa ngân sách " + item.getCategoryName() + "?")
+                .setNegativeButton(R.string.action_cancel, null)
+                .setPositiveButton(R.string.action_delete, (dialog, which) -> deleteBudget(item))
+                .show();
+    }
+
+    private void deleteBudget(com.uit.minhho.financetracker.model.personal.Budget item) {
+        com.uit.minhho.financetracker.data.local.entity.Budget budget =
+                new com.uit.minhho.financetracker.data.local.entity.Budget(
+                        Integer.parseInt(item.getCategoryId()),
+                        item.getLimitAmount(),
+                        item.getSpentAmount(),
+                        ""
+                );
+        budget.setId(item.getId());
+        budgetViewModel.delete(budget, (success, message) -> {
+            if (!isAdded()) {
+                return;
+            }
+            requireActivity().runOnUiThread(() -> {
+                if (!isAdded()) {
+                    return;
+                }
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                if (success) {
+                    budgetViewModel.refreshBudgets();
+                }
+            });
+        });
     }
 }

@@ -174,7 +174,7 @@ public class PersonalApiClient {
                         false,
                         intValue(row.get("iconRes"))
                 );
-                transaction.setId(intValue(row.get("id"), FirebaseSession.positiveHash(row.getId())));
+                transaction.setId(intValue(row.get("id"), intValue(row.getId(), FirebaseSession.positiveHash(row.getId()))));
                 result.add(transaction);
             }
             return ApiResult.success("Transactions loaded", result);
@@ -214,6 +214,42 @@ public class PersonalApiClient {
         }
     }
 
+    public ApiResult<Void> deleteTransaction(Transaction transaction) {
+        try {
+            FirebaseSession.Session session = requireSession();
+            if (!session.valid) {
+                return ApiResult.error(session.errorMessage);
+            }
+            if (transaction.getId() <= 0) {
+                return ApiResult.error("Không tìm thấy giao dịch cần xóa");
+            }
+
+            CollectionReference transactions = collection(session.uid, TRANSACTIONS);
+            DocumentSnapshot snapshot = Tasks.await(transactions.document(String.valueOf(transaction.getId())).get());
+            if (!snapshot.exists()) {
+                return ApiResult.error("Giao dịch không còn tồn tại");
+            }
+
+            Transaction stored = new Transaction(
+                    doubleValue(snapshot.get("amount")),
+                    longValue(snapshot.get("timestamp"), System.currentTimeMillis()),
+                    snapshot.getString("note") == null ? "" : snapshot.getString("note"),
+                    intValue(snapshot.get("categoryId")),
+                    intValue(snapshot.get("walletId")),
+                    boolValue(snapshot.get("isIncome")),
+                    false,
+                    intValue(snapshot.get("iconRes"))
+            );
+            stored.setId(intValue(snapshot.get("id"), transaction.getId()));
+
+            Tasks.await(transactions.document(String.valueOf(transaction.getId())).delete());
+            updateWalletBalance(collection(session.uid, WALLETS), stored.getWalletId(), -signedAmount(stored));
+            return ApiResult.success("Đã xóa giao dịch", null);
+        } catch (Exception e) {
+            return ApiResult.error(firebaseMessage(e, "Không thể xóa giao dịch"));
+        }
+    }
+
     public ApiResult<List<Budget>> getBudgets() {
         try {
             FirebaseSession.Session session = requireSession();
@@ -224,14 +260,17 @@ public class PersonalApiClient {
             QuerySnapshot snapshot = Tasks.await(collection(session.uid, BUDGETS)
                     .orderBy("id", Query.Direction.DESCENDING)
                     .get());
+            QuerySnapshot transactionSnapshot = Tasks.await(collection(session.uid, TRANSACTIONS).get());
 
             List<Budget> result = new ArrayList<>();
             for (DocumentSnapshot row : snapshot.getDocuments()) {
+                int categoryId = intValue(row.get("categoryId"));
+                String period = row.getString("period") == null ? "" : row.getString("period");
                 Budget budget = new Budget(
-                        intValue(row.get("categoryId")),
+                        categoryId,
                         doubleValue(row.get("limitAmount")),
-                        doubleValue(row.get("spentAmount")),
-                        row.getString("period") == null ? "" : row.getString("period")
+                        spentForBudget(transactionSnapshot.getDocuments(), categoryId, period),
+                        period
                 );
                 budget.setId(intValue(row.get("id"), FirebaseSession.positiveHash(row.getId())));
                 result.add(budget);
@@ -266,20 +305,28 @@ public class PersonalApiClient {
         }
     }
 
-    public ApiResult<Summary> getSummary() {
+    public ApiResult<Void> deleteBudget(Budget budget) {
         try {
-            ApiResult<List<Wallet>> wallets = getWallets();
-            ApiResult<List<Transaction>> transactions = getTransactions();
-            if (!wallets.success) {
-                return ApiResult.error(wallets.message);
+            FirebaseSession.Session session = requireSession();
+            if (!session.valid) {
+                return ApiResult.error(session.errorMessage);
             }
-            if (!transactions.success) {
-                return ApiResult.error(transactions.message);
+            if (budget == null || budget.getId() <= 0) {
+                return ApiResult.error("Không tìm thấy ngân sách trong database");
             }
 
-            double totalBalance = 0.0;
-            for (Wallet wallet : wallets.data) {
-                totalBalance += wallet.getBalance();
+            Tasks.await(collection(session.uid, BUDGETS).document(String.valueOf(budget.getId())).delete());
+            return ApiResult.success("Đã xóa ngân sách", null);
+        } catch (Exception e) {
+            return ApiResult.error(firebaseMessage(e, "Không thể xóa ngân sách"));
+        }
+    }
+
+    public ApiResult<Summary> getSummary() {
+        try {
+            ApiResult<List<Transaction>> transactions = getTransactions();
+            if (!transactions.success) {
+                return ApiResult.error(transactions.message);
             }
 
             double totalIncome = 0.0;
@@ -291,6 +338,7 @@ public class PersonalApiClient {
                     totalExpense += row.getAmount();
                 }
             }
+            double totalBalance = totalIncome - totalExpense;
             return ApiResult.success("Summary loaded", new Summary(totalBalance, totalIncome, totalExpense));
         } catch (Exception e) {
             return ApiResult.error(firebaseMessage(e, "Không thể tải tổng quan"));
@@ -324,6 +372,40 @@ public class PersonalApiClient {
     private String formatTimestamp(long timestamp) {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
                 .format(new java.util.Date(timestamp));
+    }
+
+    private double spentForBudget(List<DocumentSnapshot> transactions, int categoryId, String period) {
+        double spent = 0.0;
+        for (DocumentSnapshot transaction : transactions) {
+            if (boolValue(transaction.get("isIncome"))) {
+                continue;
+            }
+            if (intValue(transaction.get("categoryId")) != categoryId) {
+                continue;
+            }
+            long timestamp = longValue(transaction.get("timestamp"), 0L);
+            if (!matchesBudgetPeriod(timestamp, period)) {
+                continue;
+            }
+            spent += doubleValue(transaction.get("amount"));
+        }
+        return spent;
+    }
+
+    private boolean matchesBudgetPeriod(long timestamp, String period) {
+        if (timestamp <= 0L || period == null || period.trim().isEmpty()) {
+            return true;
+        }
+        String clean = period.trim();
+        String month = new SimpleDateFormat("yyyy-MM", Locale.US).format(new java.util.Date(timestamp));
+        if (clean.matches("\\d{4}-\\d{2}")) {
+            return month.equals(clean);
+        }
+        String year = new SimpleDateFormat("yyyy", Locale.US).format(new java.util.Date(timestamp));
+        if (clean.matches("\\d{4}")) {
+            return year.equals(clean);
+        }
+        return true;
     }
 
     private String firebaseMessage(Exception e, String fallback) {

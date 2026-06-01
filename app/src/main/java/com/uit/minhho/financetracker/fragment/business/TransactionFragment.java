@@ -1,10 +1,12 @@
 package com.uit.minhho.financetracker.fragment.business;
 
+import android.app.AlertDialog;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,7 +44,7 @@ public class TransactionFragment extends Fragment {
         apiClient = new BusinessApiClient(requireContext());
         RecyclerView recyclerView = view.findViewById(R.id.business_transaction_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        adapter = new BusinessTransactionAdapter(transactions);
+        adapter = new BusinessTransactionAdapter(transactions, this::confirmDeleteTransaction);
         recyclerView.setAdapter(adapter);
         loadTransactions();
 
@@ -80,6 +82,39 @@ public class TransactionFragment extends Fragment {
                 transactions.clear();
                 transactions.addAll(loadedTransactions);
                 adapter.notifyDataSetChanged();
+            });
+        });
+    }
+
+    private void confirmDeleteTransaction(BusinessTransaction transaction) {
+        new AlertDialog.Builder(requireContext())
+                .setTitle(R.string.delete_transaction_title)
+                .setMessage(R.string.delete_transaction_message)
+                .setNegativeButton(R.string.action_cancel, null)
+                .setPositiveButton(R.string.action_delete, (dialog, which) -> deleteTransaction(transaction))
+                .show();
+    }
+
+    private void deleteTransaction(BusinessTransaction transaction) {
+        executorService.execute(() -> {
+            BusinessApiClient.ApiResult<Void> result = apiClient.deleteTransaction(transaction);
+            Activity activity = getActivity();
+            if (!isAdded() || activity == null) {
+                return;
+            }
+
+            activity.runOnUiThread(() -> {
+                if (!isAdded()) {
+                    return;
+                }
+                Toast.makeText(
+                        requireContext(),
+                        result.success ? getString(R.string.delete_transaction_success) : result.message,
+                        Toast.LENGTH_SHORT
+                ).show();
+                if (result.success) {
+                    loadTransactions();
+                }
             });
         });
     }

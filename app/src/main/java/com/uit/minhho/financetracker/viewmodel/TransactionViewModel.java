@@ -32,6 +32,10 @@ public class TransactionViewModel extends AndroidViewModel {
         repository.insertTransaction(transaction, callback);
     }
 
+    public void delete(Transaction transaction, AppRepository.OperationCallback callback) {
+        repository.deleteTransaction(transaction, callback);
+    }
+
     public LiveData<Double> getTotalIncome(boolean isBusiness) {
         return repository.getTotalIncome(isBusiness);
     }

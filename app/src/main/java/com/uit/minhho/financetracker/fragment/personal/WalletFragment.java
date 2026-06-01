@@ -44,7 +44,7 @@ public class WalletFragment extends Fragment implements WalletAdapter.OnWalletCl
         adapter = new WalletAdapter(walletList, this);
         rv.setAdapter(adapter);
 
-        walletViewModel = new ViewModelProvider(this).get(WalletViewModel.class);
+        walletViewModel = new ViewModelProvider(requireActivity()).get(WalletViewModel.class);
         walletViewModel.getPersonalWallets().observe(getViewLifecycleOwner(), wallets -> adapter.setWallets(wallets));
 
         // CẬP NHẬT: Mở AddWalletFragment thay vì hiện Dialog

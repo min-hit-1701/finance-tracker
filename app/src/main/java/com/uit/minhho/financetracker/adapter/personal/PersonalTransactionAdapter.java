@@ -15,10 +15,20 @@ import java.util.List;
 
 public class PersonalTransactionAdapter extends RecyclerView.Adapter<PersonalTransactionAdapter.ViewHolder> {
 
+    public interface OnDeleteClickListener {
+        void onDeleteClick(PersonalTransaction transaction);
+    }
+
     private final List<PersonalTransaction> items;
+    private final OnDeleteClickListener deleteClickListener;
 
     public PersonalTransactionAdapter(List<PersonalTransaction> items) {
+        this(items, null);
+    }
+
+    public PersonalTransactionAdapter(List<PersonalTransaction> items, OnDeleteClickListener deleteClickListener) {
         this.items = items;
+        this.deleteClickListener = deleteClickListener;
     }
 
     @NonNull
@@ -80,6 +90,11 @@ public class PersonalTransactionAdapter extends RecyclerView.Adapter<PersonalTra
         holder.iconContainer.setBackgroundTintList(ColorStateList.valueOf(bgColor));
         // Đặt icon màu trắng để nổi bật trên nền màu
         holder.ivIcon.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(holder.itemView.getContext(), R.color.white)));
+        holder.deleteButton.setOnClickListener(v -> {
+            if (deleteClickListener != null) {
+                deleteClickListener.onDeleteClick(item);
+            }
+        });
     }
 
     @Override
@@ -90,7 +105,7 @@ public class PersonalTransactionAdapter extends RecyclerView.Adapter<PersonalTra
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle, tvSubtitle, tvAmount;
         ImageView ivIcon;
-        View iconContainer;
+        View iconContainer, deleteButton;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -99,6 +114,7 @@ public class PersonalTransactionAdapter extends RecyclerView.Adapter<PersonalTra
             tvAmount = itemView.findViewById(R.id.tv_amount);
             ivIcon = itemView.findViewById(R.id.iv_category_icon);
             iconContainer = itemView.findViewById(R.id.icon_container);
+            deleteButton = itemView.findViewById(R.id.btn_delete_transaction);
         }
     }
 }

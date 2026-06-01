@@ -59,17 +59,69 @@
             android:text="@string/business_report_title"
             style="@style/Text.Finance.Title" />
 
+        <TextView
+            android:id="@+id/tv_business_report_chart_note"
+            style="@style/Text.Finance.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Dòng tiền tháng này"
+            android:textColor="@color/text_secondary" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_business_report_previous_period"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:minWidth="48dp"
+                android:text="&lt;"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tv_business_report_selected_period"
+                style="@style/Text.Finance.Body"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Tháng hiện tại"
+                android:textColor="@color/text_primary" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_business_report_next_period"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:minWidth="48dp"
+                android:text="&gt;"
+                android:textSize="18sp" />
+        </LinearLayout>
+
         <com.google.android.material.card.MaterialCardView
             style="@style/Widget.Finance.Card"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp">
 
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/bar_chart_business"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="8dp" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/bar_chart_business"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp" />
+            </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView

@@ -44,7 +44,17 @@ public class TransactionFragment extends Fragment {
         apiClient = new BusinessApiClient(requireContext());
         RecyclerView recyclerView = view.findViewById(R.id.business_transaction_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        adapter = new BusinessTransactionAdapter(transactions, this::confirmDeleteTransaction);
+        adapter = new BusinessTransactionAdapter(transactions, new BusinessTransactionAdapter.OnTransactionActionListener() {
+            @Override
+            public void onTransactionClick(BusinessTransaction transaction) {
+                openTransactionDetail(transaction);
+            }
+
+            @Override
+            public void onTransactionLongClick(BusinessTransaction transaction) {
+                confirmDeleteTransaction(transaction);
+            }
+        });
         recyclerView.setAdapter(adapter);
         loadTransactions();
 
@@ -93,6 +103,15 @@ public class TransactionFragment extends Fragment {
                 .setNegativeButton(R.string.action_cancel, null)
                 .setPositiveButton(R.string.action_delete, (dialog, which) -> deleteTransaction(transaction))
                 .show();
+    }
+
+    private void openTransactionDetail(BusinessTransaction transaction) {
+        getParentFragmentManager().beginTransaction()
+                .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right,
+                        android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                .replace(R.id.fragment_container_business, BusinessTransactionDetailFragment.newInstance(transaction))
+                .addToBackStack(null)
+                .commit();
     }
 
     private void deleteTransaction(BusinessTransaction transaction) {

@@ -41,7 +41,8 @@ public class HomeFragment extends Fragment {
     private TextView totalExpenseText;
     private List<Transaction> currentTransactions = new ArrayList<>();
     private Map<Integer, Integer> categoryIconsById = new HashMap<>();
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+    private Map<Integer, String> categoryNamesById = new HashMap<>();
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
 
     @Nullable
     @Override
@@ -57,7 +58,17 @@ public class HomeFragment extends Fragment {
         rvTransactions = view.findViewById(R.id.rv_recent_transactions);
         rvTransactions.setLayoutManager(new LinearLayoutManager(getContext()));
         rvTransactions.setNestedScrollingEnabled(false);
-        transactionAdapter = new PersonalTransactionAdapter(new ArrayList<>(), this::confirmDeleteTransaction);
+        transactionAdapter = new PersonalTransactionAdapter(new ArrayList<>(), new PersonalTransactionAdapter.OnTransactionActionListener() {
+            @Override
+            public void onTransactionClick(com.uit.minhho.financetracker.model.personal.PersonalTransaction transaction) {
+                openTransactionDetail(transaction);
+            }
+
+            @Override
+            public void onTransactionLongClick(com.uit.minhho.financetracker.model.personal.PersonalTransaction transaction) {
+                confirmDeleteTransaction(transaction);
+            }
+        });
         rvTransactions.setAdapter(transactionAdapter);
         totalBalanceText = view.findViewById(R.id.tv_total_balance);
         totalIncomeText = view.findViewById(R.id.tv_total_income);
@@ -79,9 +90,11 @@ public class HomeFragment extends Fragment {
         );
         categoryViewModel.getAllCategories().observe(getViewLifecycleOwner(), categories -> {
             categoryIconsById = new HashMap<>();
+            categoryNamesById = new HashMap<>();
             if (categories != null) {
                 for (Category category : categories) {
                     categoryIconsById.put(category.getId(), category.getIconRes());
+                    categoryNamesById.put(category.getId(), category.getName());
                 }
             }
             renderTransactions();
@@ -126,17 +139,42 @@ public class HomeFragment extends Fragment {
             int iconRes = tx.getIconRes() > 0
                     ? tx.getIconRes()
                     : (categoryIconsById.containsKey(tx.getCategoryId()) ? categoryIconsById.get(tx.getCategoryId()) : R.drawable.ic_other);
+            String timeText = dateFormat.format(new Date(tx.getTimestamp()));
+            String categoryName = categoryNamesById.containsKey(tx.getCategoryId())
+                    ? categoryNamesById.get(tx.getCategoryId())
+                    : "";
             displayList.add(new com.uit.minhho.financetracker.model.personal.PersonalTransaction(
                     tx.getId(),
                     tx.getNote() != null && !tx.getNote().isEmpty() ? tx.getNote() : "Giao dịch",
-                    dateFormat.format(new Date(tx.getTimestamp())) + " - " + (tx.isIncome() ? "Thu nhập" : "Chi phí"),
+                    timeText,
                     amountText,
                     tx.isIncome(),
-                    String.valueOf(iconRes)
+                    String.valueOf(iconRes),
+                    categoryName,
+                    timeText
             ));
         }
-        transactionAdapter = new PersonalTransactionAdapter(displayList, this::confirmDeleteTransaction);
+        transactionAdapter = new PersonalTransactionAdapter(displayList, new PersonalTransactionAdapter.OnTransactionActionListener() {
+            @Override
+            public void onTransactionClick(com.uit.minhho.financetracker.model.personal.PersonalTransaction transaction) {
+                openTransactionDetail(transaction);
+            }
+
+            @Override
+            public void onTransactionLongClick(com.uit.minhho.financetracker.model.personal.PersonalTransaction transaction) {
+                confirmDeleteTransaction(transaction);
+            }
+        });
         rvTransactions.setAdapter(transactionAdapter);
+    }
+
+    private void openTransactionDetail(com.uit.minhho.financetracker.model.personal.PersonalTransaction item) {
+        getParentFragmentManager().beginTransaction()
+                .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right,
+                        android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                .replace(R.id.fragment_container, PersonalTransactionDetailFragment.newInstance(item))
+                .addToBackStack(null)
+                .commit();
     }
 
     private void confirmDeleteTransaction(com.uit.minhho.financetracker.model.personal.PersonalTransaction item) {

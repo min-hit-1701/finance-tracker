@@ -21,6 +21,9 @@ public class BusinessMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_business_main);
 
         setSupportActionBar(findViewById(R.id.business_toolbar));
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_business);
 

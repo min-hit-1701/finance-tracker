@@ -1,7 +1,6 @@
 package com.uit.minhho.financetracker.fragment.business;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -24,8 +23,9 @@ import com.uit.minhho.financetracker.R;
 import com.uit.minhho.financetracker.data.remote.BusinessApiClient;
 import com.uit.minhho.financetracker.model.business.BusinessEntity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
@@ -40,9 +40,6 @@ public class BusinessAddTransactionFragment extends DialogFragment {
     private AutoCompleteTextView spinnerPartner, spinnerWallet, spinnerCategory;
     private MaterialButtonToggleGroup typeToggleGroup;
     private BusinessApiClient businessApiClient;
-    private int selectedYear;
-    private int selectedMonth;
-    private int selectedDay;
     private int selectedWalletId;
 
     @Nullable
@@ -57,7 +54,7 @@ public class BusinessAddTransactionFragment extends DialogFragment {
 
         initViews(view);
         setupCategorySpinner();
-        setupDatePicker();
+        setupAutomaticTimestampField();
         loadBusinessOptions();
 
         MaterialButton saveButton = view.findViewById(R.id.btn_save);
@@ -79,25 +76,39 @@ public class BusinessAddTransactionFragment extends DialogFragment {
         spinnerCategory = view.findViewById(R.id.spinner_category);
         typeToggleGroup = view.findViewById(R.id.toggle_group_type);
 
-        Calendar calendar = Calendar.getInstance();
-        selectedYear = calendar.get(Calendar.YEAR);
-        selectedMonth = calendar.get(Calendar.MONTH);
-        selectedDay = calendar.get(Calendar.DAY_OF_MONTH);
-
         MaterialToolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(v -> closeForm());
     }
 
     private void setupCategorySpinner() {
-        String[] categories = {
-                getString(R.string.business_tx_inventory),
-                getString(R.string.business_tx_payroll),
-                getString(R.string.business_tx_rent),
-                getString(R.string.business_tx_advert),
-                getString(R.string.cat_other)
-        };
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, categories);
-        spinnerCategory.setAdapter(adapter);
+        typeToggleGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            if (isChecked) {
+                spinnerCategory.setText("", false);
+                loadCategoryOptions(checkedId == R.id.btn_revenue);
+            }
+        });
+        loadCategoryOptions(typeToggleGroup.getCheckedButtonId() == R.id.btn_revenue);
+    }
+
+    private void loadCategoryOptions(boolean income) {
+        executorService.execute(() -> {
+            List<String> categories = businessApiClient.getBusinessCategoryNames(income);
+            Activity activity = getActivity();
+            if (!isAdded() || activity == null) {
+                return;
+            }
+
+            activity.runOnUiThread(() -> {
+                if (!isAdded()) {
+                    return;
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, categories);
+                spinnerCategory.setAdapter(adapter);
+                if (!categories.isEmpty() && spinnerCategory.getText().toString().trim().isEmpty()) {
+                    spinnerCategory.setText(categories.get(0), false);
+                }
+            });
+        });
     }
 
     private void loadBusinessOptions() {
@@ -153,23 +164,10 @@ public class BusinessAddTransactionFragment extends DialogFragment {
         }
     }
 
-    private void setupDatePicker() {
-        etDate.setOnClickListener(v -> {
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
-
-            DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
-                    (view1, year1, monthOfYear, dayOfMonth) -> {
-                        selectedYear = year1;
-                        selectedMonth = monthOfYear;
-                        selectedDay = dayOfMonth;
-                        String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year1;
-                        etDate.setText(date);
-                    }, year, month, day);
-            datePickerDialog.show();
-        });
+    private void setupAutomaticTimestampField() {
+        etDate.setText(currentTimestampText());
+        etDate.setFocusable(false);
+        etDate.setClickable(false);
     }
 
     private void saveTransaction(MaterialButton saveButton) {
@@ -178,13 +176,7 @@ public class BusinessAddTransactionFragment extends DialogFragment {
         String category = spinnerCategory.getText().toString().trim();
         String note = etNote.getText() == null ? "" : etNote.getText().toString().trim();
         boolean isIncome = typeToggleGroup.getCheckedButtonId() == R.id.btn_revenue;
-        String timestamp = String.format(
-                Locale.US,
-                "%04d-%02d-%02d 00:00:00",
-                selectedYear,
-                selectedMonth + 1,
-                selectedDay
-        );
+        String timestamp = currentTimestampText();
 
         Context appContext = requireContext().getApplicationContext();
         new Thread(() -> {
@@ -256,6 +248,10 @@ public class BusinessAddTransactionFragment extends DialogFragment {
             }
         }
         return 0;
+    }
+
+    private String currentTimestampText() {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(new Date());
     }
 
     private void closeForm() {

@@ -15,20 +15,21 @@ import java.util.List;
 
 public class PersonalTransactionAdapter extends RecyclerView.Adapter<PersonalTransactionAdapter.ViewHolder> {
 
-    public interface OnDeleteClickListener {
-        void onDeleteClick(PersonalTransaction transaction);
+    public interface OnTransactionActionListener {
+        void onTransactionClick(PersonalTransaction transaction);
+        void onTransactionLongClick(PersonalTransaction transaction);
     }
 
     private final List<PersonalTransaction> items;
-    private final OnDeleteClickListener deleteClickListener;
+    private final OnTransactionActionListener actionListener;
 
     public PersonalTransactionAdapter(List<PersonalTransaction> items) {
         this(items, null);
     }
 
-    public PersonalTransactionAdapter(List<PersonalTransaction> items, OnDeleteClickListener deleteClickListener) {
+    public PersonalTransactionAdapter(List<PersonalTransaction> items, OnTransactionActionListener actionListener) {
         this.items = items;
-        this.deleteClickListener = deleteClickListener;
+        this.actionListener = actionListener;
     }
 
     @NonNull
@@ -90,9 +91,14 @@ public class PersonalTransactionAdapter extends RecyclerView.Adapter<PersonalTra
         holder.iconContainer.setBackgroundTintList(ColorStateList.valueOf(bgColor));
         // Đặt icon màu trắng để nổi bật trên nền màu
         holder.ivIcon.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(holder.itemView.getContext(), R.color.white)));
+        holder.itemView.setOnClickListener(v -> {
+            if (actionListener != null) {
+                actionListener.onTransactionClick(item);
+            }
+        });
         holder.itemView.setOnLongClickListener(v -> {
-            if (deleteClickListener != null) {
-                deleteClickListener.onDeleteClick(item);
+            if (actionListener != null) {
+                actionListener.onTransactionLongClick(item);
             }
             return true;
         });

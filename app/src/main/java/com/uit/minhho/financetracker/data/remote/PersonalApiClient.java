@@ -11,10 +11,12 @@ import com.uit.minhho.financetracker.data.local.entity.Budget;
 import com.uit.minhho.financetracker.data.local.entity.Category;
 import com.uit.minhho.financetracker.data.local.entity.Transaction;
 import com.uit.minhho.financetracker.data.local.entity.Wallet;
+import com.uit.minhho.financetracker.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -24,6 +26,16 @@ public class PersonalApiClient {
     private static final String WALLETS = "personal_wallets";
     private static final String TRANSACTIONS = "personal_transactions";
     private static final String BUDGETS = "personal_budgets";
+    private static final DefaultCategory[] DEFAULT_PERSONAL_INCOME_CATEGORIES = {
+            new DefaultCategory(2026060301, "Lương", R.drawable.ic_salary, "#10B981"),
+            new DefaultCategory(2026060302, "Thưởng", R.drawable.ic_bonus, "#22C55E"),
+            new DefaultCategory(2026060303, "Làm thêm", R.drawable.ic_salary, "#14B8A6"),
+            new DefaultCategory(2026060304, "Freelance", R.drawable.ic_salary, "#06B6D4"),
+            new DefaultCategory(2026060305, "Hoa hồng cá nhân", R.drawable.ic_bonus, "#8B5CF6"),
+            new DefaultCategory(2026060306, "Lãi tiết kiệm", R.drawable.ic_investment, "#65A30D"),
+            new DefaultCategory(2026060307, "Cổ tức", R.drawable.ic_investment, "#059669"),
+            new DefaultCategory(2026060308, "Lợi nhuận đầu tư", R.drawable.ic_investment, "#4F46E5")
+    };
 
     private final Context context;
 
@@ -38,6 +50,7 @@ public class PersonalApiClient {
                 return ApiResult.error(session.errorMessage);
             }
 
+            seedDefaultPersonalIncomeCategories(session.uid);
             Query query = collection(session.uid, CATEGORIES).orderBy("id", Query.Direction.DESCENDING);
             if (isIncome != null) {
                 query = collection(session.uid, CATEGORIES).whereEqualTo("isIncome", isIncome);
@@ -58,6 +71,28 @@ public class PersonalApiClient {
             return ApiResult.success("Categories loaded", result);
         } catch (Exception e) {
             return ApiResult.error(firebaseMessage(e, "Không thể tải danh mục"));
+        }
+    }
+
+    private void seedDefaultPersonalIncomeCategories(String uid) throws Exception {
+        CollectionReference categories = collection(uid, CATEGORIES);
+        for (DefaultCategory category : DEFAULT_PERSONAL_INCOME_CATEGORIES) {
+            String docId = String.valueOf(category.id);
+            DocumentSnapshot existing = Tasks.await(categories.document(docId).get());
+            if (existing.exists()) {
+                if (intValue(existing.get("iconRes")) <= 0 || existing.getString("type") == null) {
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("iconRes", category.iconRes);
+                    updates.put("colorHex", category.colorHex);
+                    updates.put("isIncome", true);
+                    updates.put("isBusiness", false);
+                    updates.put("type", "PERSONAL_INCOME");
+                    updates.put("updatedAt", System.currentTimeMillis());
+                    Tasks.await(categories.document(docId).update(updates));
+                }
+                continue;
+            }
+            Tasks.await(categories.document(docId).set(category.toMap()));
         }
     }
 
@@ -517,6 +552,34 @@ public class PersonalApiClient {
 
         public static <T> ApiResult<T> error(String message) {
             return new ApiResult<>(false, message, null);
+        }
+    }
+
+    private static class DefaultCategory {
+        final int id;
+        final String name;
+        final int iconRes;
+        final String colorHex;
+
+        DefaultCategory(int id, String name, int iconRes, String colorHex) {
+            this.id = id;
+            this.name = name;
+            this.iconRes = iconRes;
+            this.colorHex = colorHex;
+        }
+
+        Map<String, Object> toMap() {
+            Map<String, Object> data = new LinkedHashMap<>();
+            data.put("id", id);
+            data.put("name", name);
+            data.put("iconRes", iconRes);
+            data.put("colorHex", colorHex);
+            data.put("isIncome", true);
+            data.put("isBusiness", false);
+            data.put("type", "PERSONAL_INCOME");
+            data.put("updatedAt", System.currentTimeMillis());
+            data.put("seededByAndroid", true);
+            return data;
         }
     }
 }

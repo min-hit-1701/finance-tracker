@@ -2,7 +2,6 @@ package com.uit.minhho.financetracker.fragment.personal;
 
 import android.app.AlertDialog;
 import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
@@ -37,7 +36,8 @@ import com.uit.minhho.financetracker.viewmodel.TransactionViewModel;
 import com.uit.minhho.financetracker.viewmodel.WalletViewModel;
 
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.List;
@@ -75,7 +75,7 @@ public class AddTransactionFragment extends Fragment {
         categoryViewModel = new ViewModelProvider(requireActivity()).get(CategoryViewModel.class);
         transactionViewModel = new ViewModelProvider(requireActivity()).get(TransactionViewModel.class);
         setupSpinners();
-        setupDatePicker();
+        setupAutomaticTimestampField();
 
         view.findViewById(R.id.btn_save).setOnClickListener(v -> saveTransactionLogic());
     }
@@ -143,18 +143,10 @@ public class AddTransactionFragment extends Fragment {
         });
     }
 
-    private void setupDatePicker() {
-        etDate.setOnClickListener(v -> {
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
-
-            DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
-                    (view, year1, monthOfYear, dayOfMonth) -> etDate.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year1),
-                    year, month, day);
-            datePickerDialog.show();
-        });
+    private void setupAutomaticTimestampField() {
+        etDate.setText(currentTimestampText());
+        etDate.setFocusable(false);
+        etDate.setClickable(false);
     }
 
     private void observeCategories(boolean isIncome, ArrayAdapter<String> adapter) {
@@ -292,20 +284,10 @@ public class AddTransactionFragment extends Fragment {
     }
 
     private long selectedTimestamp() {
-        String dateText = etDate.getText() == null ? "" : etDate.getText().toString().trim();
-        if (!dateText.isEmpty() && !"Hôm nay".equalsIgnoreCase(dateText)) {
-            String[] parts = dateText.split("/");
-            if (parts.length == 3) {
-                try {
-                    Calendar calendar = Calendar.getInstance(Locale.US);
-                    calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(parts[0]));
-                    calendar.set(Calendar.MONTH, Integer.parseInt(parts[1]) - 1);
-                    calendar.set(Calendar.YEAR, Integer.parseInt(parts[2]));
-                    return calendar.getTimeInMillis();
-                } catch (NumberFormatException ignored) {
-                }
-            }
-        }
         return System.currentTimeMillis();
+    }
+
+    private String currentTimestampText() {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(new Date());
     }
 }

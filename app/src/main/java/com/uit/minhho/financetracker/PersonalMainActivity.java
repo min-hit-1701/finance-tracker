@@ -23,6 +23,9 @@ public class PersonalMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_personal_main);
 
         setSupportActionBar(findViewById(R.id.main_toolbar));
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
 
         bottomNav = findViewById(R.id.bottom_nav_personal);
         if (savedInstanceState == null) {

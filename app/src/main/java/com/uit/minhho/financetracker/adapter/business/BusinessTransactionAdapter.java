@@ -15,20 +15,21 @@ import java.util.List;
 
 public class BusinessTransactionAdapter extends RecyclerView.Adapter<BusinessTransactionAdapter.ViewHolder> {
 
-    public interface OnDeleteClickListener {
-        void onDeleteClick(BusinessTransaction transaction);
+    public interface OnTransactionActionListener {
+        void onTransactionClick(BusinessTransaction transaction);
+        void onTransactionLongClick(BusinessTransaction transaction);
     }
 
     private final List<BusinessTransaction> items;
-    private final OnDeleteClickListener deleteClickListener;
+    private final OnTransactionActionListener actionListener;
 
     public BusinessTransactionAdapter(List<BusinessTransaction> items) {
         this(items, null);
     }
 
-    public BusinessTransactionAdapter(List<BusinessTransaction> items, OnDeleteClickListener deleteClickListener) {
+    public BusinessTransactionAdapter(List<BusinessTransaction> items, OnTransactionActionListener actionListener) {
         this.items = items;
-        this.deleteClickListener = deleteClickListener;
+        this.actionListener = actionListener;
     }
 
     @NonNull
@@ -49,9 +50,14 @@ public class BusinessTransactionAdapter extends RecyclerView.Adapter<BusinessTra
                 item.isIncome() ? R.color.income_green : R.color.expense_red,
                 null
         ));
+        holder.itemView.setOnClickListener(v -> {
+            if (actionListener != null) {
+                actionListener.onTransactionClick(item);
+            }
+        });
         holder.itemView.setOnLongClickListener(v -> {
-            if (deleteClickListener != null) {
-                deleteClickListener.onDeleteClick(item);
+            if (actionListener != null) {
+                actionListener.onTransactionLongClick(item);
                 return true;
             }
             return false;

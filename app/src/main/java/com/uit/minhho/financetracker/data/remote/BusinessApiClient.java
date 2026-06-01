@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -25,6 +26,33 @@ public class BusinessApiClient {
     private static final String ENTITIES = "business_entities";
     private static final String PAYMENTS = "business_payments";
     private static final String BUDGETS = "business_budgets";
+    private static final String CATEGORIES = "business_categories";
+    private static final String BUSINESS_INCOME = "BUSINESS_INCOME";
+    private static final String BUSINESS_EXPENSE = "BUSINESS_EXPENSE";
+    private static final BusinessCategory[] DEFAULT_BUSINESS_INCOME_CATEGORIES = {
+            new BusinessCategory(2026060201, "Bán hàng", true, "#16A34A", BUSINESS_INCOME),
+            new BusinessCategory(2026060202, "Cung cấp dịch vụ", true, "#0D9488", BUSINESS_INCOME),
+            new BusinessCategory(2026060203, "Hợp đồng dự án", true, "#2563EB", BUSINESS_INCOME),
+            new BusinessCategory(2026060204, "Hoa hồng", true, "#7C3AED", BUSINESS_INCOME),
+            new BusinessCategory(2026060205, "Quảng cáo", true, "#DB2777", BUSINESS_INCOME),
+            new BusinessCategory(2026060206, "Cho thuê tài sản", true, "#0891B2", BUSINESS_INCOME),
+            new BusinessCategory(2026060207, "Lãi tiền gửi", true, "#65A30D", BUSINESS_INCOME),
+            new BusinessCategory(2026060208, "Đầu tư tài chính", true, "#4F46E5", BUSINESS_INCOME),
+            new BusinessCategory(2026060209, "Cổ tức", true, "#059669", BUSINESS_INCOME),
+            new BusinessCategory(2026060210, "Thu hồi công nợ", true, "#0284C7", BUSINESS_INCOME),
+            new BusinessCategory(2026060211, "Thanh lý tài sản", true, "#CA8A04", BUSINESS_INCOME),
+            new BusinessCategory(2026060212, "Hoàn thuế", true, "#10B981", BUSINESS_INCOME),
+            new BusinessCategory(2026060213, "Góp vốn chủ sở hữu", true, "#1D4ED8", BUSINESS_INCOME),
+            new BusinessCategory(2026060214, "Thu nhập khác", true, "#64748B", BUSINESS_INCOME)
+    };
+    private static final BusinessCategory[] FALLBACK_BUSINESS_EXPENSE_CATEGORIES = {
+            new BusinessCategory(2026060101, "Marketing", false, "#FF9800", BUSINESS_EXPENSE),
+            new BusinessCategory(2026060102, "Quảng cáo", false, "#E91E63", BUSINESS_EXPENSE),
+            new BusinessCategory(2026060103, "Sự kiện", false, "#9C27B0", BUSINESS_EXPENSE),
+            new BusinessCategory(2026060104, "Chăm sóc khách hàng", false, "#03A9F4", BUSINESS_EXPENSE),
+            new BusinessCategory(2026060105, "Văn phòng phẩm", false, "#4CAF50", BUSINESS_EXPENSE),
+            new BusinessCategory(2026060106, "Lương nhân sự", false, "#607D8B", BUSINESS_EXPENSE)
+    };
 
     private final Context context;
 
@@ -107,6 +135,52 @@ public class BusinessApiClient {
         return result;
     }
 
+    public List<String> getBusinessCategoryNames(boolean income) {
+        List<String> result = new ArrayList<>();
+        try {
+            FirebaseSession.Session session = requireSession();
+            if (!session.valid) {
+                return result;
+            }
+
+            seedDefaultBusinessIncomeCategories(session.uid);
+            QuerySnapshot snapshot = Tasks.await(collection(session.uid, CATEGORIES)
+                    .orderBy("id", Query.Direction.ASCENDING)
+                    .get());
+            for (DocumentSnapshot row : snapshot.getDocuments()) {
+                boolean rowIncome = boolValue(row.get("isIncome"));
+                String type = text(row, "type");
+                boolean typeMatches = income
+                        ? BUSINESS_INCOME.equals(type) || rowIncome
+                        : BUSINESS_EXPENSE.equals(type) || (!rowIncome && !BUSINESS_INCOME.equals(type));
+                String name = text(row, "name");
+                if (typeMatches && !name.isEmpty() && !result.contains(name)) {
+                    result.add(name);
+                }
+            }
+        } catch (Exception ignored) {
+        }
+
+        if (result.isEmpty()) {
+            BusinessCategory[] fallback = income ? DEFAULT_BUSINESS_INCOME_CATEGORIES : FALLBACK_BUSINESS_EXPENSE_CATEGORIES;
+            for (BusinessCategory category : fallback) {
+                result.add(category.name);
+            }
+        }
+        return result;
+    }
+
+    private void seedDefaultBusinessIncomeCategories(String uid) throws Exception {
+        CollectionReference categories = collection(uid, CATEGORIES);
+        for (BusinessCategory category : DEFAULT_BUSINESS_INCOME_CATEGORIES) {
+            DocumentSnapshot existing = Tasks.await(categories.document(String.valueOf(category.id)).get());
+            if (existing.exists()) {
+                continue;
+            }
+            Tasks.await(categories.document(String.valueOf(category.id)).set(category.toMap()));
+        }
+    }
+
     public List<BusinessTransaction> getTransactions() {
         List<BusinessTransaction> result = new ArrayList<>();
         try {
@@ -124,6 +198,7 @@ public class BusinessApiClient {
                 double amount = doubleValue(row.get("amount"));
                 String note = text(row, "note");
                 String displayTime = text(row, "displayTime");
+                String categoryName = text(row, "categoryName");
                 result.add(new BusinessTransaction(
                         intValue(row.get("id"), intValue(row.getId(), FirebaseSession.positiveHash(row.getId()))),
                         note.isEmpty() ? "Giao dịch doanh nghiệp" : note,
@@ -131,7 +206,8 @@ public class BusinessApiClient {
                         (income ? "+" : "-") + formatMoney(amount),
                         income,
                         amount,
-                        longValue(row.get("timestamp"), 0L)
+                        longValue(row.get("timestamp"), 0L),
+                        categoryName
                 ));
             }
         } catch (Exception ignored) {
@@ -147,17 +223,38 @@ public class BusinessApiClient {
                 return result;
             }
 
+            Map<String, Boolean> transactionKeys = new HashMap<>();
+            Map<Integer, Boolean> transactionIds = new HashMap<>();
             QuerySnapshot snapshot = Tasks.await(collection(session.uid, TRANSACTIONS).get());
             for (DocumentSnapshot row : snapshot.getDocuments()) {
                 String label = text(row, "categoryName");
-                if (label.isEmpty()) {
-                    label = text(row, "note");
-                }
+                double amount = doubleValue(row.get("amount"));
+                long timestamp = reportTimestamp(row);
+                int id = intValue(row.get("id"), intValue(row.getId(), FirebaseSession.positiveHash(row.getId())));
+                transactionIds.put(id, true);
+                transactionKeys.put(reportTransactionKey(amount, timestamp), true);
                 result.add(new ReportTransaction(
-                        doubleValue(row.get("amount")),
+                        amount,
                         boolValue(row.get("isIncome")),
                         label,
-                        longValue(row.get("timestamp"), 0L)
+                        timestamp
+                ));
+            }
+
+            QuerySnapshot payments = Tasks.await(collection(session.uid, PAYMENTS).get());
+            for (DocumentSnapshot row : payments.getDocuments()) {
+                double amount = doubleValue(row.get("amount"));
+                long timestamp = reportTimestamp(row);
+                int transactionId = intValue(row.get("transactionId"), 0);
+                if ((transactionId > 0 && transactionIds.containsKey(transactionId))
+                        || transactionKeys.containsKey(reportTransactionKey(amount, timestamp))) {
+                    continue;
+                }
+                result.add(new ReportTransaction(
+                        amount,
+                        false,
+                        "Thanh toán tự động",
+                        timestamp
                 ));
             }
         } catch (Exception ignored) {
@@ -378,7 +475,6 @@ public class BusinessApiClient {
             payment.put("note", note);
             payment.put("timestamp", now);
             payment.put("displayTime", formatTimestamp(now));
-            Tasks.await(collection(session.uid, PAYMENTS).document(String.valueOf(paymentId)).set(payment));
 
             int transactionId = FirebaseSession.nextId();
             Map<String, Object> transaction = transactionData(
@@ -390,6 +486,8 @@ public class BusinessApiClient {
                     false,
                     wallet.id
             );
+            payment.put("transactionId", transactionId);
+            Tasks.await(collection(session.uid, PAYMENTS).document(String.valueOf(paymentId)).set(payment));
             Tasks.await(collection(session.uid, TRANSACTIONS).document(String.valueOf(transactionId)).set(transaction));
             updateWalletBalance(session.uid, wallet.id, -amount);
 
@@ -548,6 +646,30 @@ public class BusinessApiClient {
         return String.format(Locale.US, "%,.0f đ", amount);
     }
 
+    private String reportTransactionKey(double amount, long timestamp) {
+        return String.format(Locale.US, "%.2f_%d", amount, timestamp);
+    }
+
+    private long reportTimestamp(DocumentSnapshot row) {
+        long timestamp = longValue(row.get("timestamp"), 0L);
+        if (timestamp > 0L) {
+            return timestamp;
+        }
+        timestamp = longValue(row.get("createdAt"), 0L);
+        if (timestamp > 0L) {
+            return timestamp;
+        }
+        timestamp = longValue(row.get("updatedAt"), 0L);
+        if (timestamp > 0L) {
+            return timestamp;
+        }
+        String displayTime = text(row, "displayTime");
+        if (!displayTime.isEmpty()) {
+            return parseTimestamp(displayTime);
+        }
+        return System.currentTimeMillis();
+    }
+
     private String text(DocumentSnapshot row, String key) {
         String value = row.getString(key);
         return value == null ? "" : value;
@@ -669,6 +791,36 @@ public class BusinessApiClient {
             this.income = income;
             this.note = note;
             this.timestamp = timestamp;
+        }
+    }
+
+    private static class BusinessCategory {
+        final int id;
+        final String name;
+        final boolean income;
+        final String colorHex;
+        final String type;
+
+        BusinessCategory(int id, String name, boolean income, String colorHex, String type) {
+            this.id = id;
+            this.name = name;
+            this.income = income;
+            this.colorHex = colorHex;
+            this.type = type;
+        }
+
+        Map<String, Object> toMap() {
+            Map<String, Object> data = new LinkedHashMap<>();
+            data.put("id", id);
+            data.put("name", name);
+            data.put("iconRes", 0);
+            data.put("colorHex", colorHex);
+            data.put("isIncome", income);
+            data.put("isBusiness", true);
+            data.put("type", type);
+            data.put("updatedAt", System.currentTimeMillis());
+            data.put("seededByAndroid", true);
+            return data;
         }
     }
 

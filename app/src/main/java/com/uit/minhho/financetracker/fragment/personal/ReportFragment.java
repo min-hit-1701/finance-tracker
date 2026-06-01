@@ -157,7 +157,7 @@ public class ReportFragment extends Fragment {
 
         double income = 0.0;
         double expense = 0.0;
-        Map<Integer, Double> expensesByCategory = new HashMap<>();
+        Map<String, Double> categoryTotals = new HashMap<>();
         Map<String, CashFlowBucket> cashFlowByPeriod = new TreeMap<>();
 
         for (Transaction transaction : transactions) {
@@ -175,11 +175,10 @@ public class ReportFragment extends Fragment {
             } else {
                 expense += transaction.getAmount();
                 bucket.expense += transaction.getAmount();
-                double current = expensesByCategory.containsKey(transaction.getCategoryId())
-                        ? expensesByCategory.get(transaction.getCategoryId())
-                        : 0.0;
-                expensesByCategory.put(transaction.getCategoryId(), current + transaction.getAmount());
             }
+            String categoryLabel = categoryLabel(transaction.getCategoryId());
+            double categoryTotal = categoryTotals.containsKey(categoryLabel) ? categoryTotals.get(categoryLabel) : 0.0;
+            categoryTotals.put(categoryLabel, categoryTotal + transaction.getAmount());
             cashFlowByPeriod.put(bucketKey, bucket);
         }
 
@@ -187,7 +186,7 @@ public class ReportFragment extends Fragment {
         expenseText.setText(formatMoney(expense));
         netText.setText(formatMoney(income - expense));
         setupBarChart(barChart, cashFlowByPeriod);
-        setupPieChart(pieChart, expensesByCategory);
+        setupPieChart(pieChart, categoryTotals);
     }
 
     private void setupBarChart(BarChart chart, Map<String, CashFlowBucket> cashFlowByPeriod) {
@@ -371,20 +370,18 @@ public class ReportFragment extends Fragment {
         calendar.set(Calendar.MILLISECOND, 0);
     }
 
-    private void setupPieChart(PieChart chart, Map<Integer, Double> expensesByCategory) {
+    private void setupPieChart(PieChart chart, Map<String, Double> categoryTotals) {
         if (chart == null) return;
         List<PieEntry> entries = new ArrayList<>();
         List<Integer> colors = new ArrayList<>();
-        for (Map.Entry<Integer, Double> entry : expensesByCategory.entrySet()) {
-            Category category = categoriesById.get(entry.getKey());
-            String name = category == null ? "Danh mục #" + entry.getKey() : category.getName();
-            entries.add(new PieEntry(entry.getValue().floatValue(), name));
-            colors.add(categoryColor(category));
+        for (Map.Entry<String, Double> entry : categoryTotals.entrySet()) {
+            entries.add(new PieEntry(entry.getValue().floatValue(), entry.getKey()));
+            colors.add(categoryColorByLabel(entry.getKey()));
         }
 
         if (entries.isEmpty()) {
             chart.clear();
-            chart.setCenterText("Chưa có\nchi tiêu");
+            chart.setCenterText("Chưa có\ndữ liệu");
             chart.invalidate();
             return;
         }
@@ -396,7 +393,7 @@ public class ReportFragment extends Fragment {
         
         PieData data = new PieData(dataSet);
         chart.setData(data);
-        chart.setCenterText("Chi tiêu\nTháng này");
+        chart.setCenterText("Phân loại\ntrong kỳ");
         chart.setCenterTextSize(16f);
         chart.setHoleRadius(50f);
         chart.getDescription().setEnabled(false);
@@ -411,6 +408,23 @@ public class ReportFragment extends Fragment {
             try {
                 return Color.parseColor(category.getColorHex());
             } catch (IllegalArgumentException ignored) {
+            }
+        }
+        return requireContext().getColor(R.color.cat_other);
+    }
+
+    private String categoryLabel(int categoryId) {
+        Category category = categoriesById.get(categoryId);
+        if (category == null || category.getName() == null || category.getName().trim().isEmpty()) {
+            return "Chưa phân loại";
+        }
+        return category.getName().trim();
+    }
+
+    private int categoryColorByLabel(String label) {
+        for (Category category : categoriesById.values()) {
+            if (category.getName() != null && category.getName().trim().equals(label)) {
+                return categoryColor(category);
             }
         }
         return requireContext().getColor(R.color.cat_other);

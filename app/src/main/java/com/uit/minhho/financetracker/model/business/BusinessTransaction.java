@@ -8,6 +8,7 @@ public class BusinessTransaction {
     private final boolean income;
     private final double rawAmount;
     private final long timestamp;
+    private final String categoryName;
 
     public BusinessTransaction(String title, String subtitle, String amount, boolean income) {
         this(0, title, subtitle, amount, income, 0.0, 0L);
@@ -18,6 +19,10 @@ public class BusinessTransaction {
     }
 
     public BusinessTransaction(int id, String title, String subtitle, String amount, boolean income, double rawAmount, long timestamp) {
+        this(id, title, subtitle, amount, income, rawAmount, timestamp, "");
+    }
+
+    public BusinessTransaction(int id, String title, String subtitle, String amount, boolean income, double rawAmount, long timestamp, String categoryName) {
         this.id = id;
         this.title = title;
         this.subtitle = subtitle;
@@ -25,6 +30,7 @@ public class BusinessTransaction {
         this.income = income;
         this.rawAmount = rawAmount;
         this.timestamp = timestamp;
+        this.categoryName = categoryName;
     }
 
     public int getId() {
@@ -53,5 +59,9 @@ public class BusinessTransaction {
 
     public long getTimestamp() {
         return timestamp;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
     }
 }

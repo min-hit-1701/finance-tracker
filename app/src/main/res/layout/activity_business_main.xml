@@ -20,7 +20,7 @@
             android:id="@+id/business_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="@string/business_dashboard_title"
+            app:title=""
             app:titleCentered="true" />
 
     </com.google.android.material.appbar.AppBarLayout>

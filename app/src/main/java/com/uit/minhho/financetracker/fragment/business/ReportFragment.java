@@ -369,19 +369,15 @@ public class ReportFragment extends Fragment {
             return;
         }
 
-        Map<String, Double> expensesByLabel = new HashMap<>();
-        Map<String, Double> incomeByLabel = new HashMap<>();
+        Map<String, Double> totalsByLabel = new HashMap<>();
         for (BusinessApiClient.ReportTransaction row : rows) {
             String label = reportLabel(row.note);
-            Map<String, Double> target = row.income ? incomeByLabel : expensesByLabel;
-            double current = target.containsKey(label) ? target.get(label) : 0.0;
-            target.put(label, current + row.amount);
+            double current = totalsByLabel.containsKey(label) ? totalsByLabel.get(label) : 0.0;
+            totalsByLabel.put(label, current + row.amount);
         }
 
         List<PieEntry> entries = new ArrayList<>();
-        boolean showingIncome = expensesByLabel.isEmpty() && !incomeByLabel.isEmpty();
-        Map<String, Double> pieRows = showingIncome ? incomeByLabel : expensesByLabel;
-        for (Map.Entry<String, Double> entry : pieRows.entrySet()) {
+        for (Map.Entry<String, Double> entry : totalsByLabel.entrySet()) {
             entries.add(new PieEntry(entry.getValue().floatValue(), entry.getKey()));
         }
 
@@ -405,7 +401,7 @@ public class ReportFragment extends Fragment {
 
         PieData data = new PieData(dataSet);
         chart.setData(data);
-        chart.setCenterText(showingIncome ? "Doanh thu\ntrong kỳ" : getString(R.string.business_expense_center_text));
+        chart.setCenterText("Phân loại\ntrong kỳ");
         chart.setCenterTextSize(15f);
         chart.setHoleRadius(52f);
         chart.setEntryLabelTextSize(10f);
@@ -423,7 +419,7 @@ public class ReportFragment extends Fragment {
 
     private String reportLabel(String note) {
         if (note == null || note.trim().isEmpty()) {
-            return getString(R.string.cat_other);
+            return "Chưa phân loại";
         }
         String clean = note.trim();
         int separator = clean.indexOf(" - ");

@@ -16,6 +16,7 @@ public class Transaction {
     private boolean isIncome;
     private boolean isBusiness;
     private int iconRes;
+    private int partnerId;
 
     @Ignore
     public Transaction(double amount, long timestamp, String note, int categoryId, int walletId, boolean isIncome, boolean isBusiness) {
@@ -31,6 +32,7 @@ public class Transaction {
         this.isIncome = isIncome;
         this.isBusiness = isBusiness;
         this.iconRes = iconRes;
+        this.partnerId = 0;
     }
 
     public int getId() { return id; }
@@ -51,4 +53,6 @@ public class Transaction {
     public void setBusiness(boolean business) { isBusiness = business; }
     public int getIconRes() { return iconRes; }
     public void setIconRes(int iconRes) { this.iconRes = iconRes; }
+    public int getPartnerId() { return partnerId; }
+    public void setPartnerId(int partnerId) { this.partnerId = partnerId; }
 }

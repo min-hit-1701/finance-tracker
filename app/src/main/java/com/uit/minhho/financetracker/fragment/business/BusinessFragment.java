@@ -1,37 +1,31 @@
 package com.uit.minhho.financetracker.fragment.business;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.uit.minhho.financetracker.R;
-import com.uit.minhho.financetracker.adapter.business.BusinessEntityAdapter;
-import com.uit.minhho.financetracker.data.remote.BusinessApiClient;
-import com.uit.minhho.financetracker.model.business.BusinessEntity;
+import com.uit.minhho.financetracker.data.local.entity.BusinessContact;
+import com.uit.minhho.financetracker.viewmodel.BusinessViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class BusinessFragment extends Fragment {
 
-    private final List<BusinessEntity> businessEntities = new ArrayList<>();
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-    private BusinessEntityAdapter entityAdapter;
-    private RecyclerView entityRecyclerView;
-    private BusinessApiClient apiClient;
+    private LinearLayout itemsContainer;
+    private BusinessViewModel businessViewModel;
 
     public BusinessFragment() {
         super(R.layout.fragment_business);
@@ -41,29 +35,48 @@ public class BusinessFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        apiClient = new BusinessApiClient(requireContext());
-        setupBusinessList(view);
+        businessViewModel = new ViewModelProvider(requireActivity()).get(BusinessViewModel.class);
+
+        itemsContainer = view.findViewById(R.id.business_items_container);
+
         setupQuickAccess(view);
         setupFormActions(view);
-        loadBusinessEntities();
+
+        businessViewModel.getBusinessContacts().observe(getViewLifecycleOwner(), this::renderContacts);
     }
 
-    private void setupBusinessList(View view) {
-        entityRecyclerView = view.findViewById(R.id.rv_business_entities);
-        entityRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+    private void renderContacts(List<BusinessContact> contacts) {
+        itemsContainer.removeAllViews();
+        if (contacts == null || contacts.isEmpty()) {
+            return;
+        }
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
+        for (BusinessContact c : contacts) {
+            View itemView = inflater.inflate(R.layout.item_business_entity, itemsContainer, false);
+            TextView nameText = itemView.findViewById(R.id.tv_business_name);
+            TextView detailText = itemView.findViewById(R.id.tv_business_detail);
+            nameText.setText(c.getName());
+            detailText.setText(getString(R.string.business_item_detail_format, c.getType(), c.getNote()));
 
-        businessEntities.clear();
+            itemView.findViewById(R.id.btn_delete_business).setOnClickListener(v ->
+                    new MaterialAlertDialogBuilder(requireContext())
+                            .setTitle(R.string.action_delete)
+                            .setMessage(getString(R.string.business_delete_confirm, c.getName()))
+                            .setPositiveButton(R.string.action_delete, (dialog, which) ->
+                                    businessViewModel.deleteBusinessContact(c))
+                            .setNegativeButton(R.string.action_cancel, null)
+                            .show()
+            );
 
-        entityAdapter = new BusinessEntityAdapter(businessEntities);
-        entityRecyclerView.setAdapter(entityAdapter);
+            itemsContainer.addView(itemView);
+        }
     }
 
     private void setupQuickAccess(View view) {
-        View walletButton = view.findViewById(R.id.btn_open_business_wallet);
-        View budgetButton = view.findViewById(R.id.btn_open_business_budget);
-
-        walletButton.setOnClickListener(v -> openChildScreen(new BusinessWalletFragment()));
-        budgetButton.setOnClickListener(v -> openChildScreen(new BusinessBudgetFragment()));
+        view.findViewById(R.id.btn_open_business_wallet)
+                .setOnClickListener(v -> openChildScreen(new BusinessWalletFragment()));
+        view.findViewById(R.id.btn_open_business_budget)
+                .setOnClickListener(v -> openChildScreen(new BusinessBudgetFragment()));
     }
 
     private void setupFormActions(View view) {
@@ -89,55 +102,12 @@ public class BusinessFragment extends Fragment {
                 note = getString(R.string.business_note_default);
             }
 
-            saveButton.setEnabled(false);
-            String finalNote = note;
-            Context appContext = requireContext().getApplicationContext();
-            executorService.execute(() -> {
-                BusinessApiClient.ApiResult result = apiClient.createBusinessEntity(name, type, finalNote);
-                Activity activity = getActivity();
-                if (!isAdded() || activity == null) {
-                    return;
-                }
+            businessViewModel.addBusinessContact(name, type, note);
+            Toast.makeText(requireContext(), R.string.business_saved_success, Toast.LENGTH_SHORT).show();
 
-                activity.runOnUiThread(() -> {
-                    if (!isAdded()) {
-                        return;
-                    }
-                    saveButton.setEnabled(true);
-                    Toast.makeText(appContext, result.message, Toast.LENGTH_SHORT).show();
-
-                    if (!result.success) {
-                        return;
-                    }
-
-                    businessEntities.add(0, new BusinessEntity(name, type, finalNote));
-                    entityAdapter.notifyDataSetChanged();
-                    entityRecyclerView.scrollToPosition(0);
-
-                    nameInput.setText("");
-                    typeInput.setText("");
-                    noteInput.setText("");
-                });
-            });
-        });
-    }
-
-    private void loadBusinessEntities() {
-        executorService.execute(() -> {
-            List<BusinessEntity> loadedItems = apiClient.getBusinessEntities();
-            Activity activity = getActivity();
-            if (!isAdded() || activity == null) {
-                return;
-            }
-
-            activity.runOnUiThread(() -> {
-                if (!isAdded()) {
-                    return;
-                }
-                businessEntities.clear();
-                businessEntities.addAll(loadedItems);
-                entityAdapter.notifyDataSetChanged();
-            });
+            nameInput.setText("");
+            typeInput.setText("");
+            noteInput.setText("");
         });
     }
 
@@ -148,11 +118,5 @@ public class BusinessFragment extends Fragment {
                 .replace(R.id.fragment_container_business, fragment)
                 .addToBackStack(null)
                 .commit();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        executorService.shutdown();
     }
 }

@@ -1,7 +1,5 @@
 package com.uit.minhho.financetracker.fragment.business;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -12,17 +10,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.button.MaterialButton;
 import com.uit.minhho.financetracker.R;
-import com.uit.minhho.financetracker.data.remote.BusinessApiClient;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import com.uit.minhho.financetracker.viewmodel.BusinessViewModel;
 
 public class BusinessPaymentFragment extends Fragment {
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-    private BusinessApiClient apiClient;
+
+    private BusinessViewModel businessViewModel;
 
     public BusinessPaymentFragment() {
         super(R.layout.fragment_business_payment);
@@ -32,7 +28,8 @@ public class BusinessPaymentFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        apiClient = new BusinessApiClient(requireContext());
+        businessViewModel = new ViewModelProvider(requireActivity()).get(BusinessViewModel.class);
+
         EditText receiverInput = view.findViewById(R.id.et_payment_receiver);
         EditText accountInput = view.findViewById(R.id.et_payment_account);
         EditText amountInput = view.findViewById(R.id.et_payment_amount);
@@ -44,7 +41,7 @@ public class BusinessPaymentFragment extends Fragment {
         confirmButton.setOnClickListener(v -> {
             String receiver = safeText(receiverInput);
             String account = safeText(accountInput);
-            String amount = safeText(amountInput);
+            String amountText = safeText(amountInput);
             String note = safeText(noteInput);
 
             if (TextUtils.isEmpty(receiver)) {
@@ -55,18 +52,7 @@ public class BusinessPaymentFragment extends Fragment {
                 Toast.makeText(requireContext(), R.string.business_payment_error_account, Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (TextUtils.isEmpty(amount)) {
-                Toast.makeText(requireContext(), R.string.business_payment_error_amount, Toast.LENGTH_SHORT).show();
-                return;
-            }
-            double parsedAmount;
-            try {
-                parsedAmount = Double.parseDouble(amount.replace(",", "").replace(" ", ""));
-            } catch (NumberFormatException e) {
-                Toast.makeText(requireContext(), R.string.business_payment_error_amount, Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if (parsedAmount <= 0) {
+            if (TextUtils.isEmpty(amountText)) {
                 Toast.makeText(requireContext(), R.string.business_payment_error_amount, Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -74,40 +60,35 @@ public class BusinessPaymentFragment extends Fragment {
                 note = getString(R.string.business_payment_default_note);
             }
 
-            confirmButton.setEnabled(false);
-            String finalNote = note;
-            Context appContext = requireContext().getApplicationContext();
-            executorService.execute(() -> {
-                BusinessApiClient.ApiResult result = apiClient.createPayment(receiver, account, parsedAmount, finalNote);
-                Activity activity = getActivity();
-                if (!isAdded() || activity == null) {
-                    return;
-                }
+            double amount;
+            try {
+                amount = Double.parseDouble(amountText);
+            } catch (NumberFormatException exception) {
+                Toast.makeText(requireContext(), R.string.business_error_amount_invalid, Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-                activity.runOnUiThread(() -> {
-                    if (!isAdded()) {
-                        return;
-                    }
-                    confirmButton.setEnabled(true);
-                    Toast.makeText(appContext, result.message, Toast.LENGTH_SHORT).show();
+            if (amount <= 0) {
+                Toast.makeText(requireContext(), R.string.business_error_amount_invalid, Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-                    if (!result.success) {
-                        return;
-                    }
+            summaryText.setText(getString(
+                    R.string.business_payment_summary_format,
+                    receiver,
+                    amountText,
+                    account,
+                    note
+            ));
 
-                    summaryText.setText(getString(
-                            R.string.business_payment_summary_format,
-                            receiver,
-                            amount,
-                            account,
-                            finalNote
-                    ));
-                    receiverInput.setText("");
-                    accountInput.setText("");
-                    amountInput.setText("");
-                    noteInput.setText("");
-                });
-            });
+            businessViewModel.createBusinessPayment(receiver, account, amount, note, System.currentTimeMillis());
+        });
+
+        businessViewModel.getOperationMessage().observe(getViewLifecycleOwner(), message -> {
+            if (message != null && !message.trim().isEmpty()) {
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                businessViewModel.clearOperationMessage();
+            }
         });
 
         backButton.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
@@ -115,11 +96,5 @@ public class BusinessPaymentFragment extends Fragment {
 
     private String safeText(EditText editText) {
         return editText.getText() == null ? "" : editText.getText().toString().trim();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        executorService.shutdown();
     }
 }

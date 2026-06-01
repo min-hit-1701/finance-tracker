@@ -84,7 +84,7 @@
                             android:background="@android:color/transparent"
                             android:hint="@string/add_tx_default_amount"
                             android:importantForAutofill="no"
-                            android:inputType="numberDecimal"
+                            android:inputType="number"
                             android:minWidth="100dp"
                             android:textColor="@color/text_on_primary_high"
                             android:textColorHint="@color/text_on_primary_mid"
@@ -138,11 +138,36 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <!-- Nguồn tiền (Ví) -->
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.Finance.Input.Dropdown"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:hint="@string/add_tx_partner_label">
+
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/et_partner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textCapWords"
+                            android:textColor="@color/text_primary"
+                            android:textSize="16sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_add_partner"
+                        style="@style/Widget.Material3.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/business_add_partner_shortcut"
+                        android:textColor="@color/brand_primary_dark"
+                        android:textSize="13sp" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.Finance.Input.Dropdown"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
                         android:hint="@string/add_tx_wallet_label">
 
                         <AutoCompleteTextView
@@ -150,23 +175,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="none"
-                            android:textColor="@color/input_text_color" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <!-- Đối tác khách hàng -->
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.Finance.Input.Dropdown"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:hint="@string/add_tx_partner_label">
-
-                        <AutoCompleteTextView
-                            android:id="@+id/spinner_partner"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="textCapWords"
-                            android:textColor="@color/input_text_color" />
+                            android:textColor="@color/text_primary" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -180,8 +189,8 @@
                             android:id="@+id/spinner_category"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="textCapWords"
-                            android:textColor="@color/input_text_color" />
+                            android:inputType="none"
+                            android:textColor="@color/text_primary" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -200,7 +209,7 @@
                             android:focusable="false"
                             android:importantForAccessibility="no"
                             android:text="@string/add_tx_date_today"
-                            android:textColor="@color/input_text_color" />
+                            android:textColor="@color/brand_primary_light" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -216,7 +225,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textLongMessage"
-                            android:textColor="@color/input_text_color" />
+                            android:textColor="@color/text_primary" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>

@@ -1,32 +1,28 @@
 package com.uit.minhho.financetracker.fragment.business;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.uit.minhho.financetracker.R;
-import com.uit.minhho.financetracker.adapter.business.BusinessWalletAdapter;
-import com.uit.minhho.financetracker.data.remote.BusinessApiClient;
-import com.uit.minhho.financetracker.model.business.BusinessWallet;
+import com.uit.minhho.financetracker.data.local.entity.Wallet;
+import com.uit.minhho.financetracker.viewmodel.BusinessViewModel;
 
-import java.util.ArrayList;
+import java.text.DecimalFormat;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class BusinessWalletFragment extends Fragment {
 
-    private final List<BusinessWallet> wallets = new ArrayList<>();
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-    private BusinessApiClient apiClient;
-    private BusinessWalletAdapter walletAdapter;
+    private BusinessViewModel businessViewModel;
+    private LinearLayout itemsContainer;
+    private final DecimalFormat moneyFormatter = new DecimalFormat("#,###");
 
     public BusinessWalletFragment() {
         super(R.layout.fragment_business_wallet);
@@ -36,13 +32,10 @@ public class BusinessWalletFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        apiClient = new BusinessApiClient(requireContext());
-        RecyclerView recyclerView = view.findViewById(R.id.rv_business_wallets);
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        businessViewModel = new ViewModelProvider(requireActivity()).get(BusinessViewModel.class);
+        itemsContainer = view.findViewById(R.id.wallet_items_container);
 
-        walletAdapter = new BusinessWalletAdapter(wallets);
-        recyclerView.setAdapter(walletAdapter);
-        loadWallets();
+        businessViewModel.getBusinessWallets().observe(getViewLifecycleOwner(), this::renderWallets);
 
         view.findViewById(R.id.btn_add_business_wallet).setOnClickListener(v ->
                 openChildScreen(new BusinessAddWalletFragment())
@@ -52,31 +45,18 @@ public class BusinessWalletFragment extends Fragment {
         );
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (walletAdapter != null) {
-            loadWallets();
+    private void renderWallets(List<Wallet> wallets) {
+        itemsContainer.removeAllViews();
+        if (wallets == null || wallets.isEmpty()) return;
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
+        for (Wallet w : wallets) {
+            View itemView = inflater.inflate(R.layout.item_business_wallet, itemsContainer, false);
+            TextView nameText = itemView.findViewById(R.id.tv_business_wallet_name);
+            TextView balanceText = itemView.findViewById(R.id.tv_business_wallet_balance);
+            nameText.setText(w.getName());
+            balanceText.setText(getString(R.string.business_wallet_balance_format, moneyFormatter.format(w.getBalance())));
+            itemsContainer.addView(itemView);
         }
-    }
-
-    private void loadWallets() {
-        executorService.execute(() -> {
-            List<BusinessWallet> loadedWallets = apiClient.getWallets();
-            Activity activity = getActivity();
-            if (!isAdded() || activity == null) {
-                return;
-            }
-
-            activity.runOnUiThread(() -> {
-                if (!isAdded()) {
-                    return;
-                }
-                wallets.clear();
-                wallets.addAll(loadedWallets);
-                walletAdapter.notifyDataSetChanged();
-            });
-        });
     }
 
     private void openChildScreen(Fragment fragment) {
@@ -86,11 +66,5 @@ public class BusinessWalletFragment extends Fragment {
                 .replace(R.id.fragment_container_business, fragment)
                 .addToBackStack(null)
                 .commit();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        executorService.shutdown();
     }
 }

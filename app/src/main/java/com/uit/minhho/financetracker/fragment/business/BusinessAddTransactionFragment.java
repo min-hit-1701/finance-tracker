@@ -274,6 +274,7 @@ public class BusinessAddTransactionFragment extends Fragment {
                 notePayload,
                 0,
                 walletId,
+                0,
                 isIncome,
                 true
         );

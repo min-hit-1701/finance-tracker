@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import com.uit.minhho.financetracker.data.local.dao.BudgetDao;
 import com.uit.minhho.financetracker.data.local.dao.BusinessContactDao;
 import com.uit.minhho.financetracker.data.local.dao.CategoryDao;
+import com.uit.minhho.financetracker.data.local.dao.PartnerDao;
 import com.uit.minhho.financetracker.data.local.dao.TransactionDao;
 import com.uit.minhho.financetracker.data.local.dao.UserDao;
 import com.uit.minhho.financetracker.data.local.dao.WalletDao;
@@ -14,6 +15,7 @@ import com.uit.minhho.financetracker.data.local.database.AppDatabase;
 import com.uit.minhho.financetracker.data.local.entity.Budget;
 import com.uit.minhho.financetracker.data.local.entity.BusinessContact;
 import com.uit.minhho.financetracker.data.local.entity.Category;
+import com.uit.minhho.financetracker.data.local.entity.Partner;
 import com.uit.minhho.financetracker.data.local.entity.Transaction;
 import com.uit.minhho.financetracker.data.local.entity.User;
 import com.uit.minhho.financetracker.data.local.entity.Wallet;
@@ -33,6 +35,7 @@ public class AppRepository {
     private final TransactionDao transactionDao;
     private final BudgetDao budgetDao;
     private final BusinessContactDao businessContactDao;
+    private final PartnerDao partnerDao;
     private final ExecutorService executorService;
 
     public AppRepository(Application application) {
@@ -43,6 +46,7 @@ public class AppRepository {
         transactionDao = db.transactionDao();
         budgetDao = db.budgetDao();
         businessContactDao = db.businessContactDao();
+        partnerDao = db.partnerDao();
         executorService = Executors.newFixedThreadPool(4);
     }
 
@@ -119,6 +123,10 @@ public class AppRepository {
         return transactionDao.getTotalExpenseByPeriod(isBusiness, fromTimestamp, toTimestamp);
     }
 
+    public LiveData<List<Partner>> getPartners(boolean isBusiness) {
+        return partnerDao.getPartners(isBusiness);
+    }
+
     public LiveData<List<Budget>> getBudgets(boolean isBusiness) {
         return budgetDao.getBudgets(isBusiness);
     }
@@ -179,6 +187,7 @@ public class AppRepository {
                 "Thanh toan den " + receiver + " | " + sourceAccount + " | " + note,
                 ensureBusinessCategory("Thanh toan", false),
                 resolveBusinessWalletId(),
+                0,
                 false,
                 true
         );

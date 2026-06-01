@@ -7,17 +7,19 @@ import androidx.room.RoomDatabase;
 import com.uit.minhho.financetracker.data.local.dao.BudgetDao;
 import com.uit.minhho.financetracker.data.local.dao.BusinessContactDao;
 import com.uit.minhho.financetracker.data.local.dao.CategoryDao;
+import com.uit.minhho.financetracker.data.local.dao.PartnerDao;
 import com.uit.minhho.financetracker.data.local.dao.TransactionDao;
 import com.uit.minhho.financetracker.data.local.dao.UserDao;
 import com.uit.minhho.financetracker.data.local.dao.WalletDao;
 import com.uit.minhho.financetracker.data.local.entity.Budget;
 import com.uit.minhho.financetracker.data.local.entity.BusinessContact;
 import com.uit.minhho.financetracker.data.local.entity.Category;
+import com.uit.minhho.financetracker.data.local.entity.Partner;
 import com.uit.minhho.financetracker.data.local.entity.Transaction;
 import com.uit.minhho.financetracker.data.local.entity.User;
 import com.uit.minhho.financetracker.data.local.entity.Wallet;
 
-@Database(entities = {User.class, Wallet.class, Category.class, Transaction.class, Budget.class, BusinessContact.class}, version = 3, exportSchema = false)
+@Database(entities = {User.class, Wallet.class, Category.class, Transaction.class, Budget.class, BusinessContact.class, Partner.class}, version = 4, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static volatile AppDatabase INSTANCE;
@@ -28,6 +30,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract TransactionDao transactionDao();
     public abstract BudgetDao budgetDao();
     public abstract BusinessContactDao businessContactDao();
+    public abstract PartnerDao partnerDao();
 
     public static AppDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {

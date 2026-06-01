@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_app"
@@ -10,24 +11,26 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            style="@style/Text.Finance.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/business_budget_dialog_title" />
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar_add_contact"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@android:drawable/ic_menu_close_clear_cancel"
+            app:title="@string/business_add_partner_shortcut"
+            app:titleCentered="true" />
 
         <TextView
             style="@style/Text.Finance.Body"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="@string/business_budget_add_page_subtitle" />
+            android:layout_marginTop="8dp"
+            android:text="@string/business_add_contact_subtitle" />
 
         <com.google.android.material.card.MaterialCardView
             style="@style/Widget.Finance.Card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp">
+            android:layout_marginTop="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -36,43 +39,58 @@
                 android:padding="16dp">
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_add_budget_name"
+                    android:id="@+id/til_contact_name"
                     style="@style/Widget.Finance.Input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/business_budget_dialog_name">
+                    android:hint="@string/business_name_label">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_add_budget_name"
+                        android:id="@+id/et_contact_name"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:inputType="textCapWords" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_add_budget_limit"
+                    android:id="@+id/til_contact_type"
                     style="@style/Widget.Finance.Input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:hint="@string/business_budget_dialog_limit">
+                    android:hint="@string/business_type_label">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_add_budget_limit"
+                        android:id="@+id/et_contact_type"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="number" />
+                        android:inputType="textCapWords" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.Finance.Input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:hint="@string/business_note_label">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_contact_note"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minLines="3" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_save_new_budget"
+                    android:id="@+id/btn_save_contact"
                     style="@style/Widget.Finance.Button.Primary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/action_add" />
+                    android:layout_marginTop="20dp"
+                    android:text="@string/action_save" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_cancel_new_budget"
+                    android:id="@+id/btn_cancel_contact"
                     style="@style/Widget.Finance.Button.Secondary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -82,5 +100,4 @@
         </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
-
 </androidx.core.widget.NestedScrollView>

@@ -40,14 +40,12 @@
             android:layout_marginTop="16dp"
             android:text="@string/business_wallet_added_title" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_business_wallets"
+        <LinearLayout
+            android:id="@+id/wallet_items_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:clipToPadding="false"
-            android:nestedScrollingEnabled="false"
-            android:paddingBottom="8dp" />
+            android:orientation="vertical" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_back_business_wallet"

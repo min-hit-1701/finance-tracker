@@ -10,16 +10,19 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.uit.minhho.financetracker.R;
-import com.uit.minhho.financetracker.model.business.BusinessBudgetItem;
+import com.uit.minhho.financetracker.data.local.entity.Budget;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BusinessBudgetAdapter extends RecyclerView.Adapter<BusinessBudgetAdapter.ViewHolder> {
 
-    private final List<BusinessBudgetItem> items;
+    private final List<Budget> items;
+    private final DecimalFormat amountFormatter = new DecimalFormat("#,###");
 
-    public BusinessBudgetAdapter(List<BusinessBudgetItem> items) {
-        this.items = items;
+    public BusinessBudgetAdapter(List<Budget> items) {
+        this.items = new ArrayList<>(items);
     }
 
     @NonNull
@@ -32,21 +35,39 @@ public class BusinessBudgetAdapter extends RecyclerView.Adapter<BusinessBudgetAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        BusinessBudgetItem item = items.get(position);
-        holder.titleText.setText(item.getName());
+        Budget item = items.get(position);
+        String budgetName = item.getName() == null || item.getName().trim().isEmpty()
+                ? holder.itemView.getResources().getString(R.string.business_budget_default_name)
+                : item.getName();
+        holder.titleText.setText(budgetName);
         holder.usageText.setText(
                 holder.itemView.getResources().getString(
                         R.string.business_budget_usage_format,
-                        item.getUsed(),
-                        item.getLimit()
+                        amountFormatter.format(item.getSpentAmount()),
+                        amountFormatter.format(item.getLimitAmount())
                 )
         );
-        holder.progressBar.setProgress(item.getProgress());
+        holder.progressBar.setProgress(getProgress(item));
     }
 
     @Override
     public int getItemCount() {
         return items.size();
+    }
+
+    public void submitItems(List<Budget> budgets) {
+        items.clear();
+        if (budgets != null) {
+            items.addAll(budgets);
+        }
+        notifyDataSetChanged();
+    }
+
+    private int getProgress(Budget budget) {
+        if (budget.getLimitAmount() <= 0) {
+            return 0;
+        }
+        return Math.min(100, (int) ((budget.getSpentAmount() * 100f) / budget.getLimitAmount()));
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

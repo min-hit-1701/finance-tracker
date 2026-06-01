@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,19 +30,22 @@ public class BusinessAddBudgetFragment extends Fragment {
 
         TextInputLayout nameLayout = view.findViewById(R.id.til_add_budget_name);
         TextInputLayout limitLayout = view.findViewById(R.id.til_add_budget_limit);
-        TextInputLayout usedLayout = view.findViewById(R.id.til_add_budget_used);
         EditText nameInput = view.findViewById(R.id.et_add_budget_name);
         EditText limitInput = view.findViewById(R.id.et_add_budget_limit);
-        EditText usedInput = view.findViewById(R.id.et_add_budget_used);
+
+        Bundle args = getArguments();
+        int editId = args != null ? args.getInt("edit_id", 0) : 0;
+        if (editId > 0) {
+            nameInput.setText(args.getString("edit_name", ""));
+            limitInput.setText(String.valueOf(args.getInt("edit_limit", 0)));
+        }
 
         view.findViewById(R.id.btn_save_new_budget).setOnClickListener(v -> {
             nameLayout.setError(null);
             limitLayout.setError(null);
-            usedLayout.setError(null);
 
             String name = safeText(nameInput);
             String limitText = safeText(limitInput);
-            String usedText = safeText(usedInput);
 
             if (TextUtils.isEmpty(name)) {
                 nameLayout.setError(getString(R.string.business_budget_error_name));
@@ -51,16 +55,10 @@ public class BusinessAddBudgetFragment extends Fragment {
                 limitLayout.setError(getString(R.string.business_budget_error_limit));
                 return;
             }
-            if (TextUtils.isEmpty(usedText)) {
-                usedLayout.setError(getString(R.string.business_budget_error_used));
-                return;
-            }
 
             int limit;
-            int used;
             try {
                 limit = Integer.parseInt(limitText);
-                used = Integer.parseInt(usedText);
             } catch (NumberFormatException exception) {
                 limitLayout.setError(getString(R.string.business_budget_error_limit));
                 return;
@@ -70,15 +68,12 @@ public class BusinessAddBudgetFragment extends Fragment {
                 limitLayout.setError(getString(R.string.business_budget_error_limit));
                 return;
             }
-            if (used < 0) {
-                usedLayout.setError(getString(R.string.business_budget_error_used));
-                return;
-            }
 
             Bundle result = new Bundle();
             result.putString(KEY_NAME, name);
             result.putInt(KEY_LIMIT, limit);
-            result.putInt(KEY_USED, used);
+            result.putInt(KEY_USED, 0);
+            if (editId > 0) result.putInt("edit_id", editId);
             getParentFragmentManager().setFragmentResult(REQUEST_KEY, result);
             getParentFragmentManager().popBackStack();
         });

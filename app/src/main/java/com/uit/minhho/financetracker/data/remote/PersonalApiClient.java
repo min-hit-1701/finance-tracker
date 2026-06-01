@@ -190,6 +190,18 @@ public class PersonalApiClient {
                 return ApiResult.error(session.errorMessage);
             }
 
+            // Kiểm tra số dư ví nếu là giao dịch chi tiêu
+            if (!transaction.isIncome() && transaction.getWalletId() > 0) {
+                DocumentSnapshot walletSnap = Tasks.await(collection(session.uid, WALLETS)
+                        .document(String.valueOf(transaction.getWalletId())).get());
+                if (walletSnap.exists()) {
+                    double balance = doubleValue(walletSnap.get("balance"));
+                    if (balance < transaction.getAmount()) {
+                        return ApiResult.error("Số dư ví không đủ để thực hiện giao dịch này (Hiện có: " + formatMoney(balance) + ")");
+                    }
+                }
+            }
+
             int id = transaction.getId() > 0 ? transaction.getId() : FirebaseSession.nextId();
             Map<String, Object> data = new HashMap<>();
             data.put("id", id);
@@ -372,6 +384,10 @@ public class PersonalApiClient {
     private String formatTimestamp(long timestamp) {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
                 .format(new java.util.Date(timestamp));
+    }
+
+    private String formatMoney(double amount) {
+        return String.format(Locale.US, "%,.0f đ", amount);
     }
 
     private double spentForBudget(List<DocumentSnapshot> transactions, int categoryId, String period) {

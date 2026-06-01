@@ -1,14 +1,24 @@
 package com.uit.minhho.financetracker.model.business;
 
 public class BusinessBudgetItem {
+    private final int id;
     private final String name;
     private final int used;
     private final int limit;
 
-    public BusinessBudgetItem(String name, int used, int limit) {
+    public BusinessBudgetItem(int id, String name, int used, int limit) {
+        this.id = id;
         this.name = name;
         this.used = used;
         this.limit = limit;
+    }
+
+    public BusinessBudgetItem(String name, int used, int limit) {
+        this(0, name, used, limit);
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {

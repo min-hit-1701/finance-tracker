@@ -7,6 +7,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.uit.minhho.financetracker.model.business.BusinessBudgetItem;
 import com.uit.minhho.financetracker.model.business.BusinessEntity;
 import com.uit.minhho.financetracker.model.business.BusinessTransaction;
 import com.uit.minhho.financetracker.model.business.BusinessWallet;
@@ -24,6 +25,7 @@ public class BusinessApiClient {
     private static final String TRANSACTIONS = "business_transactions";
     private static final String ENTITIES = "business_entities";
     private static final String PAYMENTS = "business_payments";
+    private static final String BUDGETS = "business_budgets";
 
     private final Context context;
 
@@ -331,6 +333,53 @@ public class BusinessApiClient {
         } catch (Exception e) {
             return ApiResult.error(firebaseMessage(e, "Không thể xóa giao dịch"));
         }
+    }
+
+    public ApiResult createBusinessBudget(String name, int used, int limit) {
+        try {
+            FirebaseSession.Session session = requireSession();
+            if (!session.valid) {
+                return ApiResult.error(session.errorMessage);
+            }
+
+            int id = FirebaseSession.nextId();
+            Map<String, Object> data = new HashMap<>();
+            data.put("id", id);
+            data.put("name", name);
+            data.put("used", used);
+            data.put("limit", limit);
+            data.put("updatedAt", System.currentTimeMillis());
+
+            Tasks.await(collection(session.uid, BUDGETS).document(String.valueOf(id)).set(data));
+            return ApiResult.success("Đã thiết lập ngân sách doanh nghiệp");
+        } catch (Exception e) {
+            return ApiResult.error(firebaseMessage(e, "Không thể thiết lập ngân sách"));
+        }
+    }
+
+    public List<BusinessBudgetItem> getBusinessBudgets() {
+        List<BusinessBudgetItem> result = new ArrayList<>();
+        try {
+            FirebaseSession.Session session = requireSession();
+            if (!session.valid) {
+                return result;
+            }
+
+            QuerySnapshot snapshot = Tasks.await(collection(session.uid, BUDGETS)
+                    .orderBy("id", Query.Direction.DESCENDING)
+                    .get());
+            for (DocumentSnapshot row : snapshot.getDocuments()) {
+                int id = intValue(row.get("id"), FirebaseSession.positiveHash(row.getId()));
+                result.add(new BusinessBudgetItem(
+                        id,
+                        text(row, "name"),
+                        intValue(row.get("used"), 0),
+                        intValue(row.get("limit"), 0)
+                ));
+            }
+        } catch (Exception ignored) {
+        }
+        return result;
     }
 
     private Map<String, Object> transactionData(

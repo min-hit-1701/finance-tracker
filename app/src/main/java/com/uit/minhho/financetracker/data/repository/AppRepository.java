@@ -577,7 +577,7 @@ public class AppRepository {
             String ts = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.US)
                     .format(new java.util.Date(tx.getTimestamp()));
             businessApiClient.createTransaction(tx.getAmount(), partner, category, ts,
-                    tx.getNote() != null ? tx.getNote() : "", tx.isIncome());
+                    tx.getNote() != null ? tx.getNote() : "", tx.isIncome(), tx.getWalletId());
         } catch (Exception ignored) {}
     }
 
@@ -648,3 +648,4 @@ public class AppRepository {
         });
     }
 }
+

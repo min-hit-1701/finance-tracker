@@ -1,6 +1,7 @@
 package com.uit.minhho.financetracker.fragment.business;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -40,7 +41,7 @@ public class BusinessWalletFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.rv_business_wallets);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        walletAdapter = new BusinessWalletAdapter(wallets);
+        walletAdapter = new BusinessWalletAdapter(wallets, this::confirmDeleteWallet);
         recyclerView.setAdapter(walletAdapter);
         loadWallets();
 
@@ -75,6 +76,35 @@ public class BusinessWalletFragment extends Fragment {
                 wallets.clear();
                 wallets.addAll(loadedWallets);
                 walletAdapter.notifyDataSetChanged();
+            });
+        });
+    }
+
+    private void confirmDeleteWallet(BusinessWallet wallet) {
+        new AlertDialog.Builder(requireContext())
+                .setTitle(R.string.delete_business_wallet_title)
+                .setMessage(R.string.delete_business_wallet_message)
+                .setNegativeButton(R.string.action_cancel, null)
+                .setPositiveButton(R.string.action_delete, (dialog, which) -> deleteWallet(wallet))
+                .show();
+    }
+
+    private void deleteWallet(BusinessWallet wallet) {
+        executorService.execute(() -> {
+            BusinessApiClient.ApiResult<Void> result = apiClient.deleteBusinessWallet(wallet);
+            Activity activity = getActivity();
+            if (!isAdded() || activity == null) {
+                return;
+            }
+
+            activity.runOnUiThread(() -> {
+                if (!isAdded()) {
+                    return;
+                }
+                Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show();
+                if (result.success) {
+                    loadWallets();
+                }
             });
         });
     }

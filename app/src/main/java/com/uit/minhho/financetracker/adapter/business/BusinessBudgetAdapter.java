@@ -16,10 +16,20 @@ import java.util.List;
 
 public class BusinessBudgetAdapter extends RecyclerView.Adapter<BusinessBudgetAdapter.ViewHolder> {
 
+    public interface OnBudgetLongClickListener {
+        void onBudgetLongClick(BusinessBudgetItem budget);
+    }
+
     private final List<BusinessBudgetItem> items;
+    private final OnBudgetLongClickListener longClickListener;
 
     public BusinessBudgetAdapter(List<BusinessBudgetItem> items) {
+        this(items, null);
+    }
+
+    public BusinessBudgetAdapter(List<BusinessBudgetItem> items, OnBudgetLongClickListener longClickListener) {
         this.items = items;
+        this.longClickListener = longClickListener;
     }
 
     @NonNull
@@ -42,6 +52,13 @@ public class BusinessBudgetAdapter extends RecyclerView.Adapter<BusinessBudgetAd
                 )
         );
         holder.progressBar.setProgress(item.getProgress());
+        holder.itemView.setOnLongClickListener(v -> {
+            if (longClickListener != null) {
+                longClickListener.onBudgetLongClick(item);
+                return true;
+            }
+            return false;
+        });
     }
 
     @Override

@@ -63,24 +63,13 @@
         <TextView
             android:id="@+id/tv_amount"
             style="@style/Text.Finance.Body"
-            android:layout_width="104dp"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:ellipsize="end"
             android:gravity="end"
             android:maxLines="1"
             android:textStyle="bold" />
-
-        <ImageButton
-            android:id="@+id/btn_delete_transaction"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginStart="4dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/action_delete_transaction"
-            android:padding="8dp"
-            android:src="@android:drawable/ic_menu_delete"
-            app:tint="@color/text_hint" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

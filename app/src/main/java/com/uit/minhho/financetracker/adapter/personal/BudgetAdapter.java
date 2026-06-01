@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -62,10 +61,11 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
                 formatMoney(item.getSpentAmount()),
                 formatMoney(item.getLimitAmount())
         ));
-        holder.deleteButton.setOnClickListener(v -> {
+        holder.itemView.setOnLongClickListener(v -> {
             if (actionListener != null) {
                 actionListener.onDeleteBudget(item);
             }
+            return true;
         });
         
         double remaining = item.getLimitAmount() - item.getSpentAmount();
@@ -91,7 +91,6 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
         LinearProgressIndicator progressBar;
         TextView usageText;
         TextView remainingText;
-        ImageButton deleteButton;
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             categoryName = itemView.findViewById(R.id.budget_category_name);
@@ -99,7 +98,6 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
             progressBar = itemView.findViewById(R.id.budget_progress_bar);
             usageText = itemView.findViewById(R.id.budget_usage_text);
             remainingText = itemView.findViewById(R.id.budget_remaining_text);
-            deleteButton = itemView.findViewById(R.id.btn_delete_budget);
         }
     }
 

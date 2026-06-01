@@ -49,10 +49,12 @@ public class BusinessTransactionAdapter extends RecyclerView.Adapter<BusinessTra
                 item.isIncome() ? R.color.income_green : R.color.expense_red,
                 null
         ));
-        holder.deleteButton.setOnClickListener(v -> {
+        holder.itemView.setOnLongClickListener(v -> {
             if (deleteClickListener != null) {
                 deleteClickListener.onDeleteClick(item);
+                return true;
             }
+            return false;
         });
     }
 
@@ -65,14 +67,12 @@ public class BusinessTransactionAdapter extends RecyclerView.Adapter<BusinessTra
         TextView titleText;
         TextView subtitleText;
         TextView amountText;
-        View deleteButton;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             titleText = itemView.findViewById(R.id.tx_title);
             subtitleText = itemView.findViewById(R.id.tx_subtitle);
             amountText = itemView.findViewById(R.id.tx_amount);
-            deleteButton = itemView.findViewById(R.id.btn_delete_business_transaction);
         }
     }
 }

@@ -170,6 +170,17 @@ public class AppRepository {
         });
     }
 
+    public void deleteCategory(Category category, OperationCallback callback) {
+        executorService.execute(() -> {
+            PersonalApiClient.ApiResult<Void> result = personalApiClient.deleteCategory(category);
+            if (result.success) {
+                loadCategories(null);
+                loadCategoryUsageTotals(categoryUsageTotals);
+            }
+            notify(callback, result.success, result.message);
+        });
+    }
+
     private void loadCategories(Boolean isIncome) {
         loadCategories(isIncome, categories);
     }

@@ -85,6 +85,23 @@ public class PersonalApiClient {
         }
     }
 
+    public ApiResult<Void> deleteCategory(Category category) {
+        try {
+            FirebaseSession.Session session = requireSession();
+            if (!session.valid) {
+                return ApiResult.error(session.errorMessage);
+            }
+            if (category == null || category.getId() <= 0) {
+                return ApiResult.error("Không tìm thấy danh mục cần xóa");
+            }
+
+            Tasks.await(collection(session.uid, CATEGORIES).document(String.valueOf(category.getId())).delete());
+            return ApiResult.success("Đã xóa danh mục", null);
+        } catch (Exception e) {
+            return ApiResult.error(firebaseMessage(e, "Không thể xóa danh mục"));
+        }
+    }
+
     public ApiResult<List<Wallet>> getWallets() {
         try {
             FirebaseSession.Session session = requireSession();

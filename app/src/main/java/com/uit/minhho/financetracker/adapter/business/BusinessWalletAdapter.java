@@ -15,10 +15,20 @@ import java.util.List;
 
 public class BusinessWalletAdapter extends RecyclerView.Adapter<BusinessWalletAdapter.ViewHolder> {
 
+    public interface OnWalletLongClickListener {
+        void onWalletLongClick(BusinessWallet wallet);
+    }
+
     private final List<BusinessWallet> items;
+    private final OnWalletLongClickListener longClickListener;
 
     public BusinessWalletAdapter(List<BusinessWallet> items) {
+        this(items, null);
+    }
+
+    public BusinessWalletAdapter(List<BusinessWallet> items, OnWalletLongClickListener longClickListener) {
         this.items = items;
+        this.longClickListener = longClickListener;
     }
 
     @NonNull
@@ -37,6 +47,13 @@ public class BusinessWalletAdapter extends RecyclerView.Adapter<BusinessWalletAd
         holder.noteText.setText(
                 holder.itemView.getResources().getString(R.string.business_wallet_note_format, item.getNote())
         );
+        holder.itemView.setOnLongClickListener(v -> {
+            if (longClickListener != null) {
+                longClickListener.onWalletLongClick(item);
+                return true;
+            }
+            return false;
+        });
     }
 
     @Override

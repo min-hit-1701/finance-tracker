@@ -1,9 +1,11 @@
 package com.uit.minhho.financetracker.fragment.personal;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,8 +42,16 @@ public class CategoryFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.rv_categories);
         recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
 
-        adapter = new CategoryAdapter(categoryList, category -> {
-            // Xu ly khi nguoi dung nhan vao mot danh muc
+        adapter = new CategoryAdapter(categoryList, new CategoryAdapter.OnCategoryClickListener() {
+            @Override
+            public void onCategoryClick(Category category) {
+                // Xu ly khi nguoi dung nhan vao mot danh muc
+            }
+
+            @Override
+            public void onCategoryLongClick(Category category) {
+                confirmDeleteCategory(category);
+            }
         });
         recyclerView.setAdapter(adapter);
 
@@ -65,5 +75,31 @@ public class CategoryFragment extends Fragment {
         if (categoryViewModel != null) {
             categoryViewModel.refreshCategories();
         }
+    }
+
+    private void confirmDeleteCategory(Category category) {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Xóa danh mục")
+                .setMessage("Bạn muốn xóa danh mục \"" + category.getName() + "\" khỏi database?")
+                .setNegativeButton(R.string.action_cancel, null)
+                .setPositiveButton(R.string.action_delete, (dialog, which) -> deleteCategory(category))
+                .show();
+    }
+
+    private void deleteCategory(Category category) {
+        categoryViewModel.delete(category, (success, message) -> {
+            if (!isAdded()) {
+                return;
+            }
+            requireActivity().runOnUiThread(() -> {
+                if (!isAdded()) {
+                    return;
+                }
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                if (success) {
+                    categoryViewModel.refreshCategories();
+                }
+            });
+        });
     }
 }

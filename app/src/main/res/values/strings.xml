@@ -51,6 +51,12 @@
     <string name="delete_transaction_title">Xóa giao dịch?</string>
     <string name="delete_transaction_message">Giao dịch sẽ bị xóa và các số liệu liên quan sẽ được cập nhật lại.</string>
     <string name="delete_transaction_success">Đã xóa giao dịch</string>
+    <string name="delete_business_wallet_title">Xóa ví doanh nghiệp?</string>
+    <string name="delete_business_wallet_message">Ví này sẽ bị xóa khỏi database.</string>
+    <string name="delete_business_budget_title">Xóa ngân sách doanh nghiệp?</string>
+    <string name="delete_business_budget_message">Ngân sách này sẽ bị xóa khỏi database.</string>
+    <string name="delete_business_entity_title">Xóa doanh nghiệp?</string>
+    <string name="delete_business_entity_message">Tên doanh nghiệp này sẽ bị xóa khỏi database.</string>
 
     <!-- Trang chủ Cá nhân -->
     <string name="personal_home_title">Xin chào!</string>
@@ -294,11 +300,11 @@
     <string name="business_budget_dialog_title">Thiết lập ngân sách doanh nghiệp</string>
     <string name="business_budget_add_page_subtitle">Tạo mới ngân sách để theo dõi chi phí theo nhóm</string>
     <string name="business_budget_dialog_name">Tên ngân sách</string>
+    <string name="business_budget_dialog_category">Danh mục</string>
     <string name="business_budget_dialog_limit">Hạn mức</string>
-    <string name="business_budget_dialog_used">Đã sử dụng</string>
     <string name="business_budget_error_name">Vui lòng nhập tên ngân sách</string>
+    <string name="business_budget_error_category">Vui lòng chọn danh mục</string>
     <string name="business_budget_error_limit">Vui lòng nhập hạn mức hợp lệ</string>
-    <string name="business_budget_error_used">Vui lòng nhập số đã sử dụng hợp lệ</string>
     <string name="business_budget_save_success">Đã thêm ngân sách mới</string>
     <string name="business_budget_usage_format">Đã dùng %1$s đ / %2$s đ</string>
     <string name="business_budget_operations">Ngân sách vận hành</string>

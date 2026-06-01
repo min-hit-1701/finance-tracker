@@ -15,10 +15,20 @@ import java.util.List;
 
 public class BusinessEntityAdapter extends RecyclerView.Adapter<BusinessEntityAdapter.ViewHolder> {
 
+    public interface OnEntityLongClickListener {
+        void onEntityLongClick(BusinessEntity entity);
+    }
+
     private final List<BusinessEntity> items;
+    private final OnEntityLongClickListener longClickListener;
 
     public BusinessEntityAdapter(List<BusinessEntity> items) {
+        this(items, null);
+    }
+
+    public BusinessEntityAdapter(List<BusinessEntity> items, OnEntityLongClickListener longClickListener) {
         this.items = items;
+        this.longClickListener = longClickListener;
     }
 
     @NonNull
@@ -40,6 +50,13 @@ public class BusinessEntityAdapter extends RecyclerView.Adapter<BusinessEntityAd
                         item.getNote()
                 )
         );
+        holder.itemView.setOnLongClickListener(v -> {
+            if (longClickListener != null) {
+                longClickListener.onEntityLongClick(item);
+                return true;
+            }
+            return false;
+        });
     }
 
     @Override

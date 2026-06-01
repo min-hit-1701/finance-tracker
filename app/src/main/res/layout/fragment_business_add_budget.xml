@@ -49,6 +49,21 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_add_budget_category"
+                    style="@style/Widget.Finance.Input.Dropdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:hint="@string/business_budget_dialog_category">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/spinner_add_budget_category"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_add_budget_limit"
                     style="@style/Widget.Finance.Input"
                     android:layout_width="match_parent"
@@ -58,21 +73,6 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_add_budget_limit"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_add_budget_used"
-                    style="@style/Widget.Finance.Input"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:hint="@string/business_budget_dialog_used">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_add_budget_used"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number" />

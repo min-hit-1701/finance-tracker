@@ -24,6 +24,7 @@ public class BusinessApiClient {
     private static final String TRANSACTIONS = "business_transactions";
     private static final String ENTITIES = "business_entities";
     private static final String PAYMENTS = "business_payments";
+    private static final String BUDGETS = "business_budgets";
 
     private final Context context;
 
@@ -68,9 +69,37 @@ public class BusinessApiClient {
             for (DocumentSnapshot row : snapshot.getDocuments()) {
                 String type = row.getString("type");
                 result.add(new BusinessWallet(
+                        intValue(row.get("id"), FirebaseSession.positiveHash(row.getId())),
                         text(row, "name"),
                         formatMoney(doubleValue(row.get("balance"))),
                         type == null || type.trim().isEmpty() ? "Doanh nghiệp" : type
+                ));
+            }
+        } catch (Exception ignored) {
+        }
+        return result;
+    }
+
+    public List<WalletOption> getWalletOptions() {
+        List<WalletOption> result = new ArrayList<>();
+        try {
+            FirebaseSession.Session session = requireSession();
+            if (!session.valid) {
+                return result;
+            }
+
+            QuerySnapshot snapshot = Tasks.await(collection(session.uid, WALLETS)
+                    .orderBy("id", Query.Direction.DESCENDING)
+                    .get());
+            for (DocumentSnapshot row : snapshot.getDocuments()) {
+                int id = intValue(row.get("id"), FirebaseSession.positiveHash(row.getId()));
+                String name = text(row, "name");
+                String type = text(row, "type");
+                result.add(new WalletOption(
+                        id,
+                        name,
+                        type.isEmpty() ? "Doanh nghiệp" : type,
+                        doubleValue(row.get("balance"))
                 ));
             }
         } catch (Exception ignored) {
@@ -196,6 +225,7 @@ public class BusinessApiClient {
                     .get());
             for (DocumentSnapshot row : snapshot.getDocuments()) {
                 result.add(new BusinessEntity(
+                        intValue(row.get("id"), FirebaseSession.positiveHash(row.getId())),
                         text(row, "name"),
                         text(row, "type"),
                         text(row, "note")
@@ -204,6 +234,126 @@ public class BusinessApiClient {
         } catch (Exception ignored) {
         }
         return result;
+    }
+
+    public ApiResult<Void> deleteBusinessEntity(BusinessEntity entity) {
+        try {
+            FirebaseSession.Session session = requireSession();
+            if (!session.valid) {
+                return ApiResult.error(session.errorMessage);
+            }
+            if (entity == null || entity.getId() <= 0) {
+                return ApiResult.error("Không tìm thấy doanh nghiệp cần xóa");
+            }
+
+            Tasks.await(collection(session.uid, ENTITIES).document(String.valueOf(entity.getId())).delete());
+            return ApiResult.success("Đã xóa doanh nghiệp khỏi database");
+        } catch (Exception e) {
+            return ApiResult.error(firebaseMessage(e, "Không thể xóa doanh nghiệp"));
+        }
+    }
+
+    public ApiResult createBusinessBudget(String name, String categoryName, int limit) {
+        try {
+            FirebaseSession.Session session = requireSession();
+            if (!session.valid) {
+                return ApiResult.error(session.errorMessage);
+            }
+
+            int id = FirebaseSession.nextId();
+            Map<String, Object> data = new HashMap<>();
+            data.put("id", id);
+            data.put("name", name);
+            data.put("categoryName", categoryName);
+            data.put("limit", limit);
+            data.put("updatedAt", System.currentTimeMillis());
+
+            Tasks.await(collection(session.uid, BUDGETS).document(String.valueOf(id)).set(data));
+            return ApiResult.success("Đã thêm ngân sách mới");
+        } catch (Exception e) {
+            return ApiResult.error(firebaseMessage(e, "Không thể thêm ngân sách doanh nghiệp"));
+        }
+    }
+
+    public List<com.uit.minhho.financetracker.model.business.BusinessBudgetItem> getBusinessBudgets() {
+        List<com.uit.minhho.financetracker.model.business.BusinessBudgetItem> result = new ArrayList<>();
+        try {
+            FirebaseSession.Session session = requireSession();
+            if (!session.valid) {
+                return result;
+            }
+
+            Map<String, Integer> usedByCategory = businessExpenseByCategory(session.uid);
+            QuerySnapshot snapshot = Tasks.await(collection(session.uid, BUDGETS)
+                    .orderBy("id", Query.Direction.DESCENDING)
+                    .get());
+            for (DocumentSnapshot row : snapshot.getDocuments()) {
+                String categoryName = text(row, "categoryName");
+                if (categoryName.isEmpty()) {
+                    categoryName = text(row, "name");
+                }
+                result.add(new com.uit.minhho.financetracker.model.business.BusinessBudgetItem(
+                        intValue(row.get("id"), FirebaseSession.positiveHash(row.getId())),
+                        text(row, "name"),
+                        categoryName,
+                        usedByCategory.containsKey(categoryName) ? usedByCategory.get(categoryName) : 0,
+                        intValue(row.get("limit"), 0)
+                ));
+            }
+        } catch (Exception ignored) {
+        }
+        return result;
+    }
+
+    private Map<String, Integer> businessExpenseByCategory(String uid) throws Exception {
+        Map<String, Integer> result = new HashMap<>();
+        QuerySnapshot snapshot = Tasks.await(collection(uid, TRANSACTIONS).get());
+        for (DocumentSnapshot row : snapshot.getDocuments()) {
+            if (boolValue(row.get("isIncome"))) {
+                continue;
+            }
+            String categoryName = text(row, "categoryName");
+            if (categoryName.isEmpty()) {
+                categoryName = "Khác";
+            }
+            int current = result.containsKey(categoryName) ? result.get(categoryName) : 0;
+            result.put(categoryName, current + (int) Math.round(doubleValue(row.get("amount"))));
+        }
+        return result;
+    }
+
+    public ApiResult<Void> deleteBusinessWallet(BusinessWallet wallet) {
+        try {
+            FirebaseSession.Session session = requireSession();
+            if (!session.valid) {
+                return ApiResult.error(session.errorMessage);
+            }
+            if (wallet == null || wallet.getId() <= 0) {
+                return ApiResult.error("Không tìm thấy ví cần xóa");
+            }
+
+            Tasks.await(collection(session.uid, WALLETS).document(String.valueOf(wallet.getId())).delete());
+            return ApiResult.success("Đã xóa ví doanh nghiệp");
+        } catch (Exception e) {
+            return ApiResult.error(firebaseMessage(e, "Không thể xóa ví doanh nghiệp"));
+        }
+    }
+
+    public ApiResult<Void> deleteBusinessBudget(com.uit.minhho.financetracker.model.business.BusinessBudgetItem budget) {
+        try {
+            FirebaseSession.Session session = requireSession();
+            if (!session.valid) {
+                return ApiResult.error(session.errorMessage);
+            }
+            if (budget == null || budget.getId() <= 0) {
+                return ApiResult.error("Không tìm thấy ngân sách cần xóa");
+            }
+
+            Tasks.await(collection(session.uid, BUDGETS).document(String.valueOf(budget.getId())).delete());
+            return ApiResult.success("Đã xóa ngân sách doanh nghiệp");
+        } catch (Exception e) {
+            return ApiResult.error(firebaseMessage(e, "Không thể xóa ngân sách doanh nghiệp"));
+        }
     }
 
     public ApiResult createPayment(String receiver, String account, double amount, String note) {
@@ -255,7 +405,8 @@ public class BusinessApiClient {
             String categoryName,
             String timestamp,
             String note,
-            boolean isIncome
+            boolean isIncome,
+            int walletId
     ) {
         try {
             FirebaseSession.Session session = requireSession();
@@ -263,9 +414,8 @@ public class BusinessApiClient {
                 return ApiResult.error(session.errorMessage);
             }
 
-            SimpleWallet wallet = firstWallet(session.uid);
-            if (wallet == null) {
-                return ApiResult.error("Vui lòng tạo ví doanh nghiệp trước khi thêm giao dịch");
+            if (walletId <= 0) {
+                return ApiResult.error("Vui lòng chọn tài khoản nguồn");
             }
 
             long time = parseTimestamp(timestamp);
@@ -277,10 +427,10 @@ public class BusinessApiClient {
                     buildNote(partner, note),
                     time,
                     isIncome,
-                    wallet.id
+                    walletId
             );
             Tasks.await(collection(session.uid, TRANSACTIONS).document(String.valueOf(id)).set(data));
-            updateWalletBalance(session.uid, wallet.id, isIncome ? amount : -amount);
+            updateWalletBalance(session.uid, walletId, isIncome ? amount : -amount);
             return ApiResult.success("Thêm giao dịch thành công");
         } catch (Exception e) {
             return ApiResult.error(firebaseMessage(e, "Không thể thêm giao dịch"));
@@ -519,6 +669,27 @@ public class BusinessApiClient {
             this.income = income;
             this.note = note;
             this.timestamp = timestamp;
+        }
+    }
+
+    public static class WalletOption {
+        public final int id;
+        public final String name;
+        public final String type;
+        public final double balance;
+
+        public WalletOption(int id, String name, String type, double balance) {
+            this.id = id;
+            this.name = name;
+            this.type = type;
+            this.balance = balance;
+        }
+
+        public String displayName() {
+            if (type == null || type.trim().isEmpty()) {
+                return name;
+            }
+            return name + " - " + type;
         }
     }
 }

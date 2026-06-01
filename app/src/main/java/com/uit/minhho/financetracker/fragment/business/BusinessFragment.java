@@ -1,6 +1,7 @@
 package com.uit.minhho.financetracker.fragment.business;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -54,7 +55,7 @@ public class BusinessFragment extends Fragment {
 
         businessEntities.clear();
 
-        entityAdapter = new BusinessEntityAdapter(businessEntities);
+        entityAdapter = new BusinessEntityAdapter(businessEntities, this::confirmDeleteBusinessEntity);
         entityRecyclerView.setAdapter(entityAdapter);
     }
 
@@ -110,14 +111,42 @@ public class BusinessFragment extends Fragment {
                         return;
                     }
 
-                    businessEntities.add(0, new BusinessEntity(name, type, finalNote));
-                    entityAdapter.notifyDataSetChanged();
+                    loadBusinessEntities();
                     entityRecyclerView.scrollToPosition(0);
 
                     nameInput.setText("");
                     typeInput.setText("");
                     noteInput.setText("");
                 });
+            });
+        });
+    }
+
+    private void confirmDeleteBusinessEntity(BusinessEntity entity) {
+        new AlertDialog.Builder(requireContext())
+                .setTitle(R.string.delete_business_entity_title)
+                .setMessage(R.string.delete_business_entity_message)
+                .setNegativeButton(R.string.action_cancel, null)
+                .setPositiveButton(R.string.action_delete, (dialog, which) -> deleteBusinessEntity(entity))
+                .show();
+    }
+
+    private void deleteBusinessEntity(BusinessEntity entity) {
+        executorService.execute(() -> {
+            BusinessApiClient.ApiResult<Void> result = apiClient.deleteBusinessEntity(entity);
+            Activity activity = getActivity();
+            if (!isAdded() || activity == null) {
+                return;
+            }
+
+            activity.runOnUiThread(() -> {
+                if (!isAdded()) {
+                    return;
+                }
+                Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show();
+                if (result.success) {
+                    loadBusinessEntities();
+                }
             });
         });
     }

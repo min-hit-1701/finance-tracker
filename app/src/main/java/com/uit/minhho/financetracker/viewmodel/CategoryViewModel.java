@@ -43,4 +43,8 @@ public class CategoryViewModel extends AndroidViewModel {
     public void insert(Category category, AppRepository.OperationCallback callback) {
         repository.insertCategory(category, callback);
     }
+
+    public void delete(Category category, AppRepository.OperationCallback callback) {
+        repository.deleteCategory(category, callback);
+    }
 }

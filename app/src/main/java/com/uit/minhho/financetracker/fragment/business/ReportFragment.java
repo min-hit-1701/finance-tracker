@@ -321,7 +321,7 @@ public class ReportFragment extends Fragment {
         Calendar label = (Calendar) weekStart.clone();
         label.setFirstDayOfWeek(Calendar.MONDAY);
         label.setMinimalDaysInFirstWeek(1);
-        return String.format(Locale.US, "tuần %d, tháng %d/%d",
+        return String.format(Locale.US, "Tuần %d, tháng %d/%d",
                 label.get(Calendar.WEEK_OF_MONTH),
                 label.get(Calendar.MONTH) + 1,
                 label.get(Calendar.YEAR));

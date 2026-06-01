@@ -53,11 +53,18 @@ public class DashboardFragment extends Fragment {
         expenseCountText = view.findViewById(R.id.tv_business_expense_count);
         largestTransactionText = view.findViewById(R.id.tv_business_largest_transaction);
         avgPerDayText = view.findViewById(R.id.tv_business_avg_per_day);
+        getParentFragmentManager().setFragmentResultListener(
+                BusinessAddTransactionFragment.REQUEST_KEY,
+                getViewLifecycleOwner(),
+                (requestKey, result) -> loadDashboardData()
+        );
         loadDashboardData();
 
         View paymentButton = view.findViewById(R.id.btn_send_business_payment);
 
-        paymentButton.setOnClickListener(v -> openChildScreen(new BusinessPaymentFragment()));
+        paymentButton.setOnClickListener(v ->
+                new BusinessAddTransactionFragment().show(getParentFragmentManager(), "business_add_transaction")
+        );
     }
 
     @Override

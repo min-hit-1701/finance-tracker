@@ -149,7 +149,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textCapWords"
-                            android:textColor="@color/text_primary" />
+                            android:textColor="@color/input_text_color" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -164,7 +164,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="none"
-                            android:textColor="@color/text_primary" />
+                            android:textColor="@color/input_text_color" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -183,7 +183,7 @@
                             android:focusable="false"
                             android:importantForAccessibility="no"
                             android:text="@string/add_tx_date_today"
-                            android:textColor="@color/brand_primary_light" />
+                            android:textColor="@color/input_text_color" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -199,7 +199,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textLongMessage"
-                            android:textColor="@color/text_primary" />
+                            android:textColor="@color/input_text_color" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>

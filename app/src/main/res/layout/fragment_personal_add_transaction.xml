@@ -148,7 +148,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="none"
-                            android:textColor="@color/text_primary" />
+                            android:textColor="@color/input_text_color" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <LinearLayout
@@ -176,7 +176,7 @@
                             android:layout_marginStart="12dp"
                             android:layout_weight="1"
                             android:text="@string/category_icon_label"
-                            android:textColor="@color/text_primary" />
+                            android:textColor="@color/input_text_color" />
 
                         <ImageView
                             android:layout_width="20dp"
@@ -197,7 +197,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="none"
-                            android:textColor="@color/text_primary" />
+                            android:textColor="@color/input_text_color" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -215,7 +215,7 @@
                             android:clickable="true"
                             android:focusable="false"
                             android:text="Hôm nay"
-                            android:textColor="@color/brand_primary_light" />
+                            android:textColor="@color/input_text_color" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -230,7 +230,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textLongMessage"
-                            android:textColor="@color/text_primary" />
+                            android:textColor="@color/input_text_color" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>

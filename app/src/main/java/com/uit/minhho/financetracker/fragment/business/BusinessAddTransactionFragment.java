@@ -21,16 +21,27 @@ import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.uit.minhho.financetracker.R;
 import com.uit.minhho.financetracker.data.remote.BusinessApiClient;
+import com.uit.minhho.financetracker.model.business.BusinessEntity;
+import com.uit.minhho.financetracker.model.business.BusinessWallet;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class BusinessAddTransactionFragment extends Fragment {
 
-    private EditText etAmount, etPartner, etDate, etNote;
-    private AutoCompleteTextView spinnerCategory;
+    private EditText etAmount, etDate, etNote;
+    private AutoCompleteTextView spinnerCategory, spinnerPartner, spinnerWallet;
     private MaterialButtonToggleGroup typeToggleGroup;
     private BusinessApiClient businessApiClient;
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    
+    private List<BusinessWallet> walletList = new ArrayList<>();
+    private List<BusinessEntity> partnerList = new ArrayList<>();
+    
     private int selectedYear;
     private int selectedMonth;
     private int selectedDay;
@@ -48,9 +59,10 @@ public class BusinessAddTransactionFragment extends Fragment {
         initViews(view);
         setupCategorySpinner();
         setupDatePicker();
+        loadData();
 
         MaterialButton saveButton = view.findViewById(R.id.btn_save);
-        view.findViewById(R.id.btn_save).setOnClickListener(v -> {
+        saveButton.setOnClickListener(v -> {
             if (validateInputs()) {
                 saveButton.setEnabled(false);
                 saveTransaction(saveButton);
@@ -61,7 +73,8 @@ public class BusinessAddTransactionFragment extends Fragment {
     private void initViews(View view) {
         businessApiClient = new BusinessApiClient(requireContext());
         etAmount = view.findViewById(R.id.et_amount);
-        etPartner = view.findViewById(R.id.et_partner);
+        spinnerPartner = view.findViewById(R.id.spinner_partner);
+        spinnerWallet = view.findViewById(R.id.spinner_wallet);
         etDate = view.findViewById(R.id.et_date);
         etNote = view.findViewById(R.id.et_note);
         spinnerCategory = view.findViewById(R.id.spinner_category);
@@ -88,13 +101,35 @@ public class BusinessAddTransactionFragment extends Fragment {
         spinnerCategory.setAdapter(adapter);
     }
 
+    private void loadData() {
+        executorService.execute(() -> {
+            List<BusinessWallet> wallets = businessApiClient.getWallets();
+            List<BusinessEntity> entities = businessApiClient.getBusinessEntities();
+            
+            Activity activity = getActivity();
+            if (activity == null || !isAdded()) return;
+            
+            activity.runOnUiThread(() -> {
+                if (!isAdded()) return;
+                
+                this.walletList = wallets;
+                ArrayAdapter<BusinessWallet> walletAdapter = new ArrayAdapter<>(requireContext(), 
+                        android.R.layout.simple_dropdown_item_1line, walletList);
+                spinnerWallet.setAdapter(walletAdapter);
+                if (!walletList.isEmpty()) {
+                    spinnerWallet.setText(walletList.get(0).getName(), false);
+                }
+
+                this.partnerList = entities;
+                ArrayAdapter<BusinessEntity> partnerAdapter = new ArrayAdapter<>(requireContext(), 
+                        android.R.layout.simple_dropdown_item_1line, partnerList);
+                spinnerPartner.setAdapter(partnerAdapter);
+            });
+        });
+    }
+
     private void setupDatePicker() {
         etDate.setOnClickListener(v -> {
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
-
             DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
                     (view1, year1, monthOfYear, dayOfMonth) -> {
                         selectedYear = year1;
@@ -102,17 +137,28 @@ public class BusinessAddTransactionFragment extends Fragment {
                         selectedDay = dayOfMonth;
                         String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year1;
                         etDate.setText(date);
-                    }, year, month, day);
+                    }, selectedYear, selectedMonth, selectedDay);
             datePickerDialog.show();
         });
     }
 
     private void saveTransaction(MaterialButton saveButton) {
-        double amount = Double.parseDouble(etAmount.getText().toString().trim());
-        String partner = etPartner.getText().toString().trim();
+        String amountStr = etAmount.getText().toString().trim();
+        double amount = Double.parseDouble(amountStr);
+        String partner = spinnerPartner.getText().toString().trim();
         String category = spinnerCategory.getText().toString().trim();
         String note = etNote.getText() == null ? "" : etNote.getText().toString().trim();
         boolean isIncome = typeToggleGroup.getCheckedButtonId() == R.id.btn_revenue;
+        
+        int walletId = -1;
+        String selectedWalletName = spinnerWallet.getText().toString();
+        for (BusinessWallet w : walletList) {
+            if (w.getName().equals(selectedWalletName)) {
+                walletId = w.getId();
+                break;
+            }
+        }
+
         String timestamp = String.format(
                 Locale.US,
                 "%04d-%02d-%02d 00:00:00",
@@ -121,32 +167,30 @@ public class BusinessAddTransactionFragment extends Fragment {
                 selectedDay
         );
 
+        int finalWalletId = walletId;
         Context appContext = requireContext().getApplicationContext();
-        new Thread(() -> {
+        executorService.execute(() -> {
             BusinessApiClient.ApiResult result = businessApiClient.createTransaction(
                     amount,
                     partner,
                     category,
                     timestamp,
                     note,
-                    isIncome
+                    isIncome,
+                    finalWalletId
             );
 
             Activity activity = getActivity();
-            if (!isAdded() || activity == null) {
-                return;
-            }
+            if (activity == null || !isAdded()) return;
             activity.runOnUiThread(() -> {
-                if (!isAdded()) {
-                    return;
-                }
+                if (!isAdded()) return;
                 saveButton.setEnabled(true);
                 Toast.makeText(appContext, result.message, Toast.LENGTH_SHORT).show();
                 if (result.success) {
                     getParentFragmentManager().popBackStack();
                 }
             });
-        }).start();
+        });
     }
 
     private boolean validateInputs() {
@@ -164,14 +208,27 @@ public class BusinessAddTransactionFragment extends Fragment {
             etAmount.setError("Số tiền không hợp lệ");
             return false;
         }
-        if (etPartner.getText().toString().trim().isEmpty()) {
-            etPartner.setError("Vui lòng nhập tên đối tác");
+        
+        if (spinnerWallet.getText().toString().trim().isEmpty()) {
+            spinnerWallet.setError("Vui lòng chọn nguồn tiền");
             return false;
         }
+
+        if (spinnerPartner.getText().toString().trim().isEmpty()) {
+            spinnerPartner.setError("Vui lòng chọn hoặc nhập đối tác");
+            return false;
+        }
+        
         if (spinnerCategory.getText().toString().trim().isEmpty()) {
             spinnerCategory.setError("Vui lòng chọn danh mục");
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        executorService.shutdown();
     }
 }

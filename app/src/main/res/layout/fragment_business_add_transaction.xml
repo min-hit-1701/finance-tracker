@@ -84,7 +84,7 @@
                             android:background="@android:color/transparent"
                             android:hint="@string/add_tx_default_amount"
                             android:importantForAutofill="no"
-                            android:inputType="number"
+                            android:inputType="numberDecimal"
                             android:minWidth="100dp"
                             android:textColor="@color/text_on_primary_high"
                             android:textColorHint="@color/text_on_primary_mid"
@@ -138,14 +138,31 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
+                    <!-- Nguồn tiền (Ví) -->
                     <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.Finance.Input"
+                        style="@style/Widget.Finance.Input.Dropdown"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:hint="@string/add_tx_wallet_label">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/spinner_wallet"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:textColor="@color/input_text_color" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Đối tác khách hàng -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.Finance.Input.Dropdown"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
                         android:hint="@string/add_tx_partner_label">
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/et_partner"
+                        <AutoCompleteTextView
+                            android:id="@+id/spinner_partner"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textCapWords"
@@ -163,7 +180,7 @@
                             android:id="@+id/spinner_category"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="none"
+                            android:inputType="textCapWords"
                             android:textColor="@color/input_text_color" />
                     </com.google.android.material.textfield.TextInputLayout>
 

@@ -67,7 +67,9 @@ public class BusinessApiClient {
 
             for (DocumentSnapshot row : snapshot.getDocuments()) {
                 String type = row.getString("type");
+                int id = intValue(row.get("id"), FirebaseSession.positiveHash(row.getId()));
                 result.add(new BusinessWallet(
+                        id,
                         text(row, "name"),
                         formatMoney(doubleValue(row.get("balance"))),
                         type == null || type.trim().isEmpty() ? "Doanh nghiệp" : type
@@ -195,7 +197,9 @@ public class BusinessApiClient {
                     .orderBy("id", Query.Direction.DESCENDING)
                     .get());
             for (DocumentSnapshot row : snapshot.getDocuments()) {
+                int id = intValue(row.get("id"), FirebaseSession.positiveHash(row.getId()));
                 result.add(new BusinessEntity(
+                        id,
                         text(row, "name"),
                         text(row, "type"),
                         text(row, "note")
@@ -216,6 +220,10 @@ public class BusinessApiClient {
             SimpleWallet wallet = firstWallet(session.uid);
             if (wallet == null) {
                 return ApiResult.error("Vui lòng tạo ví doanh nghiệp trước khi gửi thanh toán");
+            }
+
+            if (wallet.balance < amount) {
+                return ApiResult.error("Số dư ví không đủ để thực hiện thanh toán này (Hiện có: " + formatMoney(wallet.balance) + ")");
             }
 
             long now = System.currentTimeMillis();
@@ -255,7 +263,8 @@ public class BusinessApiClient {
             String categoryName,
             String timestamp,
             String note,
-            boolean isIncome
+            boolean isIncome,
+            int walletId
     ) {
         try {
             FirebaseSession.Session session = requireSession();
@@ -263,9 +272,18 @@ public class BusinessApiClient {
                 return ApiResult.error(session.errorMessage);
             }
 
-            SimpleWallet wallet = firstWallet(session.uid);
-            if (wallet == null) {
-                return ApiResult.error("Vui lòng tạo ví doanh nghiệp trước khi thêm giao dịch");
+            if (walletId <= 0) {
+                return ApiResult.error("Vui lòng chọn ví doanh nghiệp");
+            }
+
+            if (!isIncome) {
+                DocumentSnapshot walletSnap = Tasks.await(collection(session.uid, WALLETS).document(String.valueOf(walletId)).get());
+                if (walletSnap.exists()) {
+                    double balance = doubleValue(walletSnap.get("balance"));
+                    if (balance < amount) {
+                        return ApiResult.error("Số dư ví không đủ để thực hiện giao dịch này (Hiện có: " + formatMoney(balance) + ")");
+                    }
+                }
             }
 
             long time = parseTimestamp(timestamp);
@@ -277,10 +295,10 @@ public class BusinessApiClient {
                     buildNote(partner, note),
                     time,
                     isIncome,
-                    wallet.id
+                    walletId
             );
             Tasks.await(collection(session.uid, TRANSACTIONS).document(String.valueOf(id)).set(data));
-            updateWalletBalance(session.uid, wallet.id, isIncome ? amount : -amount);
+            updateWalletBalance(session.uid, walletId, isIncome ? amount : -amount);
             return ApiResult.success("Thêm giao dịch thành công");
         } catch (Exception e) {
             return ApiResult.error(firebaseMessage(e, "Không thể thêm giao dịch"));
@@ -353,7 +371,8 @@ public class BusinessApiClient {
         DocumentSnapshot first = snapshot.getDocuments().get(0);
         return new SimpleWallet(
                 intValue(first.get("id"), FirebaseSession.positiveHash(first.getId())),
-                text(first, "name")
+                text(first, "name"),
+                doubleValue(first.get("balance"))
         );
     }
 
@@ -465,10 +484,12 @@ public class BusinessApiClient {
     private static class SimpleWallet {
         final int id;
         final String name;
+        final double balance;
 
-        SimpleWallet(int id, String name) {
+        SimpleWallet(int id, String name, double balance) {
             this.id = id;
             this.name = name;
+            this.balance = balance;
         }
     }
 
